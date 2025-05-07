@@ -1,0 +1,63 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Django stuff:
+*.log
+*.pot
+*.pyc
+*.pyo
+*.db
+*.sqlite3
+*.sqlite
+db.sqlite3
+
+# Media and static files
+/media
+/staticfiles
+/static
+
+# Environment variables
+.env
+.env.*
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+.ENV/
+
+# VS Code settings
+.vscode/
+
+# MacOS
+.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Migrations
+**/migrations/*.py
+!**/migrations/__init__.py
+
+# Coverage reports
+htmlcov/
+.coverage
+.tox/
+.nox/
+.cache/
+.pytest_cache/
+
+# MyPy
+.mypy_cache/
+.dmypy.json
+
+# Pipenv
+Pipfile.lock
+
+# Pyre type checker
+.pyre/

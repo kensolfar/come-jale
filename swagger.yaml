@@ -1,0 +1,345 @@
+openapi: 3.0.3
+info:
+  title: Come-Jale API
+  version: 1.0.0
+  description: API REST para gestión de productos, pedidos y facturas con autenticación JWT.
+servers:
+  - url: http://localhost:8000
+paths:
+  /api/token/:
+    post:
+      summary: Obtener token JWT
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Token JWT obtenido
+        '401':
+          description: Credenciales inválidas
+  /api/token/refresh/:
+    post:
+      summary: Refrescar token JWT
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                refresh:
+                  type: string
+      responses:
+        '200':
+          description: Token refrescado
+        '401':
+          description: Token inválido
+  /api/productos/:
+    get:
+      summary: Listar productos
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista de productos
+    post:
+      summary: Crear producto
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Producto'
+      responses:
+        '201':
+          description: Producto creado
+        '401':
+          description: No autenticado
+  /api/productos/{id}/:
+    get:
+      summary: Detalle de producto
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Detalle del producto
+        '404':
+          description: No encontrado
+    put:
+      summary: Actualizar producto
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Producto'
+      responses:
+        '200':
+          description: Producto actualizado
+    delete:
+      summary: Eliminar producto
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Producto eliminado
+  /api/pedidos/:
+    get:
+      summary: Listar pedidos
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista de pedidos
+    post:
+      summary: Crear pedido
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Pedido'
+      responses:
+        '201':
+          description: Pedido creado
+  /api/pedidos/{id}/:
+    get:
+      summary: Detalle de pedido
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Detalle del pedido
+        '404':
+          description: No encontrado
+    put:
+      summary: Actualizar pedido
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Pedido'
+      responses:
+        '200':
+          description: Pedido actualizado
+    delete:
+      summary: Eliminar pedido
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Pedido eliminado
+  /api/facturas/:
+    get:
+      summary: Listar facturas
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista de facturas
+    post:
+      summary: Crear factura
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Factura'
+      responses:
+        '201':
+          description: Factura creada
+  /api/facturas/{id}/:
+    get:
+      summary: Detalle de factura
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Detalle de la factura
+        '404':
+          description: No encontrado
+    put:
+      summary: Actualizar factura
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Factura'
+      responses:
+        '200':
+          description: Factura actualizada
+    delete:
+      summary: Eliminar factura
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Factura eliminada
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Producto:
+      type: object
+      properties:
+        id:
+          type: integer
+        nombre:
+          type: string
+        precio:
+          type: number
+        descripcion:
+          type: string
+        categoria:
+          type: string
+        subcategoria:
+          type: string
+        imagen:
+          type: string
+    Pedido:
+      type: object
+      properties:
+        id:
+          type: integer
+        cliente:
+          type: integer
+        vendedor:
+          type: integer
+        repartidor:
+          type: integer
+        productos:
+          type: array
+          items:
+            type: integer
+        direccion_entrega:
+          type: string
+        contacto:
+          type: string
+        info_adicional:
+          type: string
+        estado:
+          type: string
+        fecha_creacion:
+          type: string
+          format: date-time
+    Factura:
+      type: object
+      properties:
+        id:
+          type: integer
+        pedido:
+          type: integer
+        nombre_vendedor:
+          type: string
+        domicilio_vendedor:
+          type: string
+        nombre_destinatario:
+          type: string
+        domicilio_destinatario:
+          type: string
+        descripcion_mercancias:
+          type: string
+        tipo_embalaje:
+          type: string
+        marcas:
+          type: string
+        numeros:
+          type: string
+        clases:
+          type: string
+        cantidades:
+          type: string
+        termino_comercial:
+          type: string
+        fletes:
+          type: number
+        seguro:
+          type: number
+        lugar_expedicion:
+          type: string
+        fecha_expedicion:
+          type: string
+          format: date
+        metodo_pago:
+          type: string
+        monto_total:
+          type: number

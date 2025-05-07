@@ -1,0 +1,283 @@
+{
+  "info": {
+    "_postman_id": "c1e1e1e1-1111-2222-3333-444444444444",
+    "name": "Come-Jale API",
+    "description": "Colección de pruebas para la API de Come-Jale (autenticación JWT, CRUD, errores)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Autenticación - Obtener Token",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"<tu_password>\"\n}"
+        },
+        "url": { "raw": "{{base_url}}/api/token/", "host": ["{{base_url}}"], "path": ["api", "token", ""] }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status 200', function () { pm.response.to.have.status(200); });",
+              "pm.test('Token recibido', function () { var json = pm.response.json(); pm.expect(json).to.have.property('access'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Autenticación - Token Inválido",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"incorrecto\"\n}"
+        },
+        "url": { "raw": "{{base_url}}/api/token/", "host": ["{{base_url}}"], "path": ["api", "token", ""] }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status 401', function () { pm.response.to.have.status(401); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Productos - Listar",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+        ],
+        "url": { "raw": "{{base_url}}/api/productos/", "host": ["{{base_url}}"], "path": ["api", "productos", ""] }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status 200', function () { pm.response.to.have.status(200); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Productos - Crear (error sin token)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Producto Test\",\n  \"precio\": 10.5,\n  \"descripcion\": \"desc\",\n  \"categoria\": \"cat\"\n}"
+        },
+        "url": { "raw": "{{base_url}}/api/productos/", "host": ["{{base_url}}"], "path": ["api", "productos", ""] }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status 401', function () { pm.response.to.have.status(401); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Productos - Crear",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Producto Test\",\n  \"precio\": 10.5,\n  \"descripcion\": \"desc\",\n  \"categoria\": \"cat\"\n}"
+        },
+        "url": { "raw": "{{base_url}}/api/productos/", "host": ["{{base_url}}"], "path": ["api", "productos", ""] }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status 201', function () { pm.response.to.have.status(201); });",
+              "pm.test('Nombre correcto', function () { var json = pm.response.json(); pm.expect(json.nombre).to.eql('Producto Test'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Pedidos - Listar",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+        ],
+        "url": { "raw": "{{base_url}}/api/pedidos/", "host": ["{{base_url}}"], "path": ["api", "pedidos", ""] }
+      },
+      "event": [
+        { "listen": "test", "script": { "exec": ["pm.test('Status 200', function () { pm.response.to.have.status(200); });"] } }
+      ]
+    },
+    {
+      "name": "Pedidos - Crear",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"cliente\": 1,\n  \"direccion_entrega\": \"Calle 123\",\n  \"contacto\": \"88888888\",\n  \"info_adicional\": \"Ninguna\",\n  \"estado\": \"pendiente\"\n}"
+        },
+        "url": { "raw": "{{base_url}}/api/pedidos/", "host": ["{{base_url}}"], "path": ["api", "pedidos", ""] }
+      },
+      "event": [
+        { "listen": "test", "script": { "exec": ["pm.test('Status 201', function () { pm.response.to.have.status(201); });"] } }
+      ]
+    },
+    {
+      "name": "Pedidos - Detalle",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+        ],
+        "url": { "raw": "{{base_url}}/api/pedidos/1/", "host": ["{{base_url}}"], "path": ["api", "pedidos", "1", ""] }
+      },
+      "event": [
+        { "listen": "test", "script": { "exec": ["pm.test('Status 200', function () { pm.response.to.have.status(200); });"] } }
+      ]
+    },
+    {
+      "name": "Pedidos - Actualizar",
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"cliente\": 1,\n  \"direccion_entrega\": \"Calle 456\",\n  \"contacto\": \"99999999\",\n  \"info_adicional\": \"Actualizar info\",\n  \"estado\": \"enviado\"\n}"
+        },
+        "url": { "raw": "{{base_url}}/api/pedidos/1/", "host": ["{{base_url}}"], "path": ["api", "pedidos", "1", ""] }
+      },
+      "event": [
+        { "listen": "test", "script": { "exec": ["pm.test('Status 200', function () { pm.response.to.have.status(200); });"] } }
+      ]
+    },
+    {
+      "name": "Pedidos - Eliminar",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+        ],
+        "url": { "raw": "{{base_url}}/api/pedidos/1/", "host": ["{{base_url}}"], "path": ["api", "pedidos", "1", ""] }
+      },
+      "event": [
+        { "listen": "test", "script": { "exec": ["pm.test('Status 204', function () { pm.response.to.have.status(204); });"] } }
+      ]
+    },
+    {
+      "name": "Facturas - Listar",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+        ],
+        "url": { "raw": "{{base_url}}/api/facturas/", "host": ["{{base_url}}"], "path": ["api", "facturas", ""] }
+      },
+      "event": [
+        { "listen": "test", "script": { "exec": ["pm.test('Status 200', function () { pm.response.to.have.status(200); });"] } }
+      ]
+    },
+    {
+      "name": "Facturas - Crear",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"pedido\": 1,\n  \"nombre_vendedor\": \"Vendedor Test\",\n  \"domicilio_vendedor\": \"Dirección Vendedor\",\n  \"nombre_destinatario\": \"Cliente Test\",\n  \"domicilio_destinatario\": \"Dirección Cliente\",\n  \"descripcion_mercancias\": \"Productos varios\",\n  \"tipo_embalaje\": \"Caja\",\n  \"marcas\": \"MarcaX\",\n  \"numeros\": \"123\",\n  \"clases\": \"ClaseA\",\n  \"cantidades\": \"10\",\n  \"termino_comercial\": \"FOB\",\n  \"fletes\": 5.0,\n  \"seguro\": 1.0,\n  \"lugar_expedicion\": \"San José\",\n  \"metodo_pago\": \"Efectivo\",\n  \"monto_total\": 100.0\n}"
+        },
+        "url": { "raw": "{{base_url}}/api/facturas/", "host": ["{{base_url}}"], "path": ["api", "facturas", ""] }
+      },
+      "event": [
+        { "listen": "test", "script": { "exec": ["pm.test('Status 201', function () { pm.response.to.have.status(201); });"] } }
+      ]
+    },
+    {
+      "name": "Facturas - Detalle",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+        ],
+        "url": { "raw": "{{base_url}}/api/facturas/1/", "host": ["{{base_url}}"], "path": ["api", "facturas", "1", ""] }
+      },
+      "event": [
+        { "listen": "test", "script": { "exec": ["pm.test('Status 200', function () { pm.response.to.have.status(200); });"] } }
+      ]
+    },
+    {
+      "name": "Facturas - Actualizar",
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"pedido\": 1,\n  \"nombre_vendedor\": \"Vendedor Editado\",\n  \"domicilio_vendedor\": \"Dirección Editada\",\n  \"nombre_destinatario\": \"Cliente Editado\",\n  \"domicilio_destinatario\": \"Dirección Editada\",\n  \"descripcion_mercancias\": \"Productos editados\",\n  \"tipo_embalaje\": \"Bolsa\",\n  \"marcas\": \"MarcaY\",\n  \"numeros\": \"456\",\n  \"clases\": \"ClaseB\",\n  \"cantidades\": \"20\",\n  \"termino_comercial\": \"CIF\",\n  \"fletes\": 10.0,\n  \"seguro\": 2.0,\n  \"lugar_expedicion\": \"Heredia\",\n  \"metodo_pago\": \"Tarjeta\",\n  \"monto_total\": 200.0\n}"
+        },
+        "url": { "raw": "{{base_url}}/api/facturas/1/", "host": ["{{base_url}}"], "path": ["api", "facturas", "1", ""] }
+      },
+      "event": [
+        { "listen": "test", "script": { "exec": ["pm.test('Status 200', function () { pm.response.to.have.status(200); });"] } }
+      ]
+    },
+    {
+      "name": "Facturas - Eliminar",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+        ],
+        "url": { "raw": "{{base_url}}/api/facturas/1/", "host": ["{{base_url}}"], "path": ["api", "facturas", "1", ""] }
+      },
+      "event": [
+        { "listen": "test", "script": { "exec": ["pm.test('Status 204', function () { pm.response.to.have.status(204); });"] } }
+      ]
+    }
+  ],
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:8000" },
+    { "key": "jwt_token", "value": "" }
+  ]
+}
