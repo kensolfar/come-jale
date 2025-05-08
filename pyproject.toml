@@ -1,6 +1,12 @@
 [tool.semantic_release]
-version_variable = ["core/__init__.py:__version__"]
-branch = "main"
+version_variable = "orders/__init__.py:__version__"
+upload_to_pypi = false
+prerelease_token = "beta"
+# La lógica de ramas/canales se maneja en el workflow de GitHub Actions
+# Documentación: https://python-semantic-release.readthedocs.io/en/latest/pre-releases.html
+# Puedes cambiar upload_to_pypi a true si vas a publicar en PyPI
+# Ajusta version_variable si tu version está en otro archivo
+# Documentación: https://python-semantic-release.readthedocs.io/en/latest/configuration.html
 changelog_file = "CHANGELOG.md"
 commit_message = "chore(release): {version} [skip ci]"
 
