@@ -13,9 +13,12 @@ Este archivo documenta el proceso, decisiones y contexto de desarrollo para el s
 - **Pedido**: cliente, vendedor, repartidor, productos (ManyToMany con Producto vía PedidoProducto), dirección de entrega, contacto, info adicional, estado, fecha de creación.
 - **PedidoProducto**: relación intermedia entre Pedido y Producto, con cantidad y precio unitario.
 - **Factura**: OneToOne con Pedido, datos de vendedor, destinatario, mercancías, fletes, seguro, lugar y fecha de expedición, método de pago, monto total.
+- **Ruta**: nombre, descripción, activa.
+- **Entrega**: pedido (OneToOne), repartidor, ruta, fechas, estado, ubicación actual.
+- **ClienteRuta**: cliente, ruta, latitud, longitud, dirección.
 
 ### Serializers:
-- Serializers para Producto, PedidoProducto, Pedido (incluyendo productos anidados), y Factura.
+- Serializers para Producto, PedidoProducto, Pedido (incluyendo productos anidados), Factura, Ruta, Entrega y ClienteRuta.
 
 ---
 
@@ -26,6 +29,10 @@ Este archivo documenta el proceso, decisiones y contexto de desarrollo para el s
 - Se creó y refinó `.github/workflows/release.yml` para separar los flujos de trabajo de liberación estable (main/PyPI) y pre-lanzamiento (beta/TestPyPI), usando entornos de GitHub Actions para gestionar secretos y URLs.
 - Se documentaron ejemplos de mensajes de commit semánticos para disparar releases.
 - Se preparó este archivo `conversacion.md` para migración y onboarding.
+- Se implementaron los modelos **Ruta**, **Entrega** y **ClienteRuta** con sus serializers y registro en el admin.
+- Se añadieron pruebas unitarias para los modelos Ruta, Entrega y ClienteRuta en `orders/tests.py` y todas pasan correctamente.
+- Se crearon recursos de API REST (ViewSet y endpoints) para Ruta, Entrega y ClienteRuta, y se registraron en el router.
+- Se añadieron y ejecutaron pruebas de API para todos los modelos principales (incluyendo los nuevos) en `orders/tests_api.py`, y todas pasaron exitosamente al 17 de mayo de 2025.
 
 ---
 
@@ -45,8 +52,6 @@ Este archivo documenta el proceso, decisiones y contexto de desarrollo para el s
 ---
 
 ## Pendiente
-- Implementar y probar los modelos Entrega, Ruta y ClienteRuta (gestión de entregas, asignación de rutas y geolocalización).
-- Añadir y ejecutar pruebas unitarias/integración para estos modelos.
 - (Opcional) Crear un archivo `RELEASE_WORKFLOW.md` con documentación técnica del proceso de release.
 - Seguir documentando cualquier cambio adicional en este archivo.
 

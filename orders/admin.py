@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Producto, Pedido, PedidoProducto, Factura
+from .models import Producto, Pedido, PedidoProducto, Factura, Ruta, Entrega, ClienteRuta
 
 class PedidoProductoInline(admin.TabularInline):
     model = PedidoProducto
@@ -22,5 +22,25 @@ class FacturaAdmin(admin.ModelAdmin):
     list_display = ("id", "pedido", "nombre_vendedor", "nombre_destinatario", "monto_total", "fecha_expedicion")
     search_fields = ("pedido__id", "nombre_vendedor", "nombre_destinatario")
 
-# PedidoProducto no se registra directamente, solo como inline
+@admin.register(PedidoProducto)
+class PedidoProductoAdmin(admin.ModelAdmin):
+    list_display = ("pedido", "producto", "cantidad", "precio_unitario")
+    search_fields = ("pedido__id", "producto__nombre")
+
+@admin.register(Ruta)
+class RutaAdmin(admin.ModelAdmin):
+    list_display = ("nombre", "activa")
+    search_fields = ("nombre",)
+
+@admin.register(Entrega)
+class EntregaAdmin(admin.ModelAdmin):
+    list_display = ("pedido", "repartidor", "ruta", "estado", "fecha_asignacion", "fecha_entrega")
+    list_filter = ("estado", "ruta")
+    search_fields = ("pedido__id", "repartidor__username")
+
+@admin.register(ClienteRuta)
+class ClienteRutaAdmin(admin.ModelAdmin):
+    list_display = ("cliente", "ruta", "direccion", "latitud", "longitud")
+    search_fields = ("cliente__username", "ruta__nombre", "direccion")
+
 # Register your models here.

@@ -2,7 +2,7 @@ import pytest
 import requests
 
 BASE_URL = "http://localhost:8000"
-ADMIN_USER = "admin"
+ADMIN_USER = "kensol"
 ADMIN_PASS = "123456"  # Cambia esto por la contraseña real
 
 @pytest.fixture(scope="session")
@@ -115,4 +115,74 @@ def test_facturas_crud(get_jwt_token):
     assert r.status_code == 200
     # Eliminar
     r = requests.delete(f"{url}{factura_id}/", headers=headers)
+    assert r.status_code == 204
+
+def test_rutas_crud(get_jwt_token):
+    url = f"{BASE_URL}/api/rutas/"
+    headers = {"Authorization": f"Bearer {get_jwt_token}"}
+    data = {"nombre": "Ruta Test", "descripcion": "Zona centro", "activa": True}
+    r = requests.post(url, json=data, headers=headers)
+    assert r.status_code == 201
+    ruta_id = r.json()["id"]
+    r = requests.get(url, headers=headers)
+    assert r.status_code == 200
+    r = requests.get(f"{url}{ruta_id}/", headers=headers)
+    assert r.status_code == 200
+    data["descripcion"] = "Zona norte"
+    r = requests.put(f"{url}{ruta_id}/", json=data, headers=headers)
+    assert r.status_code == 200
+    r = requests.delete(f"{url}{ruta_id}/", headers=headers)
+    assert r.status_code == 204
+
+def test_entregas_crud(get_jwt_token):
+    # Crear pedido y ruta para la entrega
+    pedido_url = f"{BASE_URL}/api/pedidos/"
+    ruta_url = f"{BASE_URL}/api/rutas/"
+    headers = {"Authorization": f"Bearer {get_jwt_token}"}
+    pedido_data = {"cliente": 1, "direccion_entrega": "Calle 123", "contacto": "88888888", "info_adicional": "Ninguna", "estado": "pendiente"}
+    r = requests.post(pedido_url, json=pedido_data, headers=headers)
+    assert r.status_code == 201
+    pedido_id = r.json()["id"]
+    ruta_data = {"nombre": "Ruta Entrega"}
+    r = requests.post(ruta_url, json=ruta_data, headers=headers)
+    assert r.status_code == 201
+    ruta_id = r.json()["id"]
+    # Crear entrega
+    url = f"{BASE_URL}/api/entregas/"
+    data = {"pedido": pedido_id, "ruta": ruta_id, "estado": "pendiente"}
+    r = requests.post(url, json=data, headers=headers)
+    assert r.status_code == 201
+    entrega_id = r.json()["id"]
+    r = requests.get(url, headers=headers)
+    assert r.status_code == 200
+    r = requests.get(f"{url}{entrega_id}/", headers=headers)
+    assert r.status_code == 200
+    data["estado"] = "en_ruta"
+    r = requests.put(f"{url}{entrega_id}/", json=data, headers=headers)
+    assert r.status_code == 200
+    r = requests.delete(f"{url}{entrega_id}/", headers=headers)
+    assert r.status_code == 204
+
+def test_clienteruta_crud(get_jwt_token):
+    # Crear usuario y ruta para ClienteRuta
+    ruta_url = f"{BASE_URL}/api/rutas/"
+    headers = {"Authorization": f"Bearer {get_jwt_token}"}
+    ruta_data = {"nombre": "Ruta Cliente"}
+    r = requests.post(ruta_url, json=ruta_data, headers=headers)
+    assert r.status_code == 201
+    ruta_id = r.json()["id"]
+    # NOTA: El usuario con id=1 debe existir (admin por defecto)
+    url = f"{BASE_URL}/api/clientes-ruta/"
+    data = {"cliente": 1, "ruta": ruta_id, "latitud": 19.4326, "longitud": -99.1332, "direccion": "CDMX"}
+    r = requests.post(url, json=data, headers=headers)
+    assert r.status_code == 201
+    cr_id = r.json()["id"]
+    r = requests.get(url, headers=headers)
+    assert r.status_code == 200
+    r = requests.get(f"{url}{cr_id}/", headers=headers)
+    assert r.status_code == 200
+    data["direccion"] = "EDOMEX"
+    r = requests.put(f"{url}{cr_id}/", json=data, headers=headers)
+    assert r.status_code == 200
+    r = requests.delete(f"{url}{cr_id}/", headers=headers)
     assert r.status_code == 204
