@@ -274,6 +274,362 @@
       "event": [
         { "listen": "test", "script": { "exec": ["pm.test('Status 204', function () { pm.response.to.have.status(204); });"] } }
       ]
+    },
+    {
+      "name": "Entregas - Listar",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+        ],
+        "url": { "raw": "{{base_url}}/api/entregas/", "host": ["{{base_url}}"], "path": ["api", "entregas", ""] }
+      },
+      "event": [
+        { "listen": "test", "script": { "exec": ["pm.test('Status 200', function () { pm.response.to.have.status(200); });"] } }
+      ]
+    },
+    {
+      "name": "Entregas - Crear",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"pedido\": 1,\n  \"repartidor\": 4,\n  \"ruta\": 1,\n  \"fecha_inicio\": \"2025-05-17T10:00:00Z\",\n  \"fecha_entrega\": null,\n  \"estado\": \"pendiente\",\n  \"ubicacion_actual\": \"\"\n}"
+        },
+        "url": { "raw": "{{base_url}}/api/entregas/", "host": ["{{base_url}}"], "path": ["api", "entregas", ""] }
+      },
+      "event": [
+        { "listen": "test", "script": { "exec": ["pm.test('Status 201', function () { pm.response.to.have.status(201); });"] } }
+      ]
+    },
+    {
+      "name": "Entregas - Detalle",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+        ],
+        "url": { "raw": "{{base_url}}/api/entregas/1/", "host": ["{{base_url}}"], "path": ["api", "entregas", "1", ""] }
+      },
+      "event": [
+        { "listen": "test", "script": { "exec": ["pm.test('Status 200', function () { pm.response.to.have.status(200); });"] } }
+      ]
+    },
+    {
+      "name": "Entregas - Actualizar",
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"pedido\": 1,\n  \"repartidor\": 4,\n  \"ruta\": 1,\n  \"fecha_inicio\": \"2025-05-17T10:00:00Z\",\n  \"fecha_entrega\": \"2025-05-17T12:00:00Z\",\n  \"estado\": \"entregado\",\n  \"ubicacion_actual\": \"Destino final\"\n}"
+        },
+        "url": { "raw": "{{base_url}}/api/entregas/1/", "host": ["{{base_url}}"], "path": ["api", "entregas", "1", ""] }
+      },
+      "event": [
+        { "listen": "test", "script": { "exec": ["pm.test('Status 200', function () { pm.response.to.have.status(200); });"] } }
+      ]
+    },
+    {
+      "name": "Entregas - Eliminar",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+        ],
+        "url": { "raw": "{{base_url}}/api/entregas/1/", "host": ["{{base_url}}"], "path": ["api", "entregas", "1", ""] }
+      },
+      "event": [
+        { "listen": "test", "script": { "exec": ["pm.test('Status 204', function () { pm.response.to.have.status(204); });"] } }
+      ]
+    },
+    {
+      "name": "Entregas - Crear (sin token)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"pedido\": 1,\n  \"repartidor\": 4,\n  \"ruta\": 1,\n  \"fecha_inicio\": \"2025-05-17T10:00:00Z\",\n  \"fecha_entrega\": null,\n  \"estado\": \"pendiente\",\n  \"ubicacion_actual\": \"\"\n}"
+        },
+        "url": { "raw": "{{base_url}}/api/entregas/", "host": ["{{base_url}}"], "path": ["api", "entregas", ""] }
+      },
+      "event": [
+        { "listen": "test", "script": { "exec": ["pm.test('Status 401', function () { pm.response.to.have.status(401); });"] } }
+      ]
+    },
+    {
+      "name": "Entregas - Crear (sin permiso)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{jwt_token_cliente}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"pedido\": 1,\n  \"repartidor\": 4,\n  \"ruta\": 1,\n  \"fecha_inicio\": \"2025-05-17T10:00:00Z\",\n  \"fecha_entrega\": null,\n  \"estado\": \"pendiente\",\n  \"ubicacion_actual\": \"\"\n}"
+        },
+        "url": { "raw": "{{base_url}}/api/entregas/", "host": ["{{base_url}}"], "path": ["api", "entregas", ""] }
+      },
+      "event": [
+        { "listen": "test", "script": { "exec": ["pm.test('Status 403', function () { pm.response.to.have.status(403); });"] } }
+      ]
+    },
+    {
+      "name": "Entregas - Detalle (no existe)",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+        ],
+        "url": { "raw": "{{base_url}}/api/entregas/9999/", "host": ["{{base_url}}"], "path": ["api", "entregas", "9999", ""] }
+      },
+      "event": [
+        { "listen": "test", "script": { "exec": ["pm.test('Status 404', function () { pm.response.to.have.status(404); });"] } }
+      ]
+    },
+    {
+      "name": "Rutas - Listar",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+        ],
+        "url": { "raw": "{{base_url}}/api/rutas/", "host": ["{{base_url}}"], "path": ["api", "rutas", ""] }
+      },
+      "event": [
+        { "listen": "test", "script": { "exec": ["pm.test('Status 200', function () { pm.response.to.have.status(200); });"] } }
+      ]
+    },
+    {
+      "name": "Rutas - Crear",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Ruta Test\",\n  \"descripcion\": \"Descripción de prueba\",\n  \"activa\": true\n}"
+        },
+        "url": { "raw": "{{base_url}}/api/rutas/", "host": ["{{base_url}}"], "path": ["api", "rutas", ""] }
+      },
+      "event": [
+        { "listen": "test", "script": { "exec": ["pm.test('Status 201', function () { pm.response.to.have.status(201); });"] } }
+      ]
+    },
+    {
+      "name": "Rutas - Detalle",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+        ],
+        "url": { "raw": "{{base_url}}/api/rutas/1/", "host": ["{{base_url}}"], "path": ["api", "rutas", "1", ""] }
+      },
+      "event": [
+        { "listen": "test", "script": { "exec": ["pm.test('Status 200', function () { pm.response.to.have.status(200); });"] } }
+      ]
+    },
+    {
+      "name": "Rutas - Actualizar",
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Ruta Editada\",\n  \"descripcion\": \"Descripción editada\",\n  \"activa\": false\n}"
+        },
+        "url": { "raw": "{{base_url}}/api/rutas/1/", "host": ["{{base_url}}"], "path": ["api", "rutas", "1", ""] }
+      },
+      "event": [
+        { "listen": "test", "script": { "exec": ["pm.test('Status 200', function () { pm.response.to.have.status(200); });"] } }
+      ]
+    },
+    {
+      "name": "Rutas - Eliminar",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+        ],
+        "url": { "raw": "{{base_url}}/api/rutas/1/", "host": ["{{base_url}}"], "path": ["api", "rutas", "1", ""] }
+      },
+      "event": [
+        { "listen": "test", "script": { "exec": ["pm.test('Status 204', function () { pm.response.to.have.status(204); });"] } }
+      ]
+    },
+    {
+      "name": "Rutas - Crear (sin token)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Ruta Test\",\n  \"descripcion\": \"Descripción de prueba\",\n  \"activa\": true\n}"
+        },
+        "url": { "raw": "{{base_url}}/api/rutas/", "host": ["{{base_url}}"], "path": ["api", "rutas", ""] }
+      },
+      "event": [
+        { "listen": "test", "script": { "exec": ["pm.test('Status 401', function () { pm.response.to.have.status(401); });"] } }
+      ]
+    },
+    {
+      "name": "Rutas - Crear (sin permiso)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{jwt_token_cliente}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Ruta Test\",\n  \"descripcion\": \"Descripción de prueba\",\n  \"activa\": true\n}"
+        },
+        "url": { "raw": "{{base_url}}/api/rutas/", "host": ["{{base_url}}"], "path": ["api", "rutas", ""] }
+      },
+      "event": [
+        { "listen": "test", "script": { "exec": ["pm.test('Status 403', function () { pm.response.to.have.status(403); });"] } }
+      ]
+    },
+    {
+      "name": "ClienteRuta - Listar",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+        ],
+        "url": { "raw": "{{base_url}}/api/clientes-ruta/", "host": ["{{base_url}}"], "path": ["api", "clientes-ruta", ""] }
+      },
+      "event": [
+        { "listen": "test", "script": { "exec": ["pm.test('Status 200', function () { pm.response.to.have.status(200); });"] } }
+      ]
+    },
+    {
+      "name": "ClienteRuta - Crear",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"cliente\": 2,\n  \"ruta\": 1,\n  \"latitud\": 9.93333,\n  \"longitud\": -84.08333,\n  \"direccion\": \"Calle 123, San José\"\n}"
+        },
+        "url": { "raw": "{{base_url}}/api/clientes-ruta/", "host": ["{{base_url}}"], "path": ["api", "clientes-ruta", ""] }
+      },
+      "event": [
+        { "listen": "test", "script": { "exec": ["pm.test('Status 201', function () { pm.response.to.have.status(201); });"] } }
+      ]
+    },
+    {
+      "name": "ClienteRuta - Detalle",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+        ],
+        "url": { "raw": "{{base_url}}/api/clientes-ruta/1/", "host": ["{{base_url}}"], "path": ["api", "clientes-ruta", "1", ""] }
+      },
+      "event": [
+        { "listen": "test", "script": { "exec": ["pm.test('Status 200', function () { pm.response.to.have.status(200); });"] } }
+      ]
+    },
+    {
+      "name": "ClienteRuta - Actualizar",
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"cliente\": 2,\n  \"ruta\": 1,\n  \"latitud\": 9.93400,\n  \"longitud\": -84.08400,\n  \"direccion\": \"Calle 456, San José\"\n}"
+        },
+        "url": { "raw": "{{base_url}}/api/clientes-ruta/1/", "host": ["{{base_url}}"], "path": ["api", "clientes-ruta", "1", ""] }
+      },
+      "event": [
+        { "listen": "test", "script": { "exec": ["pm.test('Status 200', function () { pm.response.to.have.status(200); });"] } }
+      ]
+    },
+    {
+      "name": "ClienteRuta - Eliminar",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+        ],
+        "url": { "raw": "{{base_url}}/api/clientes-ruta/1/", "host": ["{{base_url}}"], "path": ["api", "clientes-ruta", "1", ""] }
+      },
+      "event": [
+        { "listen": "test", "script": { "exec": ["pm.test('Status 204', function () { pm.response.to.have.status(204); });"] } }
+      ]
+    },
+    {
+      "name": "ClienteRuta - Crear (sin token)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"cliente\": 2,\n  \"ruta\": 1,\n  \"latitud\": 9.93333,\n  \"longitud\": -84.08333,\n  \"direccion\": \"Calle 123, San José\"\n}"
+        },
+        "url": { "raw": "{{base_url}}/api/clientes-ruta/", "host": ["{{base_url}}"], "path": ["api", "clientes-ruta", ""] }
+      },
+      "event": [
+        { "listen": "test", "script": { "exec": ["pm.test('Status 401', function () { pm.response.to.have.status(401); });"] } }
+      ]
+    },
+    {
+      "name": "ClienteRuta - Crear (sin permiso)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{jwt_token_repartidor}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"cliente\": 2,\n  \"ruta\": 1,\n  \"latitud\": 9.93333,\n  \"longitud\": -84.08333,\n  \"direccion\": \"Calle 123, San José\"\n}"
+        },
+        "url": { "raw": "{{base_url}}/api/clientes-ruta/", "host": ["{{base_url}}"], "path": ["api", "clientes-ruta", ""] }
+      },
+      "event": [
+        { "listen": "test", "script": { "exec": ["pm.test('Status 403', function () { pm.response.to.have.status(403); });"] } }
+      ]
+    },
+    {
+      "name": "ClienteRuta - Detalle (no existe)",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+        ],
+        "url": { "raw": "{{base_url}}/api/clientes-ruta/9999/", "host": ["{{base_url}}"], "path": ["api", "clientes-ruta", "9999", ""] }
+      },
+      "event": [
+        { "listen": "test", "script": { "exec": ["pm.test('Status 404', function () { pm.response.to.have.status(404); });"] } }
+      ]
     }
   ],
   "variable": [
