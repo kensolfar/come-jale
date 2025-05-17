@@ -93,6 +93,113 @@ Las rutas de entrega corresponden a ubicaciones reales del Distrito Central de C
 - El fixture de usuarios sobrescribe el usuario con pk=1. Si tienes un superusuario propio, crea uno nuevo tras cargar los datos.
 - Para pruebas automatizadas, consulta `orders/tests_api.py` y la colección Postman incluida.
 
+## Resultados de las pruebas API (pytest)
+
+A fecha 2025-05-17, la suite de pruebas automatizadas (`orders/tests_api.py`) pasa correctamente con la política de roles y permisos implementada:
+
+- **Clientes** pueden crear, listar y ver sus propios pedidos, pero no pueden actualizar ni eliminar pedidos (reciben 403 Forbidden).
+- **Admin y Vendedor** pueden actualizar y eliminar pedidos.
+- Los endpoints de productos, facturas, entregas y clientes-ruta respetan los permisos personalizados definidos para cada rol.
+- Todos los flujos principales y restricciones de acceso están cubiertos por pruebas automatizadas.
+
+Para ejecutar las pruebas:
+
+```bash
+pytest orders/tests_api.py --disable-warnings -v
+```
+
+Todos los tests deben pasar (9 passed).
+
+## Ejemplos de request/response por rol
+
+### 1. Cliente crea y lista sus pedidos
+
+**POST /api/pedidos/**
+```json
+{
+  "cliente": 2,
+  "direccion_entrega": "Calle 123",
+  "contacto": "88888888",
+  "info_adicional": "Ninguna",
+  "estado": "pendiente"
+}
+```
+**Response 201:**
+```json
+{
+  "id": 10,
+  "cliente": 2,
+  "direccion_entrega": "Calle 123",
+  "contacto": "88888888",
+  "info_adicional": "Ninguna",
+  "estado": "pendiente",
+  ...
+}
+```
+
+**GET /api/pedidos/** (con token de cliente)
+```json
+[
+  {
+    "id": 10,
+    "cliente": 2,
+    "direccion_entrega": "Calle 123",
+    ...
+  }
+]
+```
+
+### 2. Cliente intenta actualizar/eliminar pedido (no permitido)
+
+**PUT /api/pedidos/10/**
+```json
+{
+  "cliente": 2,
+  "direccion_entrega": "Calle 456",
+  ...
+}
+```
+**Response 403:**
+```json
+{
+  "detail": "No tienes permiso para realizar esta acción."
+}
+```
+
+### 3. Admin/vendedor actualiza pedido (permitido)
+
+**PUT /api/pedidos/10/** (con token de admin o vendedor)
+```json
+{
+  "cliente": 2,
+  "direccion_entrega": "Calle 456",
+  ...
+}
+```
+**Response 200:**
+```json
+{
+  "id": 10,
+  "cliente": 2,
+  "direccion_entrega": "Calle 456",
+  ...
+}
+```
+
+---
+
+## Cobertura Postman
+
+La colección `postman_collection.json` incluida en el repositorio permite probar:
+- Autenticación JWT (login, refresh)
+- CRUD de productos, pedidos, facturas, entregas y clientes-ruta
+- Escenarios de acceso denegado según rol (403)
+- Flujos de éxito y error para cada endpoint y rol
+
+Puedes importar la colección en Postman y usar los usuarios de prueba documentados para validar todos los flujos y restricciones de la API.
+
+---
+
 ## Versionado y despliegue
 - Versionado automático con python-semantic-release
 - Configuración en `pyproject.toml`

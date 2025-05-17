@@ -95,6 +95,104 @@ Este archivo documenta el proceso, decisiones y contexto de desarrollo para el s
 - Para migrar el proyecto, asegúrate de copiar este archivo y los archivos de configuración clave (`pyproject.toml`, workflows, fixtures, etc.).
 - Los secretos de PyPI/TestPyPI deben configurarse en los entornos de GitHub Actions correspondientes.
 
+## Resultados de pruebas y cobertura de roles (2025-05-17)
+
+- Todos los tests API (`orders/tests_api.py`) pasan correctamente con la política de permisos actual.
+- Los clientes solo pueden crear, listar y ver sus propios pedidos. No pueden actualizar ni eliminar pedidos (403 Forbidden).
+- Admin y vendedor pueden actualizar y eliminar pedidos.
+- Los endpoints de productos, facturas, entregas y clientes-ruta respetan los permisos personalizados.
+- La cobertura de pruebas incluye flujos de éxito y error para cada rol.
+
+Para reproducir:
+
+```
+python manage.py runserver
+pytest orders/tests_api.py --disable-warnings -v
+```
+
+## Ejemplos de request/response y cobertura Postman (2025-05-17)
+
+### Ejemplo: Cliente crea y lista pedidos
+
+**POST /api/pedidos/**
+```json
+{
+  "cliente": 2,
+  "direccion_entrega": "Calle 123",
+  "contacto": "88888888",
+  "info_adicional": "Ninguna",
+  "estado": "pendiente"
+}
+```
+**Response 201:**
+```json
+{
+  "id": 10,
+  "cliente": 2,
+  "direccion_entrega": "Calle 123",
+  ...
+}
+```
+
+**GET /api/pedidos/** (token de cliente)
+```json
+[
+  {
+    "id": 10,
+    "cliente": 2,
+    "direccion_entrega": "Calle 123",
+    ...
+  }
+]
+```
+
+### Ejemplo: Cliente intenta actualizar/eliminar pedido (403)
+
+**PUT /api/pedidos/10/**
+```json
+{
+  "cliente": 2,
+  "direccion_entrega": "Calle 456",
+  ...
+}
+```
+**Response 403:**
+```json
+{
+  "detail": "No tienes permiso para realizar esta acción."
+}
+```
+
+### Ejemplo: Admin/vendedor actualiza pedido
+
+**PUT /api/pedidos/10/** (token de admin o vendedor)
+```json
+{
+  "cliente": 2,
+  "direccion_entrega": "Calle 456",
+  ...
+}
+```
+**Response 200:**
+```json
+{
+  "id": 10,
+  "cliente": 2,
+  "direccion_entrega": "Calle 456",
+  ...
+}
+```
+
+### Cobertura Postman
+
+La colección `postman_collection.json` cubre:
+- Login y refresh JWT
+- CRUD de productos, pedidos, facturas, entregas y clientes-ruta
+- Acceso denegado (403) según rol
+- Flujos de éxito y error para cada endpoint y rol
+
+Importa la colección en Postman y usa los usuarios de prueba para validar todos los flujos y restricciones de la API.
+
 ## Última actualización
 17 de mayo de 2025
 

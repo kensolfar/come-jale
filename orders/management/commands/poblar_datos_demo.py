@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from orders.models import Producto, Pedido, PedidoProducto, Factura, Ruta, Entrega, ClienteRuta
 from django.db import transaction
 
@@ -8,19 +8,31 @@ class Command(BaseCommand):
 
     @transaction.atomic
     def handle(self, *args, **kwargs):
+        # Crear grupos de roles si no existen
+        roles = ['Administrador', 'Cliente', 'Vendedor', 'Repartidor']
+        for role in roles:
+            Group.objects.get_or_create(name=role)
+
         # Usuarios
         admin, _ = User.objects.get_or_create(username='admin', defaults={'email': 'admin@demo.com', 'is_staff': True, 'is_superuser': True})
         admin.set_password('admin123')
         admin.save()
+        admin.groups.add(Group.objects.get(name='Administrador'))
+
         cliente, _ = User.objects.get_or_create(username='cliente', defaults={'email': 'cliente@demo.com'})
         cliente.set_password('cliente123')
         cliente.save()
+        cliente.groups.add(Group.objects.get(name='Cliente'))
+
         vendedor, _ = User.objects.get_or_create(username='vendedor', defaults={'email': 'vendedor@demo.com'})
         vendedor.set_password('vendedor123')
         vendedor.save()
+        vendedor.groups.add(Group.objects.get(name='Vendedor'))
+
         repartidor, _ = User.objects.get_or_create(username='repartidor', defaults={'email': 'repartidor@demo.com'})
         repartidor.set_password('repartidor123')
         repartidor.save()
+        repartidor.groups.add(Group.objects.get(name='Repartidor'))
 
         # Productos
         productos = [
