@@ -52,6 +52,47 @@ Se incluye una colección de Postman (`postman_collection.json`) con pruebas de 
 - CRUD de productos, pedidos y facturas
 - Escenarios de error: credenciales inválidas, acceso sin token, datos inválidos
 
+## Usuarios de prueba y superusuario
+
+El sistema incluye datos de prueba y un superusuario para facilitar el desarrollo y pruebas locales.
+
+- **Superusuario:**
+  - Usuario: `kenso`
+  - Email: `kensol23@gmail.com`
+  - Contraseña: (debes establecerla manualmente usando `python manage.py changepassword kenso` tras cargar los fixtures, por seguridad y compatibilidad con Django)
+
+- **Usuarios de prueba:**
+  - Cliente: `cliente` / `cliente123`
+  - Vendedor: `vendedor` / `vendedor123`
+  - Repartidor: `repartidor` / `repartidor123`
+
+## Carga de datos de prueba
+
+Puedes poblar la base de datos con datos realistas (productos, rutas, pedidos, facturas, entregas) usando:
+
+```bash
+python manage.py loaddata orders/fixtures_demo.json
+```
+
+O bien, usando el comando personalizado:
+
+```bash
+python manage.py poblar_datos_demo
+```
+
+## Rutas y direcciones de ejemplo
+
+Las rutas de entrega corresponden a ubicaciones reales del Distrito Central de Cañas, Guanacaste:
+- Ruta Central: Centro de Cañas, Parque Central
+- Ruta Barrio San José: Barrio San José, cerca de la iglesia
+- Ruta Barrio Lajas: Barrio Lajas, frente a la escuela
+- Ruta Barrio Santa Lucía: Barrio Santa Lucía, costado sur del Ebais
+
+## Notas de seguridad y desarrollo
+- No uses contraseñas simples en producción.
+- El fixture de usuarios sobrescribe el usuario con pk=1. Si tienes un superusuario propio, crea uno nuevo tras cargar los datos.
+- Para pruebas automatizadas, consulta `orders/tests_api.py` y la colección Postman incluida.
+
 ## Versionado y despliegue
 - Versionado automático con python-semantic-release
 - Configuración en `pyproject.toml`

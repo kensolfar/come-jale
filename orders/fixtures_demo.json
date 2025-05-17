@@ -1,0 +1,227 @@
+[
+  {
+    "model": "auth.user",
+    "pk": 1,
+    "fields": {
+      "username": "kenso",
+      "password": "pbkdf2_sha256$600000$2QkQw6Qw6Qw6Q$w1Qw6Qw6Qw6Qw6Qw6Qw6Qw6Qw6Qw6Qw6Qw6Qw6Qw6Q=",
+      "is_superuser": true,
+      "is_staff": true,
+      "is_active": true,
+      "email": "kensol23@gmail.com"
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 2,
+    "fields": {
+      "username": "cliente",
+      "password": "pbkdf2_sha256$600000$demo$demo",
+      "is_superuser": false,
+      "is_staff": false,
+      "is_active": true,
+      "email": "cliente@demo.com"
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 3,
+    "fields": {
+      "username": "vendedor",
+      "password": "pbkdf2_sha256$600000$demo$demo",
+      "is_superuser": false,
+      "is_staff": false,
+      "is_active": true,
+      "email": "vendedor@demo.com"
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 4,
+    "fields": {
+      "username": "repartidor",
+      "password": "pbkdf2_sha256$600000$demo$demo",
+      "is_superuser": false,
+      "is_staff": false,
+      "is_active": true,
+      "email": "repartidor@demo.com"
+    }
+  },
+  {
+    "model": "orders.producto",
+    "pk": 1,
+    "fields": {
+      "nombre": "Gallo Pinto",
+      "precio": "2500.00",
+      "descripcion": "Desayuno típico costarricense",
+      "categoria": "Desayuno",
+      "subcategoria": "Típico",
+      "imagen": ""
+    }
+  },
+  {
+    "model": "orders.producto",
+    "pk": 2,
+    "fields": {
+      "nombre": "Casado de Pollo",
+      "precio": "3500.00",
+      "descripcion": "Arroz, frijoles, ensalada, plátano y pollo",
+      "categoria": "Almuerzo",
+      "subcategoria": "Casado",
+      "imagen": ""
+    }
+  },
+  {
+    "model": "orders.producto",
+    "pk": 3,
+    "fields": {
+      "nombre": "Refresco Natural",
+      "precio": "1000.00",
+      "descripcion": "Bebida de frutas frescas",
+      "categoria": "Bebidas",
+      "subcategoria": "Natural",
+      "imagen": ""
+    }
+  },
+  {
+    "model": "orders.producto",
+    "pk": 4,
+    "fields": {
+      "nombre": "Empanada de Queso",
+      "precio": "800.00",
+      "descripcion": "Empanada artesanal rellena de queso",
+      "categoria": "Snacks",
+      "subcategoria": "Empanadas",
+      "imagen": ""
+    }
+  },
+  {
+    "model": "orders.ruta",
+    "pk": 1,
+    "fields": {
+      "nombre": "Ruta Central",
+      "descripcion": "Centro de Cañas, Parque Central",
+      "activa": true
+    }
+  },
+  {
+    "model": "orders.ruta",
+    "pk": 2,
+    "fields": {
+      "nombre": "Ruta Barrio San José",
+      "descripcion": "Barrio San José, cerca de la iglesia",
+      "activa": true
+    }
+  },
+  {
+    "model": "orders.ruta",
+    "pk": 3,
+    "fields": {
+      "nombre": "Ruta Barrio Lajas",
+      "descripcion": "Barrio Lajas, frente a la escuela",
+      "activa": true
+    }
+  },
+  {
+    "model": "orders.ruta",
+    "pk": 4,
+    "fields": {
+      "nombre": "Ruta Barrio Santa Lucía",
+      "descripcion": "Barrio Santa Lucía, costado sur del Ebais",
+      "activa": true
+    }
+  },
+  {
+    "model": "orders.clienteruta",
+    "pk": 1,
+    "fields": {
+      "cliente": 2,
+      "ruta": 1,
+      "latitud": "10.4271",
+      "longitud": "-85.0998",
+      "direccion": "Parque Central, Cañas"
+    }
+  },
+  {
+    "model": "orders.clienteruta",
+    "pk": 2,
+    "fields": {
+      "cliente": 2,
+      "ruta": 2,
+      "latitud": "10.4300",
+      "longitud": "-85.0950",
+      "direccion": "Barrio San José, Cañas"
+    }
+  },
+  {
+    "model": "orders.pedido",
+    "pk": 1,
+    "fields": {
+      "cliente": 2,
+      "vendedor": 3,
+      "repartidor": 4,
+      "direccion_entrega": "Parque Central, Cañas",
+      "contacto": "8888-1111",
+      "info_adicional": "Entregar antes de las 12pm",
+      "estado": "pendiente",
+      "fecha_creacion": "2025-05-17T10:00:00Z"
+    }
+  },
+  {
+    "model": "orders.pedidoproducto",
+    "pk": 1,
+    "fields": {
+      "pedido": 1,
+      "producto": 1,
+      "cantidad": 2,
+      "precio_unitario": "2500.00"
+    }
+  },
+  {
+    "model": "orders.pedidoproducto",
+    "pk": 2,
+    "fields": {
+      "pedido": 1,
+      "producto": 3,
+      "cantidad": 1,
+      "precio_unitario": "1000.00"
+    }
+  },
+  {
+    "model": "orders.factura",
+    "pk": 1,
+    "fields": {
+      "pedido": 1,
+      "nombre_vendedor": "Soda La Central",
+      "domicilio_vendedor": "Parque Central, Cañas",
+      "nombre_destinatario": "Juan Pérez",
+      "domicilio_destinatario": "Barrio San José, Cañas",
+      "descripcion_mercancias": "Gallo Pinto x2, Refresco Natural x1",
+      "tipo_embalaje": "Caja",
+      "marcas": "-",
+      "numeros": "-",
+      "clases": "-",
+      "cantidades": "3",
+      "termino_comercial": "Contado",
+      "fletes": "0.00",
+      "seguro": "0.00",
+      "lugar_expedicion": "Cañas",
+      "fecha_expedicion": "2025-05-17",
+      "metodo_pago": "Efectivo",
+      "monto_total": "6000.00"
+    }
+  },
+  {
+    "model": "orders.entrega",
+    "pk": 1,
+    "fields": {
+      "pedido": 1,
+      "repartidor": 4,
+      "ruta": 1,
+      "fecha_asignacion": "2025-05-17T10:05:00Z",
+      "fecha_entrega": null,
+      "estado": "pendiente",
+      "ubicacion_actual": "En cocina"
+    }
+  }
+]

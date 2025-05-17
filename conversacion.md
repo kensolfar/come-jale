@@ -31,8 +31,6 @@ Este archivo documenta el proceso, decisiones y contexto de desarrollo para el s
 - Se preparó este archivo `conversacion.md` para migración y onboarding.
 - Se implementaron los modelos **Ruta**, **Entrega** y **ClienteRuta** con sus serializers y registro en el admin.
 - Se añadieron pruebas unitarias para los modelos Ruta, Entrega y ClienteRuta en `orders/tests.py` y todas pasan correctamente.
-- Se crearon recursos de API REST (ViewSet y endpoints) para Ruta, Entrega y ClienteRuta, y se registraron en el router.
-- Se añadieron y ejecutaron pruebas de API para todos los modelos principales (incluyendo los nuevos) en `orders/tests_api.py`, y todas pasaron exitosamente al 17 de mayo de 2025.
 
 ---
 
@@ -74,6 +72,28 @@ Este archivo documenta el proceso, decisiones y contexto de desarrollo para el s
 - Los secretos de PyPI/TestPyPI deben configurarse en los entornos de GitHub Actions correspondientes.
 
 ---
+
+## Datos de prueba y superusuario
+- El proyecto incluye un fixture (`orders/fixtures_demo.json`) y un comando de gestión (`python manage.py poblar_datos_demo`) para poblar la base de datos con datos realistas: productos, rutas, pedidos, facturas, entregas y usuarios de prueba.
+- El superusuario por defecto es:
+  - Usuario: `kenso`
+  - Email: `kensol23@gmail.com`
+  - Contraseña: debes establecerla manualmente con `python manage.py changepassword kenso` tras cargar los fixtures, por seguridad y compatibilidad con Django.
+- Usuarios de prueba:
+  - Cliente: `cliente` / `cliente123`
+  - Vendedor: `vendedor` / `vendedor123`
+  - Repartidor: `repartidor` / `repartidor123`
+
+## Endpoints y documentación
+- La API está documentada en `swagger.yaml` y cubre productos, pedidos, facturas, rutas, entregas y clientes por ruta.
+- Los endpoints principales están protegidos por autenticación JWT.
+- La colección Postman (`postman_collection.json`) permite probar todos los flujos principales y errores comunes.
+
+## Consideraciones de seguridad y migración
+- No uses contraseñas simples en producción.
+- El fixture sobrescribe el usuario con pk=1. Si tienes un superusuario propio, créalo después de cargar los datos.
+- Para migrar el proyecto, asegúrate de copiar este archivo y los archivos de configuración clave (`pyproject.toml`, workflows, fixtures, etc.).
+- Los secretos de PyPI/TestPyPI deben configurarse en los entornos de GitHub Actions correspondientes.
 
 ## Última actualización
 17 de mayo de 2025

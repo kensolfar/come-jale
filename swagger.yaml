@@ -251,6 +251,229 @@ paths:
       responses:
         '204':
           description: Factura eliminada
+  /api/usuarios/:
+    get:
+      summary: Listar usuarios (solo admin)
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista de usuarios
+        '403':
+          description: No autorizado
+  /api/rutas/:
+    get:
+      summary: Listar rutas
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista de rutas
+    post:
+      summary: Crear ruta
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Ruta'
+      responses:
+        '201':
+          description: Ruta creada
+        '401':
+          description: No autenticado
+  /api/rutas/{id}/:
+    get:
+      summary: Detalle de ruta
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Detalle de la ruta
+        '404':
+          description: No encontrado
+    put:
+      summary: Actualizar ruta
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Ruta'
+      responses:
+        '200':
+          description: Ruta actualizada
+    delete:
+      summary: Eliminar ruta
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Ruta eliminada
+  /api/entregas/:
+    get:
+      summary: Listar entregas
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista de entregas
+    post:
+      summary: Crear entrega
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Entrega'
+      responses:
+        '201':
+          description: Entrega creada
+        '401':
+          description: No autenticado
+  /api/entregas/{id}/:
+    get:
+      summary: Detalle de entrega
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Detalle de la entrega
+        '404':
+          description: No encontrado
+    put:
+      summary: Actualizar entrega
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Entrega'
+      responses:
+        '200':
+          description: Entrega actualizada
+    delete:
+      summary: Eliminar entrega
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Entrega eliminada
+  /api/clientes-ruta/:
+    get:
+      summary: Listar clientes por ruta
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista de clientes por ruta
+    post:
+      summary: Asociar cliente a ruta
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClienteRuta'
+      responses:
+        '201':
+          description: Asociación creada
+        '401':
+          description: No autenticado
+  /api/clientes-ruta/{id}/:
+    get:
+      summary: Detalle de cliente en ruta
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Detalle de la asociación
+        '404':
+          description: No encontrado
+    put:
+      summary: Actualizar cliente en ruta
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClienteRuta'
+      responses:
+        '200':
+          description: Asociación actualizada
+    delete:
+      summary: Eliminar cliente de ruta
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Asociación eliminada
 components:
   securitySchemes:
     bearerAuth:
@@ -343,3 +566,50 @@ components:
           type: string
         monto_total:
           type: number
+    Ruta:
+      type: object
+      properties:
+        id:
+          type: integer
+        nombre:
+          type: string
+        descripcion:
+          type: string
+        activa:
+          type: boolean
+    Entrega:
+      type: object
+      properties:
+        id:
+          type: integer
+        pedido:
+          type: integer
+        repartidor:
+          type: integer
+        ruta:
+          type: integer
+        fecha_asignacion:
+          type: string
+          format: date-time
+        fecha_entrega:
+          type: string
+          format: date-time
+        estado:
+          type: string
+        ubicacion_actual:
+          type: string
+    ClienteRuta:
+      type: object
+      properties:
+        id:
+          type: integer
+        cliente:
+          type: integer
+        ruta:
+          type: integer
+        latitud:
+          type: number
+        longitud:
+          type: number
+        direccion:
+          type: string
