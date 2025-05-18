@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { getProductos } from '../services/api';
 import type { Producto } from '../services/api';
 
-const placeholderImg = 'https://via.placeholder.com/100x100?text=Imagen+pendiente';
 
 const ProductosList: React.FC = () => {
   const [productos, setProductos] = useState<Producto[]>([]);
