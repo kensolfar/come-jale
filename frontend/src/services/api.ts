@@ -25,5 +25,22 @@ export async function refreshToken(refresh: string): Promise<LoginResponse> {
   return response.data;
 }
 
+export async function getProductos(){
+    const response = await axios.get(`${API_BASE_URL}/productos/`);
+    return response.data;
+}
+
+export interface Producto {
+    id: number;
+    nombre: string;
+    descripcion: string;
+    precio: number;
+    imagen?: string;
+    disponible: boolean;
+    categoria: string;
+    subcategoria: string;
+    fecha_creacion: string;
+}
+
 // Puedes agregar más funciones para llamadas autenticadas aquí
 // Ejemplo: export async function getProductos() { ... }

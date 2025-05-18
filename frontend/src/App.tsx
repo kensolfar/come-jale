@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import Login from './components/Login'
 import { setAuthToken, refreshToken } from './services/api'
 import './App.css'
+import ProductosList from './components/ProductosList'
 
 function App() {
   const [token, setToken] = useState<string | null>(() => localStorage.getItem('jwt_token'))
@@ -65,7 +66,7 @@ function App() {
       {page === 'productos' && (
         <>
           <h2>Productos</h2>
-          <p>Aquí iría la lista de productos obtenida desde la API.</p>
+          <ProductosList />
         </>
       )}
     </div>
