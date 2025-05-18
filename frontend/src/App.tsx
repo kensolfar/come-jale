@@ -53,9 +53,9 @@ function App() {
   return (
     <div style={{ maxWidth: 600, margin: '2rem auto' }}>
       <nav style={{ marginBottom: 24, display: 'flex', gap: 16 }}>
-        <button onClick={() => setPage('dashboard')}>Dashboard</button>
-        <button onClick={() => setPage('productos')}>Productos</button>
-        <button onClick={() => setToken(null)} style={{ marginLeft: 'auto' }}>Cerrar sesión</button>
+        <button className="nav-btn" onClick={() => setPage('dashboard')}>Dashboard</button>
+        <button className="nav-btn" onClick={() => setPage('productos')}>Productos</button>
+        <button className="nav-btn" style={{ marginLeft: 'auto' }} onClick={() => setToken(null)}>Cerrar sesión</button>
       </nav>
       {page === 'dashboard' && (
         <>

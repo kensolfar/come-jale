@@ -65,9 +65,9 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
       </div>
       {error && <div style={{ color: 'red', marginBottom: 12, width: '100%', textAlign: 'center' }}>{error}</div>}
       <button
+        className="primary-btn"
         type="submit"
         disabled={loading}
-        style={{ width: '100%', padding: '14px 0', borderRadius: 4, background: '#111', color: '#fff', border: 'none', fontWeight: 'bold', cursor: 'pointer', fontSize: 18, letterSpacing: 1 }}
       >
         {loading ? 'Ingresando...' : 'Entrar'}
       </button>

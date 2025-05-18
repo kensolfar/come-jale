@@ -105,10 +105,11 @@ const ProductosList: React.FC<{ token?: string }> = ({ token }) => {
     <>
       {isAdmin && (
         <button
+          className="nav-btn"
           style={{
             marginBottom: 18,
             padding: '10px 24px',
-            background: '#1a73e8',
+            background: 'var(--color-green-leaf, #8DAA91)',
             color: '#fff',
             fontWeight: 700,
             border: 'none',
@@ -118,6 +119,7 @@ const ProductosList: React.FC<{ token?: string }> = ({ token }) => {
             transition: 'background 0.2s',
             display: 'block',
             marginLeft: 'auto',
+            boxShadow: 'none',
           }}
           onClick={() => setSelectedProduct({
             id: 0,

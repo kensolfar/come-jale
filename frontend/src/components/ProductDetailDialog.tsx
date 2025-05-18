@@ -102,14 +102,14 @@ const ProductDetailDialog: React.FC<ProductDetailDialogProps> = ({ product, onCl
       zIndex: 1000,
     }}>
       <div style={{
-        background: '#18191c',
-        color: '#fff',
+        background: 'var(--color-latte-cream, #F5E1C6)',
+        color: 'var(--color-coffee-brown, #855E42)',
         padding: '2rem 2.5rem',
-        borderRadius: 16,
+        borderRadius: 18,
         width: '95%',
         maxWidth: 420,
-        boxShadow: '0 8px 32px 0 rgba(0,0,0,0.37)',
-        border: '1px solid #333',
+        boxShadow: '0 8px 32px 0 rgba(133,94,66,0.13)',
+        border: 'var(--border-width-main, 2px) solid var(--color-coffee-brown, #855E42)',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'stretch',
@@ -117,9 +117,10 @@ const ProductDetailDialog: React.FC<ProductDetailDialogProps> = ({ product, onCl
         <h2 style={{
           textAlign: 'center',
           marginBottom: 24,
-          fontWeight: 700,
+          fontWeight: 800,
           fontSize: 24,
-          color: '#fff',
+          color: 'var(--color-coffee-brown, #855E42)',
+          fontFamily: 'var(--font-title, Nunito, sans-serif)'
         }}>{product ? (isAdmin ? 'Editar Producto' : 'Detalles del Producto') : 'Nuevo Producto'}</h2>
         <label style={{ marginBottom: 12, fontWeight: 500, textAlign: 'left', display: 'block' }}>
           Nombre:
@@ -134,8 +135,8 @@ const ProductDetailDialog: React.FC<ProductDetailDialogProps> = ({ product, onCl
               padding: '8px 10px',
               borderRadius: 6,
               border: '1px solid #333',
-              background: '#232428',
-              color: '#fff',
+              background: '#fff',
+              color: '#222',
               fontSize: 16,
               marginBottom: 8,
             }}
@@ -154,8 +155,8 @@ const ProductDetailDialog: React.FC<ProductDetailDialogProps> = ({ product, onCl
               padding: '8px 10px',
               borderRadius: 6,
               border: '1px solid #333',
-              background: '#232428',
-              color: '#fff',
+              background: '#fff',
+              color: '#222',
               fontSize: 15,
               minHeight: 60,
               marginBottom: 8,
@@ -177,8 +178,8 @@ const ProductDetailDialog: React.FC<ProductDetailDialogProps> = ({ product, onCl
               padding: '8px 10px',
               borderRadius: 6,
               border: '1px solid #333',
-              background: '#232428',
-              color: '#fff',
+              background: '#fff',
+              color: '#222',
               fontSize: 16,
               marginBottom: 8,
             }}
@@ -198,8 +199,8 @@ const ProductDetailDialog: React.FC<ProductDetailDialogProps> = ({ product, onCl
               padding: '8px 10px',
               borderRadius: 6,
               border: '1px solid #333',
-              background: '#232428',
-              color: '#fff',
+              background: '#fff',
+              color: '#222',
               fontSize: 16,
               marginBottom: 8,
             }}
@@ -219,8 +220,8 @@ const ProductDetailDialog: React.FC<ProductDetailDialogProps> = ({ product, onCl
               padding: '8px 10px',
               borderRadius: 6,
               border: '1px solid #333',
-              background: '#232428',
-              color: '#fff',
+              background: '#fff',
+              color: '#222',
               fontSize: 16,
               marginBottom: 8,
             }}
@@ -258,19 +259,9 @@ const ProductDetailDialog: React.FC<ProductDetailDialogProps> = ({ product, onCl
               disabled={!isAdmin}
             />
             <button
+              className="nav-btn"
               type="button"
               onClick={() => isAdmin && fileInputRef.current?.click()}
-              style={{
-                background: uploading ? '#888' : '#222',
-                color: '#fff',
-                fontWeight: 700,
-                border: 'none',
-                borderRadius: 8,
-                padding: '8px 16px',
-                fontSize: 15,
-                cursor: uploading || !isAdmin ? 'not-allowed' : 'pointer',
-                transition: 'background 0.2s',
-              }}
               disabled={uploading || !isAdmin}
             >
               {uploading ? 'Subiendo...' : 'Cambiar imagen'}
@@ -280,53 +271,29 @@ const ProductDetailDialog: React.FC<ProductDetailDialogProps> = ({ product, onCl
         <div style={{ display: 'flex', gap: 12, justifyContent: 'center', marginTop: 10 }}>
           {isAdmin && (
             <button
+              className="nav-btn"
               onClick={handleSave}
-              style={{
-                background: '#222',
-                color: '#fff',
-                fontWeight: 700,
-                border: 'none',
-                borderRadius: 8,
-                padding: '10px 24px',
-                fontSize: 17,
-                cursor: 'pointer',
-                transition: 'background 0.2s',
-              }}
             >
               Guardar
             </button>
           )}
           {isAdmin && product && (
             <button
-              onClick={handleDelete}
-              style={{
-                background: '#a11',
-                color: '#fff',
-                fontWeight: 700,
-                border: 'none',
-                borderRadius: 8,
-                padding: '10px 24px',
-                fontSize: 17,
-                cursor: 'pointer',
-                transition: 'background 0.2s',
+              className="nav-btn"
+              style={{ background: '#a11', color: '#fff' }}
+              onClick={() => {
+                if (window.confirm('¿Estás seguro de que deseas eliminar este producto? Esta acción no se puede deshacer.')) {
+                  handleDelete();
+                }
               }}
             >
               Eliminar
             </button>
           )}
           <button
+            className="nav-btn"
+            style={{ background: '#444', color: '#fff' }}
             onClick={onClose}
-            style={{
-              background: '#444',
-              color: '#fff',
-              fontWeight: 700,
-              border: 'none',
-              borderRadius: 8,
-              padding: '10px 24px',
-              fontSize: 17,
-              cursor: 'pointer',
-              transition: 'background 0.2s',
-            }}
           >
             Cerrar
           </button>

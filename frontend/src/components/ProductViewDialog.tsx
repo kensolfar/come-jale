@@ -146,39 +146,19 @@ const ProductViewDialog: React.FC<ProductViewDialogProps> = ({ product, onClose,
             </button>
           </div>
           <button
+            className="primary-btn"
+            style={{ width: '100%', marginBottom: 12 }}
             onClick={handleOrder}
-            style={{
-              width: '100%',
-              background: '#8DAA91',
-              color: '#fff',
-              fontFamily: 'Nunito, sans-serif',
-              fontWeight: 800,
-              fontSize: 20,
-              border: 'none',
-              borderRadius: 10,
-              padding: '14px 0',
-              marginBottom: 12,
-              cursor: 'pointer',
-              transition: 'background 0.2s',
-              boxShadow: '0 2px 8px 0 rgba(133,94,66,0.08)',
-            }}
-          >Ordenar</button>
+          >
+            Ordenar
+          </button>
           <button
+            className="primary-btn"
+            style={{ width: '100%', background: '#fff', color: '#855E42' }}
             onClick={onClose}
-            style={{
-              width: '100%',
-              background: '#fff',
-              color: '#855E42',
-              fontFamily: 'Nunito, sans-serif',
-              fontWeight: 700,
-              fontSize: 17,
-              border: '1px solid #855E42',
-              borderRadius: 10,
-              padding: '10px 0',
-              cursor: 'pointer',
-              transition: 'background 0.2s',
-            }}
-          >Cerrar</button>
+          >
+            Cerrar
+          </button>
         </div>
       </div>
     </div>

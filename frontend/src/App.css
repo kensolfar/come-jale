@@ -94,6 +94,42 @@ button.secondary, .btn-secondary {
   border: var(--border-width-main) solid var(--color-coffee-brown);
 }
 
+.primary-btn {
+  margin-bottom: 18px;
+  padding: 10px 24px;
+  background: #1a73e8;
+  color: #fff;
+  font-weight: 700;
+  border: none;
+  border-radius: 8px;
+  font-size: 17px;
+  cursor: pointer;
+  transition: background 0.2s;
+  display: block;
+  margin-left: auto;
+}
+
+.nav-btn {
+  background: var(--color-green-leaf, #8DAA91);
+  color: #fff;
+  font-family: var(--font-title, 'Nunito', sans-serif);
+  font-weight: 700;
+  font-size: 17px;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 24px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  box-shadow: none;
+  outline: none;
+}
+
+.nav-btn:hover, .nav-btn:focus {
+  background: #6e9477;
+  color: #fff;
+  filter: brightness(1.08);
+}
+
 input, textarea, select {
   border-radius: calc(var(--border-radius-main) / 2);
   border: var(--border-width-main) solid var(--color-coffee-brown);
