@@ -3,6 +3,7 @@ import Login from './components/Login'
 import { setAuthToken, refreshToken } from './services/api'
 import './App.css'
 import ProductosList from './components/ProductosList'
+import UserInfo from './components/UserInfo'
 
 function App() {
   const [token, setToken] = useState<string | null>(() => localStorage.getItem('jwt_token'))
@@ -59,7 +60,8 @@ function App() {
       {page === 'dashboard' && (
         <>
           <h1>Bienvenido</h1>
-          <p>Token JWT activo.</p>
+          {/* Mostrar datos básicos del usuario conectado extraídos del JWT */}
+          <UserInfo token={token} />
           <p>Selecciona una opción en la navegación para continuar.</p>
         </>
       )}

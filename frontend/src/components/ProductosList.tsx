@@ -13,8 +13,17 @@ const ProductosList: React.FC = () => {
     try {
       if (product.id === 0) {
         // Crear nuevo producto
-        const { id, fecha_creacion, ...nuevoProducto } = product;
-        await createProducto(nuevoProducto);
+        // Solo enviar los campos requeridos por el backend
+        const { id, fecha_creacion, imagen, ...nuevoProducto } = product;
+        // Eliminar campos vacíos
+        const cleanData: any = {};
+        Object.keys(nuevoProducto).forEach(key => {
+          const value = (nuevoProducto as any)[key];
+          if (value !== undefined && value !== null && value !== '') {
+            cleanData[key] = value;
+          }
+        });
+        await createProducto(cleanData);
       } else {
         // Actualizar producto existente
         await updateProducto(product.id, product);
@@ -25,8 +34,20 @@ const ProductosList: React.FC = () => {
       const productosActualizados = await getProductos();
       setProductos(productosActualizados);
       setLoading(false);
-    } catch (err) {
-      setError('Error al guardar el producto');
+    } catch (err: any) {
+      let errorMsg = 'Error al guardar el producto';
+      if (err.response && err.response.data) {
+        if (typeof err.response.data === 'object') {
+          // Mostrar el primer error detallado
+          const detalles = Object.entries(err.response.data)
+            .map(([campo, mensajes]) => `${campo}: ${(Array.isArray(mensajes) ? mensajes.join(', ') : mensajes)}`)
+            .join(' | ');
+          errorMsg = `Error al guardar el producto: ${detalles}`;
+        } else if (typeof err.response.data === 'string') {
+          errorMsg = `Error al guardar el producto: ${err.response.data}`;
+        }
+      }
+      setError(errorMsg);
       setLoading(false);
     }
   };
@@ -54,6 +75,35 @@ const ProductosList: React.FC = () => {
 
   return (
     <>
+      <button
+        style={{
+          marginBottom: 18,
+          padding: '10px 24px',
+          background: '#1a73e8',
+          color: '#fff',
+          fontWeight: 700,
+          border: 'none',
+          borderRadius: 8,
+          fontSize: 17,
+          cursor: 'pointer',
+          transition: 'background 0.2s',
+          display: 'block',
+          marginLeft: 'auto',
+        }}
+        onClick={() => setSelectedProduct({
+          id: 0,
+          nombre: '',
+          descripcion: '',
+          precio: 0,
+          imagen: '',
+          disponible: true,
+          categoria: '',
+          subcategoria: '',
+          fecha_creacion: ''
+        })}
+      >
+        + Agregar producto
+      </button>
       <ul style={{ listStyle: 'none', padding: 0 }}>
         {productos.map(prod => (
           <li

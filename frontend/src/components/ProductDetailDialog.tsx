@@ -110,7 +110,7 @@ const ProductDetailDialog: React.FC<ProductDetailDialogProps> = ({ product, onCl
           fontSize: 24,
           color: '#fff',
         }}>{product ? 'Editar Producto' : 'Nuevo Producto'}</h2>
-        <label style={{ marginBottom: 12, fontWeight: 500 }}>
+        <label style={{ marginBottom: 12, fontWeight: 500, textAlign: 'left', display: 'block' }}>
           Nombre:
           <input
             type="text"
@@ -130,7 +130,7 @@ const ProductDetailDialog: React.FC<ProductDetailDialogProps> = ({ product, onCl
             }}
           />
         </label>
-        <label style={{ marginBottom: 12, fontWeight: 500 }}>
+        <label style={{ marginBottom: 12, fontWeight: 500, textAlign: 'left', display: 'block' }}>
           Descripción:
           <textarea
             name="descripcion"
@@ -151,12 +151,52 @@ const ProductDetailDialog: React.FC<ProductDetailDialogProps> = ({ product, onCl
             }}
           />
         </label>
-        <label style={{ marginBottom: 12, fontWeight: 500 }}>
+        <label style={{ marginBottom: 12, fontWeight: 500, textAlign: 'left', display: 'block' }}>
           Precio:
           <input
             type="number"
             name="precio"
             value={formData.precio}
+            onChange={handleChange}
+            style={{
+              width: '100%',
+              marginTop: 4,
+              padding: '8px 10px',
+              borderRadius: 6,
+              border: '1px solid #333',
+              background: '#232428',
+              color: '#fff',
+              fontSize: 16,
+              marginBottom: 8,
+            }}
+          />
+        </label>
+        <label style={{ marginBottom: 12, fontWeight: 500, textAlign: 'left', display: 'block' }}>
+          Categoría:
+          <input
+            type="text"
+            name="categoria"
+            value={formData.categoria}
+            onChange={handleChange}
+            style={{
+              width: '100%',
+              marginTop: 4,
+              padding: '8px 10px',
+              borderRadius: 6,
+              border: '1px solid #333',
+              background: '#232428',
+              color: '#fff',
+              fontSize: 16,
+              marginBottom: 8,
+            }}
+          />
+        </label>
+        <label style={{ marginBottom: 12, fontWeight: 500, textAlign: 'left', display: 'block' }}>
+          Subcategoría:
+          <input
+            type="text"
+            name="subcategoria"
+            value={formData.subcategoria}
             onChange={handleChange}
             style={{
               width: '100%',
