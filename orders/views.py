@@ -3,6 +3,9 @@ from rest_framework import viewsets
 from .models import Producto, Pedido, Factura, Ruta, Entrega, ClienteRuta
 from .models import ProductoSerializer, PedidoSerializer, FacturaSerializer, RutaSerializer, EntregaSerializer, ClienteRutaSerializer
 from .permissions import IsAdmin, IsVendedor, IsRepartidor, IsCliente, IsAdminOrReadOnly, IsAdminOrVendedorOrCliente
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework import status
 
 # Create your views here.
 
@@ -10,6 +13,16 @@ class ProductoViewSet(viewsets.ModelViewSet):
     queryset = Producto.objects.all()
     serializer_class = ProductoSerializer
     permission_classes = [IsAdminOrReadOnly | IsVendedor]
+
+    @action(detail=True, methods=['post'], url_path='upload')
+    def upload_image(self, request, pk=None):
+        producto = self.get_object()
+        file = request.FILES.get('imagen')
+        if not file:
+            return Response({'error': 'No se envió ninguna imagen.'}, status=status.HTTP_400_BAD_REQUEST)
+        producto.imagen = file
+        producto.save()
+        return Response({'imagen': producto.imagen.url}, status=status.HTTP_200_OK)
 
 class PedidoViewSet(viewsets.ModelViewSet):
     queryset = Pedido.objects.all()

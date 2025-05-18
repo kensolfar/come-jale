@@ -30,6 +30,32 @@ export async function getProductos(){
     return response.data;
 }
 
+export async function createProducto(producto: Omit<Producto, 'id' | 'fecha_creacion'>) {
+  const response = await axios.post(`${API_BASE_URL}/productos/`, producto);
+  return response.data;
+}
+
+export async function updateProducto(id: number, producto: Partial<Producto>) {
+  const response = await axios.patch(`${API_BASE_URL}/productos/${id}/`, producto);
+  return response.data;
+}
+
+export async function deleteProducto(id: number) {
+  const response = await axios.delete(`${API_BASE_URL}/productos/${id}/`);
+  return response.data;
+}
+
+export async function uploadProductoImagen(file: File, productoId: number): Promise<{ imagen: string }> {
+  const form = new FormData();
+  form.append('imagen', file);
+  const response = await axios.post(`${API_BASE_URL}/productos/${productoId}/upload/`, form, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+  return response.data;
+}
+
 export interface Producto {
     id: number;
     nombre: string;
