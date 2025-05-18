@@ -1,15 +1,17 @@
 import React, { useState, useRef } from 'react';
 import type { Producto } from '../services/api';
 import { uploadProductoImagen } from '../services/api';
+import { jwtDecode } from 'jwt-decode';
 
 interface ProductDetailDialogProps {
   product: Producto | null;
   onClose: () => void;
   onSave: (product: Producto) => void;
   onDelete: (id: number) => void;
+  token: string; // Nuevo prop para el token JWT
 }
 
-const ProductDetailDialog: React.FC<ProductDetailDialogProps> = ({ product, onClose, onSave, onDelete }) => {
+const ProductDetailDialog: React.FC<ProductDetailDialogProps> = ({ product, onClose, onSave, onDelete, token }) => {
   const [formData, setFormData] = useState<Producto>(
     product || { 
       id: 0, 
@@ -26,6 +28,15 @@ const ProductDetailDialog: React.FC<ProductDetailDialogProps> = ({ product, onCl
   const [imagePreview, setImagePreview] = useState<string>(formData.imagen || '');
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Decodificar el JWT para obtener permisos
+  let isAdmin = false;
+  try {
+    const decoded: any = jwtDecode(token);
+    isAdmin = decoded.is_superuser || (decoded.groups && decoded.groups.includes('admin'));
+  } catch (e) {
+    isAdmin = false;
+  }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -109,7 +120,7 @@ const ProductDetailDialog: React.FC<ProductDetailDialogProps> = ({ product, onCl
           fontWeight: 700,
           fontSize: 24,
           color: '#fff',
-        }}>{product ? 'Editar Producto' : 'Nuevo Producto'}</h2>
+        }}>{product ? (isAdmin ? 'Editar Producto' : 'Detalles del Producto') : 'Nuevo Producto'}</h2>
         <label style={{ marginBottom: 12, fontWeight: 500, textAlign: 'left', display: 'block' }}>
           Nombre:
           <input
@@ -128,6 +139,7 @@ const ProductDetailDialog: React.FC<ProductDetailDialogProps> = ({ product, onCl
               fontSize: 16,
               marginBottom: 8,
             }}
+            disabled={!isAdmin}
           />
         </label>
         <label style={{ marginBottom: 12, fontWeight: 500, textAlign: 'left', display: 'block' }}>
@@ -149,6 +161,7 @@ const ProductDetailDialog: React.FC<ProductDetailDialogProps> = ({ product, onCl
               marginBottom: 8,
               resize: 'vertical',
             }}
+            disabled={!isAdmin}
           />
         </label>
         <label style={{ marginBottom: 12, fontWeight: 500, textAlign: 'left', display: 'block' }}>
@@ -169,6 +182,7 @@ const ProductDetailDialog: React.FC<ProductDetailDialogProps> = ({ product, onCl
               fontSize: 16,
               marginBottom: 8,
             }}
+            disabled={!isAdmin}
           />
         </label>
         <label style={{ marginBottom: 12, fontWeight: 500, textAlign: 'left', display: 'block' }}>
@@ -189,6 +203,7 @@ const ProductDetailDialog: React.FC<ProductDetailDialogProps> = ({ product, onCl
               fontSize: 16,
               marginBottom: 8,
             }}
+            disabled={!isAdmin}
           />
         </label>
         <label style={{ marginBottom: 12, fontWeight: 500, textAlign: 'left', display: 'block' }}>
@@ -209,6 +224,7 @@ const ProductDetailDialog: React.FC<ProductDetailDialogProps> = ({ product, onCl
               fontSize: 16,
               marginBottom: 8,
             }}
+            disabled={!isAdmin}
           />
         </label>
         <label style={{ marginBottom: 18, fontWeight: 500 }}>
@@ -239,10 +255,11 @@ const ProductDetailDialog: React.FC<ProductDetailDialogProps> = ({ product, onCl
               ref={fileInputRef}
               style={{ display: 'none' }}
               onChange={handleImageChange}
+              disabled={!isAdmin}
             />
             <button
               type="button"
-              onClick={() => fileInputRef.current?.click()}
+              onClick={() => isAdmin && fileInputRef.current?.click()}
               style={{
                 background: uploading ? '#888' : '#222',
                 color: '#fff',
@@ -251,33 +268,35 @@ const ProductDetailDialog: React.FC<ProductDetailDialogProps> = ({ product, onCl
                 borderRadius: 8,
                 padding: '8px 16px',
                 fontSize: 15,
-                cursor: uploading ? 'not-allowed' : 'pointer',
+                cursor: uploading || !isAdmin ? 'not-allowed' : 'pointer',
                 transition: 'background 0.2s',
               }}
-              disabled={uploading}
+              disabled={uploading || !isAdmin}
             >
               {uploading ? 'Subiendo...' : 'Cambiar imagen'}
             </button>
           </div>
         </label>
         <div style={{ display: 'flex', gap: 12, justifyContent: 'center', marginTop: 10 }}>
-          <button
-            onClick={handleSave}
-            style={{
-              background: '#222',
-              color: '#fff',
-              fontWeight: 700,
-              border: 'none',
-              borderRadius: 8,
-              padding: '10px 24px',
-              fontSize: 17,
-              cursor: 'pointer',
-              transition: 'background 0.2s',
-            }}
-          >
-            Guardar
-          </button>
-          {product && (
+          {isAdmin && (
+            <button
+              onClick={handleSave}
+              style={{
+                background: '#222',
+                color: '#fff',
+                fontWeight: 700,
+                border: 'none',
+                borderRadius: 8,
+                padding: '10px 24px',
+                fontSize: 17,
+                cursor: 'pointer',
+                transition: 'background 0.2s',
+              }}
+            >
+              Guardar
+            </button>
+          )}
+          {isAdmin && product && (
             <button
               onClick={handleDelete}
               style={{

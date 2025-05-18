@@ -68,7 +68,7 @@ function App() {
       {page === 'productos' && (
         <>
           <h2>Productos</h2>
-          <ProductosList />
+          <ProductosList token={token}/>
         </>
       )}
     </div>

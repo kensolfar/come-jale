@@ -10,6 +10,9 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         token['username'] = user.username
         token['first_name'] = user.first_name
         token['last_name'] = user.last_name
+        token['is_superuser'] = user.is_superuser
+        # Add groups as a list of group names
+        token['groups'] = list(user.groups.values_list('name', flat=True))
         return token
 
 class CustomTokenObtainPairView(TokenObtainPairView):

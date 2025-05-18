@@ -40,3 +40,94 @@
 .read-the-docs {
   color: #888;
 }
+
+/* App.css - Estilos globales para la app estilo coffee shop */
+
+:root {
+  --color-coffee-brown: #855E42;
+  --color-latte-cream: #F5E1C6;
+  --color-green-leaf: #8DAA91;
+  --color-white: #FFFFFF;
+  --border-radius-main: 18px;
+  --border-width-main: 2px;
+  --font-title: 'Nunito', sans-serif;
+  --font-body: 'Open Sans', sans-serif;
+}
+
+body {
+  background: var(--color-latte-cream);
+  color: var(--color-coffee-brown);
+  font-family: var(--font-body);
+  margin: 0;
+  min-height: 100vh;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-title);
+  font-weight: 800;
+  color: var(--color-coffee-brown);
+  margin-top: 0;
+}
+
+button, .btn {
+  border-radius: var(--border-radius-main);
+  border: var(--border-width-main) solid var(--color-coffee-brown);
+  font-family: var(--font-title);
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 10px 24px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  background: var(--color-green-leaf);
+  color: var(--color-white);
+}
+
+button.primary, .btn-primary {
+  background: var(--color-green-leaf);
+  color: var(--color-white);
+  border: none;
+}
+
+button.secondary, .btn-secondary {
+  background: var(--color-white);
+  color: var(--color-coffee-brown);
+  border: var(--border-width-main) solid var(--color-coffee-brown);
+}
+
+input, textarea, select {
+  border-radius: calc(var(--border-radius-main) / 2);
+  border: var(--border-width-main) solid var(--color-coffee-brown);
+  background: var(--color-white);
+  color: var(--color-coffee-brown);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  padding: 8px 12px;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.card, .product-card {
+  background: var(--color-latte-cream);
+  border-radius: var(--border-radius-main);
+  box-shadow: 0 4px 16px 0 rgba(133,94,66,0.08);
+  border: var(--border-width-main) solid var(--color-coffee-brown);
+  padding: 1.5rem 2rem;
+  margin-bottom: 1.5rem;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  background: var(--color-latte-cream);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-coffee-brown);
+  border-radius: 8px;
+}
+
+/* Ejemplo de uso de clases:
+<div class="card">
+  <h2>Mi Título</h2>
+  <p>Texto de ejemplo...</p>
+  <button class="primary">Acción</button>
+</div>
+*/
