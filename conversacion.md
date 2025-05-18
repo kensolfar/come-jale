@@ -193,6 +193,37 @@ La colección `postman_collection.json` cubre:
 
 Importa la colección en Postman y usa los usuarios de prueba para validar todos los flujos y restricciones de la API.
 
+## Decisión: Interfaz de usuario multiplataforma (Web y Móvil)
+
+A partir del 17 de mayo de 2025, se decide avanzar con el desarrollo de interfaces de usuario modernas y multiplataforma para el sistema:
+
+### 1. Web (SPA)
+- Se recomienda usar **React + Vite** o **Vue + Vite** para la interfaz web, por su rapidez, experiencia de desarrollo fluida y mantenibilidad.
+- Ambas opciones permiten una arquitectura de componentes, recarga instantánea y fácil integración con la API Django REST.
+- Se sugiere crear una carpeta `/frontend/` en la raíz del proyecto para alojar el frontend web.
+
+### 2. Apps móviles (iOS y Android)
+- Se opta por **React Native** para el desarrollo móvil, ya que permite compartir lógica y mentalidad con React web, facilitando el mantenimiento y la reutilización de servicios de API.
+- Alternativamente, se podría usar Flutter si se prefiere, pero React Native es más natural si ya se usa React en web.
+- Se recomienda crear una carpeta `/mobile/` para el proyecto React Native.
+
+### 3. Organización y convivencia de proyectos
+- Es totalmente viable trabajar en este mismo workspace de VS Code con proyectos paralelos de Node.js (por ejemplo, `/frontend/` para React/Vue y `/mobile/` para React Native), junto al backend Django.
+- Cada proyecto debe tener su propio `package.json` y gestión de dependencias independiente.
+- Se recomienda documentar la estructura y convenciones en los README de cada subproyecto.
+
+### 4. Siguientes pasos
+- Inicializar el proyecto web con Vite (React o Vue) en `/frontend/`.
+- Inicializar el proyecto móvil con React Native en `/mobile/`.
+- Definir servicios de API reutilizables y flujos de usuario básicos.
+- Documentar la estructura y decisiones en este archivo y en los README de cada subproyecto.
+
+---
+
+> Nota: Vite es una herramienta de desarrollo frontend ultrarrápida que facilita la creación de SPAs modernas con React o Vue. Permite arranque instantáneo, recarga en caliente y builds optimizados. Es ideal para proyectos nuevos y se integra fácilmente con APIs REST.
+
+---
+
 ## Última actualización
 17 de mayo de 2025
 
