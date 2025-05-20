@@ -37,12 +37,17 @@ const Menu: React.FC<MenuProps> = ({ order, setOrder }) => {
 
   useEffect(() => {
     getCategorias().then(setCategorias);
-    getProductos().then(setProductos);
   }, []);
 
-  const productosFiltrados = categoriaSeleccionada
-    ? productos.filter(p => Number(p.categoria) === categoriaSeleccionada)
-    : productos;
+  useEffect(() => {
+    if (categoriaSeleccionada !== null) {
+      getProductos(categoriaSeleccionada).then(setProductos);
+    } else {
+      getProductos().then(setProductos);
+    }
+  }, [categoriaSeleccionada]);
+
+  const productosFiltrados = productos;
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -96,6 +101,23 @@ const Menu: React.FC<MenuProps> = ({ order, setOrder }) => {
       >
         <h1 style={{ color: '#fff', fontWeight: 800, fontSize: 32, marginBottom: 8 }}>Menú</h1>
         <div style={{ display: 'flex', gap: 16, marginBottom: 24, flexWrap: 'wrap' }}>
+          <button
+            onClick={() => setCategoriaSeleccionada(null)}
+            style={{
+              background: categoriaSeleccionada === null ? 'var(--color-green-leaf, #8DAA91)' : '#23242a',
+              color: categoriaSeleccionada === null ? '#fff' : '#bdbdbd',
+              border: categoriaSeleccionada === null ? '2px solid #fff' : '2px solid #23242a',
+              borderRadius: 16,
+              fontWeight: 700,
+              fontSize: 18,
+              padding: '10px 28px',
+              cursor: 'pointer',
+              transition: 'all 0.2s',
+              outline: 'none',
+            }}
+          >
+            Todo el menú
+          </button>
           {categorias.map(cat => (
             <button
               key={cat.id}
@@ -127,6 +149,11 @@ const Menu: React.FC<MenuProps> = ({ order, setOrder }) => {
             transition: 'all 0.2s',
           }}
         >
+          {productosFiltrados.length === 0 && (
+            <div style={{ color: '#fff', fontWeight: 600, fontSize: 18, gridColumn: '1/-1', textAlign: 'center', padding: '2rem 0' }}>
+              No hay productos en esta categoría.
+            </div>
+          )}
           {productosFiltrados.map(producto => (
             <div
               key={producto.id}
