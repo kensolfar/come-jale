@@ -68,5 +68,28 @@ export interface Producto {
     fecha_creacion: string;
 }
 
+export interface Categoria {
+  id: number;
+  nombre: string;
+  descripcion: string;
+}
+
+export interface Subcategoria {
+  id: number;
+  nombre: string;
+  descripcion: string;
+  categoria: number;
+}
+
+export async function getCategorias(): Promise<Categoria[]> {
+  const response = await axios.get(`${API_BASE_URL}/categorias/`);
+  return response.data;
+}
+
+export async function getSubcategorias(categoriaId?: number): Promise<Subcategoria[]> {
+  const response = await axios.get(`${API_BASE_URL}/subcategorias/`, categoriaId ? { params: { categoria: categoriaId } } : undefined);
+  return response.data;
+}
+
 // Puedes agregar más funciones para llamadas autenticadas aquí
 // Ejemplo: export async function getProductos() { ... }

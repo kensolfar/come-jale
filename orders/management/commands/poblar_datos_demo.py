@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User, Group
-from orders.models import Producto, Pedido, PedidoProducto, Factura, Ruta, Entrega, ClienteRuta
+from orders.models import Producto, Pedido, PedidoProducto, Factura, Ruta, Entrega, ClienteRuta, Categoria, Subcategoria
 from django.db import transaction
 
 class Command(BaseCommand):
@@ -34,6 +34,22 @@ class Command(BaseCommand):
         repartidor.save()
         repartidor.groups.add(Group.objects.get(name='Repartidor'))
 
+        # Categorías y Subcategorías
+        categorias_data = {
+            'Desayuno': ['Típico'],
+            'Almuerzo': ['Casado'],
+            'Bebidas': ['Natural'],
+            'Snacks': ['Empanadas'],
+        }
+        categorias_objs = {}
+        subcategorias_objs = {}
+        for cat, subs in categorias_data.items():
+            categoria_obj, _ = Categoria.objects.get_or_create(nombre=cat)
+            categorias_objs[cat] = categoria_obj
+            for sub in subs:
+                subcat_obj, _ = Subcategoria.objects.get_or_create(nombre=sub, categoria=categoria_obj)
+                subcategorias_objs[(cat, sub)] = subcat_obj
+
         # Productos
         productos = [
             {'nombre': 'Gallo Pinto', 'precio': 2500, 'descripcion': 'Desayuno típico costarricense', 'categoria': 'Desayuno', 'subcategoria': 'Típico'},
@@ -43,7 +59,17 @@ class Command(BaseCommand):
         ]
         producto_objs = []
         for p in productos:
-            obj, _ = Producto.objects.get_or_create(nombre=p['nombre'], defaults=p)
+            categoria_obj = categorias_objs[p['categoria']]
+            subcategoria_obj = subcategorias_objs[(p['categoria'], p['subcategoria'])]
+            obj, _ = Producto.objects.get_or_create(
+                nombre=p['nombre'],
+                defaults={
+                    'precio': p['precio'],
+                    'descripcion': p['descripcion'],
+                    'categoria': categoria_obj,
+                    'subcategoria': subcategoria_obj
+                }
+            )
             producto_objs.append(obj)
 
         # Rutas (Direcciones en Cañas, Guanacaste)

@@ -1,6 +1,6 @@
-import React, { useState, useRef } from 'react';
-import type { Producto } from '../services/api';
-import { uploadProductoImagen } from '../services/api';
+import React, { useState, useRef, useEffect } from 'react';
+import type { Producto, Categoria, Subcategoria } from '../services/api';
+import { uploadProductoImagen, getCategorias, getSubcategorias } from '../services/api';
 import { jwtDecode } from 'jwt-decode';
 
 interface ProductDetailDialogProps {
@@ -28,6 +28,10 @@ const ProductDetailDialog: React.FC<ProductDetailDialogProps> = ({ product, onCl
   const [imagePreview, setImagePreview] = useState<string>(formData.imagen || '');
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [categorias, setCategorias] = useState<Categoria[]>([]);
+  //const [selectedCategoria, setSelectedCategoria] = useState<Categoria | null>(null);
+  const [subcategorias, setSubcategorias] = useState<Subcategoria[]>([]);
+  //const [selectedSubcategoria, setSelectedSubcategoria] = useState<Subcategoria | null>(null);
 
   // Decodificar el JWT para obtener permisos
   let isAdmin = false;
@@ -38,9 +42,46 @@ const ProductDetailDialog: React.FC<ProductDetailDialogProps> = ({ product, onCl
     isAdmin = false;
   }
 
+  useEffect(() => {
+    getCategorias().then(setCategorias);
+  }, []);
+
+  useEffect(() => {
+    if (formData.categoria) {
+      console.log('Categoría seleccionada:', formData.categoria);
+      const catId = typeof formData.categoria === 'object' ? (formData.categoria as any).id : formData.categoria;
+      console.log('ID de categoría:', catId);
+      const cats = getSubcategorias(Number(catId)).then(cats => console.log('Subcategorías obtenidas:', cats));
+      getSubcategorias(Number(catId)).then(setSubcategorias);
+    } else {
+      setSubcategorias([]);
+    }
+  }, [formData.categoria]);
+
+  // Set default values for selects when editing a product
+  useEffect(() => {
+    if (product) {
+      setFormData({
+        ...product,
+        categoria: typeof product.categoria === 'object' && product.categoria !== null ? String((product.categoria as any).id) : String(product.categoria || ''),
+        subcategoria: typeof product.subcategoria === 'object' && product.subcategoria !== null ? String((product.subcategoria as any).id) : String(product.subcategoria || ''),
+      });
+    }
+  }, [product]);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: name === 'precio' ? parseFloat(value) : value });
+  };
+
+  const handleCategoriaChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const catId = e.target.value;
+    setFormData({ ...formData, categoria: catId, subcategoria: '' });
+  };
+
+  const handleSubcategoriaChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const subcatId = e.target.value;
+    setFormData({ ...formData, subcategoria: subcatId });
   };
 
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -188,11 +229,10 @@ const ProductDetailDialog: React.FC<ProductDetailDialogProps> = ({ product, onCl
         </label>
         <label style={{ marginBottom: 12, fontWeight: 500, textAlign: 'left', display: 'block' }}>
           Categoría:
-          <input
-            type="text"
+          <select
             name="categoria"
-            value={formData.categoria}
-            onChange={handleChange}
+            value={formData.categoria || ''}
+            onChange={handleCategoriaChange}
             style={{
               width: '100%',
               marginTop: 4,
@@ -205,15 +245,19 @@ const ProductDetailDialog: React.FC<ProductDetailDialogProps> = ({ product, onCl
               marginBottom: 8,
             }}
             disabled={!isAdmin}
-          />
+          >
+            <option value="">Selecciona una categoría</option>
+            {categorias.map(cat => (
+              <option key={cat.id} value={cat.id}>{cat.nombre}</option>
+            ))}
+          </select>
         </label>
         <label style={{ marginBottom: 12, fontWeight: 500, textAlign: 'left', display: 'block' }}>
           Subcategoría:
-          <input
-            type="text"
+          <select
             name="subcategoria"
-            value={formData.subcategoria}
-            onChange={handleChange}
+            value={formData.subcategoria || ''}
+            onChange={handleSubcategoriaChange}
             style={{
               width: '100%',
               marginTop: 4,
@@ -225,8 +269,13 @@ const ProductDetailDialog: React.FC<ProductDetailDialogProps> = ({ product, onCl
               fontSize: 16,
               marginBottom: 8,
             }}
-            disabled={!isAdmin}
-          />
+            disabled={!isAdmin || !formData.categoria}
+          >
+            <option value="">Selecciona una subcategoría</option>
+            {subcategorias.map(sub => (
+              <option key={sub.id} value={sub.id}>{sub.nombre}</option>
+            ))}
+          </select>
         </label>
         <label style={{ marginBottom: 18, fontWeight: 500 }}>
           Imagen:

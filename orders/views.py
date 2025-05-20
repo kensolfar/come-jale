@@ -1,11 +1,12 @@
 from django.shortcuts import render
-from rest_framework import viewsets
-from .models import Producto, Pedido, Factura, Ruta, Entrega, ClienteRuta
-from .models import ProductoSerializer, PedidoSerializer, FacturaSerializer, RutaSerializer, EntregaSerializer, ClienteRutaSerializer
+from rest_framework import viewsets, filters
+from .models import Producto, Pedido, Factura, Ruta, Entrega, ClienteRuta, Categoria, Subcategoria
+from .models import ProductoSerializer, PedidoSerializer, FacturaSerializer, RutaSerializer, EntregaSerializer, ClienteRutaSerializer, CategoriaSerializer, SubcategoriaSerializer
 from .permissions import IsAdmin, IsVendedor, IsRepartidor, IsCliente, IsAdminOrReadOnly, IsAdminOrVendedorOrCliente
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status
+from django_filters.rest_framework import DjangoFilterBackend
 
 # Create your views here.
 
@@ -63,3 +64,15 @@ class ClienteRutaViewSet(viewsets.ModelViewSet):
     queryset = ClienteRuta.objects.all()
     serializer_class = ClienteRutaSerializer
     permission_classes = [IsAdmin | IsCliente]
+
+class CategoriaViewSet(viewsets.ModelViewSet):
+    queryset = Categoria.objects.all()
+    serializer_class = CategoriaSerializer
+    permission_classes = [IsAdminOrReadOnly]
+
+class SubcategoriaViewSet(viewsets.ModelViewSet):
+    queryset = Subcategoria.objects.all()
+    serializer_class = SubcategoriaSerializer
+    permission_classes = [IsAdminOrReadOnly]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['categoria']
