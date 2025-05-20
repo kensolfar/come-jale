@@ -28,6 +28,7 @@ class Producto(models.Model):
     subcategoria = models.ForeignKey(Subcategoria, on_delete=models.SET_NULL, null=True, blank=True, related_name='productos')
     imagen = models.ImageField(upload_to='productos/', blank=True, null=True)
     disponible = models.BooleanField(default=True)
+    cantidad = models.PositiveIntegerField(default=0)  # Nuevo campo para stock/cantidad
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):

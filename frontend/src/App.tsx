@@ -2,20 +2,26 @@ import { useState, useEffect } from 'react'
 import Login from './components/Login'
 import { setAuthToken, refreshToken } from './services/api'
 import './App.css'
-import ProductosList from './components/ProductosList'
 import Sidebar from './components/Sidebar';
+import Menu from './pages/Menu';
+import Order from './components/Order';
+import type { Producto } from './services/api';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import RestaurantMenuIcon from '@mui/icons-material/RestaurantMenu';
 import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
 import LogoutIcon from '@mui/icons-material/Logout';
+import ProductosList from './components/ProductosList';
+
+interface OrderItem {
+  producto: Producto;
+  cantidad: number;
+}
 
 function App() {
   const [token, setToken] = useState<string | null>(() => localStorage.getItem('jwt_token'))
   const [refresh, setRefresh] = useState<string | null>(() => localStorage.getItem('jwt_refresh'))
-  const [page, setPage] = useState<'dashboard' | 'productos' | 'ordenes'>('dashboard')
-  const [drawerExpanded, setDrawerExpanded] = useState(true);
-
-  const handleDrawerExpand = () => setDrawerExpanded(!drawerExpanded);
+  const [order, setOrder] = useState<OrderItem[]>([]);
+  const [page, setPage] = useState<'dashboard' | 'productos' | 'ordenes'>('dashboard');
 
   const navItems = [
     { label: 'Dashboard', icon: <DashboardIcon />, onClick: () => setPage('dashboard') },
@@ -65,35 +71,32 @@ function App() {
   }
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh' }}>
-      <Sidebar
-        drawerExpanded={drawerExpanded}
-        handleDrawerExpand={handleDrawerExpand}
-        navItems={navItems}
-        page={page}
-        token={token!}
-      />
-      <div style={{ flex: 1, padding: '2rem', maxWidth: 600, margin: '0 auto' }}>
-        {page === 'dashboard' && (
-          <>
-            <h1>🍝 ComeJale 🍔</h1>
-            <p>Selecciona una opción en la navegación para continuar.</p>
-          </>
-        )}
-        {page === 'productos' && (
-          <>
-            <h2>Productos</h2>
-            <ProductosList token={token}/>
-          </>
-        )}
-        {page === 'ordenes' && (
-          <>
-            <h2>Ordenes</h2>
-          </>
-        )}
+    <div style={{
+      display: 'flex',
+      flexDirection: 'row',
+      width: '100vw',
+      height: '100vh',
+      background: '#18191f',
+      overflow: 'hidden',
+      boxSizing: 'border-box',
+      padding: '1rem 1rem',
+    }}>
+      {/* Sidebar (izquierda) */}
+      <div className='columna izquierda' style={{boxSizing: 'border-box' }}>
+        <Sidebar navItems={navItems} page={page} token={token || ''} />
+      </div>
+      {/* Contenido central (menú) */}
+      <div className='columna centro' style={{overflowY: 'auto', padding: '0 1.5rem', boxSizing: 'border-box' }}>
+        {page === 'dashboard' && <Menu order={order} setOrder={setOrder} />}
+        {page === 'productos' && <ProductosList token={token || ''} />}
+        {/* Aquí puedes agregar más páginas según el valor de page */}
+      </div>
+      {/* Orden (derecha) */}
+      <div className='columna derecha' style={{boxSizing: 'border-box' }}>
+        <Order order={order} />
       </div>
     </div>
   );
 }
 
-export default App
+export default App;

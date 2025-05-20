@@ -64,6 +64,7 @@ export interface Producto {
     imagen?: string;
     disponible: boolean;
     categoria: string;
+    cantidad: number;
     subcategoria: string;
     fecha_creacion: string;
 }

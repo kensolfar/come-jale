@@ -37,6 +37,21 @@ const UserInfo: React.FC<UserInfoProps> = ({ token, expanded }) => {
   const username = payload.username || payload.user || payload.email || 'N/A';
   const userImg = payload.img || payload.avatar || null; // Ajusta si tu JWT tiene campo de imagen
   const initials = getInitials(username);
+  // Detectar rol
+  let rol = 'Usuario';
+  if (payload.groups) {
+    if (Array.isArray(payload.groups)) {
+      if (payload.groups.includes('Administrador')) rol = 'Administrador';
+      else if (payload.groups.includes('Vendedor')) rol = 'Vendedor';
+      else if (payload.groups.includes('Repartidor')) rol = 'Repartidor';
+      else if (payload.groups.includes('Cliente')) rol = 'Cliente';
+      else if (payload.groups.length > 0) rol = payload.groups[0];
+    } else if (typeof payload.groups === 'string') {
+      rol = payload.groups;
+    }
+  } else if (payload.is_superuser) {
+    rol = 'Administrador';
+  }
 
   return (
     <div style={{
@@ -55,11 +70,11 @@ const UserInfo: React.FC<UserInfoProps> = ({ token, expanded }) => {
       boxSizing: 'border-box',
     }}>
       {userImg ? (
-        <img src={userImg} alt="avatar" style={{ width: 40, height: 40, borderRadius: '50%', objectFit: 'cover', marginBottom: expanded ? 8 : 0 }} />
+        <img src={userImg} alt="avatar" style={{ width: 48, height: 48, borderRadius: '50%', objectFit: 'cover', marginBottom: expanded ? 8 : 0 }} />
       ) : (
         <div style={{
-          width: 40,
-          height: 40,
+          width: 48,
+          height: 48,
           borderRadius: '50%',
           background: 'var(--color-green-leaf, #8DAA91)',
           color: '#fff',
@@ -67,7 +82,7 @@ const UserInfo: React.FC<UserInfoProps> = ({ token, expanded }) => {
           alignItems: 'center',
           justifyContent: 'center',
           fontWeight: 700,
-          fontSize: 20,
+          fontSize: 24,
           marginBottom: expanded ? 8 : 0,
         }}>{initials}</div>
       )}
@@ -79,6 +94,10 @@ const UserInfo: React.FC<UserInfoProps> = ({ token, expanded }) => {
             <br />
             <span style={{ fontSize: 16, marginRight: 5 }}>
             <strong>ID:</strong> {payload.user_id || payload.id || 'N/A'}
+            </span>
+            <br />
+            <span style={{ fontSize: 16, marginRight: 5 }}>
+            <strong>Rol:</strong> {rol}
             </span>
             <br />
             {payload.email && <><strong>Email:</strong> {payload.email}<br /></>}

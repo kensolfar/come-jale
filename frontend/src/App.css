@@ -1,8 +1,31 @@
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+  max-width: 2400px;
   text-align: center;
+  
+  /* En móvil, reduce el margen lateral en la diferencia entre sidebar expandido y colapsado */
+  /* Suponiendo: sidebar expandido = 240px, colapsado = 64px, diferencia = 176px */
+}
+@media (max-width: 600px) {
+  #root {
+    margin: 0 calc(150px - 176px);
+  }
+}
+
+.columna {
+  float: left;
+}
+
+.izquierda {
+  width: 20%;
+}
+
+.derecha {
+  width: 30%;
+  float: right;
+}
+
+.centro {
+  width: 50%;
 }
 
 .logo {
@@ -67,6 +90,7 @@ body {
   color: var(--color-coffee-brown);
   font-family: var(--font-body);
   margin: 0;
+  display: block;
   min-height: 100vh;
 }
 
