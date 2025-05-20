@@ -52,6 +52,14 @@
   --border-width-main: 2px;
   --font-title: 'Nunito', sans-serif;
   --font-body: 'Open Sans', sans-serif;
+  --color-bg-main: #181A20; /* Fondo principal oscuro */
+  --color-bg-panel: #23242a; /* Paneles y sidebar */
+  --color-bg-card: #23242a; /* Tarjetas y paneles */
+  --color-accent: #ff5c5c; /* Botón y acento */
+  --color-text-main: #fff;
+  --color-text-secondary: #bdbdbd;
+  --color-border: #292b32;
+  --color-btn-hover: #ff7b7b;
 }
 
 body {
@@ -60,6 +68,11 @@ body {
   font-family: var(--font-body);
   margin: 0;
   min-height: 100vh;
+}
+
+body, #root {
+  background: var(--color-bg-main) !important;
+  color: var(--color-text-main);
 }
 
 h1, h2, h3, h4, h5, h6 {

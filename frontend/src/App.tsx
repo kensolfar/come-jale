@@ -3,9 +3,7 @@ import Login from './components/Login'
 import { setAuthToken, refreshToken } from './services/api'
 import './App.css'
 import ProductosList from './components/ProductosList'
-import UserInfo from './components/UserInfo'
-import { Drawer, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Tooltip } from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
+import Sidebar from './components/Sidebar';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import RestaurantMenuIcon from '@mui/icons-material/RestaurantMenu';
 import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
@@ -68,57 +66,17 @@ function App() {
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh' }}>
-      <Drawer
-        variant="permanent"
-        open={drawerExpanded}
-        PaperProps={{
-          sx: {
-            width: drawerExpanded ? 200 : 56,
-            bgcolor: 'var(--color-latte-cream, #F5E1C6)',
-            borderRight: '2px solid var(--color-coffee-brown, #855E42)',
-            transition: 'width 0.2s',
-            overflowX: 'hidden',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            px: 0,
-          }
-        }}
-      >
-        <IconButton onClick={handleDrawerExpand} sx={{ my: 2 }}>
-          <MenuIcon />
-        </IconButton>
-        <List sx={{ width: '100%', p: 0, flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          {navItems.map((item, idx) => (
-            <Tooltip key={item.label} title={drawerExpanded ? '' : item.label} placement="right">
-              <ListItem disablePadding sx={{ width: '100%' }}>
-                <ListItemButton
-                  onClick={item.onClick}
-                  sx={{
-                    minHeight: 56,
-                    height: 56,
-                    justifyContent: 'center',
-                    borderRadius: 2,
-                    m: 1,
-                    aspectRatio: '1/1',
-                    ...item.style,
-                  }}
-                >
-                  <ListItemIcon sx={{ minWidth: 0, color: 'var(--color-coffee-brown, #855E42)', justifyContent: 'center' }}>
-                    {item.icon}
-                  </ListItemIcon>
-                  {drawerExpanded && <ListItemText primary={item.label} sx={{ ml: 1, color: 'var(--color-coffee-brown, #855E42)' }} />}
-                </ListItemButton>
-              </ListItem>
-            </Tooltip>
-          ))}
-        </List>
-      </Drawer>
+      <Sidebar
+        drawerExpanded={drawerExpanded}
+        handleDrawerExpand={handleDrawerExpand}
+        navItems={navItems}
+        page={page}
+        token={token!}
+      />
       <div style={{ flex: 1, padding: '2rem', maxWidth: 600, margin: '0 auto' }}>
         {page === 'dashboard' && (
           <>
-            <h1>🍝 Come-Jale 🍔</h1>
-            <UserInfo token={token} />
+            <h1>🍝 ComeJale 🍔</h1>
             <p>Selecciona una opción en la navegación para continuar.</p>
           </>
         )}

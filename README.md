@@ -31,12 +31,50 @@ python manage.py runserver
 - Refrescar token: `POST /api/token/refresh/`
 - Usar el token en el header: `Authorization: Bearer <token>`
 
-## Endpoints principales
-- `/api/productos/` CRUD de productos
-- `/api/pedidos/` CRUD de pedidos
-- `/api/facturas/` CRUD de facturas
+## Endpoints principales y filtros disponibles
 
-Todos los endpoints requieren autenticación JWT.
+### /api/productos/
+- CRUD de productos
+- Filtros disponibles: nombre, categoria, subcategoria, disponible, precio, fecha_creacion
+  - Ejemplo: `/api/productos/?categoria=1&disponible=true`
+
+### /api/pedidos/
+- CRUD de pedidos
+- Filtros disponibles: cliente, vendedor, repartidor, estado, fecha_creacion
+  - Ejemplo: `/api/pedidos/?cliente=2&estado=pendiente`
+
+### /api/facturas/
+- CRUD de facturas
+- Filtros disponibles: pedido, nombre_vendedor, nombre_destinatario, fecha_expedicion, metodo_pago
+  - Ejemplo: `/api/facturas/?pedido=1&metodo_pago=Efectivo`
+
+### /api/rutas/
+- CRUD de rutas
+- Filtros disponibles: nombre, activa
+  - Ejemplo: `/api/rutas/?activa=true`
+
+### /api/entregas/
+- CRUD de entregas
+- Filtros disponibles: pedido, repartidor, ruta, estado, fecha_asignacion, fecha_entrega
+  - Ejemplo: `/api/entregas/?repartidor=4&estado=pendiente`
+
+### /api/clientes-ruta/
+- CRUD de asociaciones cliente-ruta
+- Filtros disponibles: cliente, ruta
+  - Ejemplo: `/api/clientes-ruta/?cliente=2`
+
+### /api/categorias/
+- CRUD de categorías
+- Filtros disponibles: nombre
+  - Ejemplo: `/api/categorias/?nombre=Desayuno`
+
+### /api/subcategorias/
+- CRUD de subcategorías
+- Filtros disponibles: nombre, categoria
+  - Ejemplo: `/api/subcategorias/?categoria=1`
+
+> Todos los endpoints requieren autenticación JWT.
+> Los filtros se aplican como parámetros de consulta (query params) en la URL.
 
 ## Roles y permisos
 - El sistema utiliza el modelo de usuario de Django. Los roles se gestionan por grupo o campo extra (a definir en futuras iteraciones).
