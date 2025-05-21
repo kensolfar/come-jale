@@ -54,7 +54,6 @@ const ProductDetailDialog: React.FC<ProductDetailDialogProps> = ({ product, onCl
       console.log('Categoría seleccionada:', formData.categoria);
       const catId = typeof formData.categoria === 'object' ? (formData.categoria as any).id : formData.categoria;
       console.log('ID de categoría:', catId);
-      const cats = getSubcategorias(Number(catId)).then(cats => console.log('Subcategorías obtenidas:', cats));
       getSubcategorias(Number(catId)).then(setSubcategorias);
     } else {
       setSubcategorias([]);

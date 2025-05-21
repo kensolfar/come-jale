@@ -130,7 +130,8 @@ const ProductosList: React.FC<{ token?: string }> = ({ token }) => {
             disponible: true,
             categoria: '',
             subcategoria: '',
-            fecha_creacion: ''
+            fecha_creacion: '',
+            cantidad: 0,
           })}
         >
           + Agregar producto

@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useConfig } from './ConfigContext';
 import { useTranslation } from 'react-i18next';
 import { updateConfiguracion } from '../services/api';
 
@@ -19,8 +18,14 @@ function normalizeConfig(cfg: any) {
   };
 }
 
-export const ConfigEdit: React.FC = () => {
-  const { config, loading, setIdioma, setConfig } = useConfig();
+interface ConfigEditProps {
+  config: any;
+  setConfig: (c: any) => void;
+  setIdioma?: (lang: string) => void;
+  loading: boolean;
+}
+
+export const ConfigEdit: React.FC<ConfigEditProps> = ({ config, setConfig, setIdioma, loading }) => {
   const { t } = useTranslation();
   const [form, setForm] = useState(normalizeConfig(config));
   const [logoFile, setLogoFile] = useState<File | null>(null);
@@ -34,7 +39,7 @@ export const ConfigEdit: React.FC = () => {
 
   React.useEffect(() => {
     if (success) {
-      setConfig(normalizeConfig(form)); // Actualiza el contexto global con los nuevos datos
+      setConfig(normalizeConfig(form));
     }
   }, [success, setConfig, form]);
 
@@ -44,7 +49,7 @@ export const ConfigEdit: React.FC = () => {
 
   const handleLangChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setForm({ ...form, idioma: e.target.value });
-    setIdioma(e.target.value);
+    if (setIdioma) setIdioma(e.target.value);
   };
 
   const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -1,10 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { FaCog } from 'react-icons/fa';
-import { ConfigEdit } from './ConfigEdit';
 import { getUserProfileMe } from '../services/api';
-import { useConfig } from './ConfigContext';
 import { useTranslation } from 'react-i18next';
-import BusinessInfoPanel from './BusinessInfoPanel';
 
 interface UserInfoProps {
   token: string;
@@ -38,7 +34,6 @@ function getInitials(name: string) {
 }
 
 const UserInfo: React.FC<UserInfoProps> = ({ token, expanded }) => {
-  const { config, idioma, setIdioma } = useConfig();
   const { t } = useTranslation();
   const payload = parseJwt(token);
   if (!payload) return null;
@@ -62,7 +57,6 @@ const UserInfo: React.FC<UserInfoProps> = ({ token, expanded }) => {
 
   // Estado para la imagen del perfil
   const [profileImg, setProfileImg] = useState<string | null>(null);
-  const [adminOpen, setAdminOpen] = useState(false);
 
   useEffect(() => {
     async function fetchProfile() {
@@ -80,12 +74,6 @@ const UserInfo: React.FC<UserInfoProps> = ({ token, expanded }) => {
     fetchProfile();
   }, [token]);
 
-  useEffect(() => {
-    const close = () => setAdminOpen(false);
-    window.addEventListener('close-admin-modal', close);
-    return () => window.removeEventListener('close-admin-modal', close);
-  }, []);
-
   return (
     <div style={{
       display: 'flex',
@@ -102,6 +90,7 @@ const UserInfo: React.FC<UserInfoProps> = ({ token, expanded }) => {
       width: '100%',
       boxSizing: 'border-box',
     }}>
+      {/* BusinessInfoPanel eliminado de aquí */}
       {profileImg ? (
         <img src={profileImg} alt="avatar" style={{ width: 58, height: 58, borderRadius: '50%', objectFit: 'cover', marginBottom: expanded ? 8 : 0 }} />
       ) : (
@@ -139,22 +128,6 @@ const UserInfo: React.FC<UserInfoProps> = ({ token, expanded }) => {
               {t('session_expires')}: {new Date(payload.exp * 1000).toLocaleTimeString()}
             </span>
           )}
-        </div>
-      )}
-      {expanded && config && (
-        <BusinessInfoPanel config={config} idioma={idioma} setIdioma={setIdioma} onOpenAdmin={() => setAdminOpen(true)} />
-      )}
-      {adminOpen && (
-        <div style={{
-          position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: 2000,
-          background: 'rgba(0,0,0,0.45)', display: 'flex', alignItems: 'center', justifyContent: 'center',
-        }}>
-          <div style={{
-            background: 'transparent', borderRadius: 0, boxShadow: 'none', padding: 0, position: 'relative',
-            display: 'flex', alignItems: 'center', justifyContent: 'center', width: 'auto', height: 'auto', minWidth: 0, minHeight: 0
-          }}>
-            <ConfigEdit />
-          </div>
         </div>
       )}
     </div>

@@ -1,6 +1,7 @@
 import React from 'react';
 import UserInfo from './UserInfo';
 import { useTranslation } from 'react-i18next';
+import BusinessInfoPanel from './BusinessInfoPanel';
 
 interface NavItem {
   label: string;
@@ -16,7 +17,7 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ navItems, page, token }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   return (
     <aside style={{
       background: '#23242a',
@@ -29,6 +30,7 @@ const Sidebar: React.FC<SidebarProps> = ({ navItems, page, token }) => {
       alignItems: 'flex-start',
       boxSizing: 'border-box',
     }}>
+      <BusinessInfoPanel idioma={i18n.language} setIdioma={i18n.changeLanguage} />
       <UserInfo token={token} expanded={true} />
       <nav style={{ width: '100%' }}>
         {navItems.map((item) => {

@@ -114,6 +114,11 @@ export async function uploadProductoImagen(file: File, productoId: number): Prom
   return response.data;
 }
 
+export async function getConfiguracion(): Promise<any> {
+  const response = await axios.get(`${API_BASE_URL}/configuracion/1/`);
+  return response.data;
+}
+
 export async function updateConfiguracion(data: any, isForm: boolean): Promise<any> {
   const API_BASE = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000';
   if (isForm) {

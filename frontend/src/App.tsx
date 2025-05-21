@@ -11,7 +11,6 @@ import RestaurantMenuIcon from '@mui/icons-material/RestaurantMenu';
 import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
 import LogoutIcon from '@mui/icons-material/Logout';
 import ProductosList from './components/ProductosList';
-import { ConfigProvider } from './components/ConfigContext';
 
 interface OrderItem {
   producto: Producto;
@@ -80,33 +79,31 @@ function App() {
   }
 
   return (
-    <ConfigProvider token={token}>
-      <div style={{
-        display: 'flex',
-        flexDirection: 'row',
-        width: '100vw',
-        height: '100vh',
-        background: '#18191f',
-        overflow: 'hidden',
-        boxSizing: 'border-box',
-        padding: '1rem 1rem',
-      }}>
-        {/* Sidebar (izquierda) */}
-        <div className='columna izquierda' style={{boxSizing: 'border-box' }}>
-          <Sidebar navItems={navItems} page={page} token={token || ''} />
-        </div>
-        {/* Contenido central (menú) */}
-        <div className='columna centro' style={{overflowY: 'auto', padding: '0 1.5rem', boxSizing: 'border-box' }}>
-          {page === 'dashboard' && <Menu order={order} setOrder={setOrder} />}
-          {page === 'productos' && <ProductosList token={token || ''} />}
-          {/* Aquí puedes agregar más páginas según el valor de page */}
-        </div>
-        {/* Orden (derecha) */}
-        <div className='columna derecha' style={{boxSizing: 'border-box' }}>
-          <Order order={order} onRemove={handleRemoveFromOrder} />
-        </div>
+    <div style={{
+      display: 'flex',
+      flexDirection: 'row',
+      width: '100vw',
+      height: '100vh',
+      background: '#18191f',
+      overflow: 'hidden',
+      boxSizing: 'border-box',
+      padding: '1rem 1rem',
+    }}>
+      {/* Sidebar (izquierda) */}
+      <div className='columna izquierda' style={{boxSizing: 'border-box' }}>
+        <Sidebar navItems={navItems} page={page} token={token || ''} />
       </div>
-    </ConfigProvider>
+      {/* Contenido central (menú) */}
+      <div className='columna centro' style={{overflowY: 'auto', padding: '0 1.5rem', boxSizing: 'border-box' }}>
+        {page === 'dashboard' && <Menu order={order} setOrder={setOrder} />}
+        {page === 'productos' && <ProductosList token={token || ''} />}
+        {/* Aquí puedes agregar más páginas según el valor de page */}
+      </div>
+      {/* Orden (derecha) */}
+      <div className='columna derecha' style={{boxSizing: 'border-box' }}>
+        <Order order={order} onRemove={handleRemoveFromOrder} />
+      </div>
+    </div>
   );
 }
 
