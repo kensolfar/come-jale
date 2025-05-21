@@ -77,7 +77,7 @@ const UserInfo: React.FC<UserInfoProps> = ({ token, expanded }) => {
   return (
     <div style={{
       display: 'flex',
-      flexDirection: expanded ? 'column' : 'column', // Siempre columna
+      flexDirection: 'row', // Avatar a la izquierda, info a la derecha
       alignItems: 'center',
       background: '#232428',
       color: '#fff',
@@ -90,9 +90,9 @@ const UserInfo: React.FC<UserInfoProps> = ({ token, expanded }) => {
       width: '100%',
       boxSizing: 'border-box',
     }}>
-      {/* BusinessInfoPanel eliminado de aquí */}
+      {/* Avatar a la izquierda */}
       {profileImg ? (
-        <img src={profileImg} alt="avatar" style={{ width: 58, height: 58, borderRadius: '50%', objectFit: 'cover', marginBottom: expanded ? 8 : 0 }} />
+        <img src={profileImg} alt="avatar" style={{ width: 58, height: 58, borderRadius: '50%', objectFit: 'cover', marginRight: 16 }} />
       ) : (
         <div style={{
           width: 48,
@@ -105,9 +105,10 @@ const UserInfo: React.FC<UserInfoProps> = ({ token, expanded }) => {
           justifyContent: 'center',
           fontWeight: 700,
           fontSize: 24,
-          marginBottom: expanded ? 8 : 0,
+          marginRight: 16,
         }}>{initials}</div>
       )}
+      {/* Info a la derecha */}
       {expanded && (
         <div style={{ flex: 1, textAlign: 'left', width: '100%' }}>
             <span style={{ fontSize: 16, marginRight: 5 }}>

@@ -26,7 +26,7 @@ interface ConfigEditProps {
 }
 
 export const ConfigEdit: React.FC<ConfigEditProps> = ({ config, setConfig, setIdioma, loading }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [form, setForm] = useState(normalizeConfig(config));
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [saving, setSaving] = useState(false);
@@ -50,6 +50,7 @@ export const ConfigEdit: React.FC<ConfigEditProps> = ({ config, setConfig, setId
   const handleLangChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setForm({ ...form, idioma: e.target.value });
     if (setIdioma) setIdioma(e.target.value);
+    i18n.changeLanguage(e.target.value); // Cambio inmediato de idioma
   };
 
   const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
