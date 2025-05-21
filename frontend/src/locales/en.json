@@ -59,5 +59,6 @@
   "subcategory": "Subcategory",
   "quantity": "Quantity",
   "no_products_in_category": "No products in this category.",
-  "no_image": "No image"
+  "no_image": "No image",
+  "available_stock": "{{stock}} units"
 }

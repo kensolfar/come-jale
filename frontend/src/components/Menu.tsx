@@ -222,7 +222,7 @@ const Menu: React.FC<MenuProps> = ({ order, setOrder }) => {
                   {sinStock ? (
                     <span style={{ color: '#ff5c5c', fontWeight: 500, fontSize: isMobile ? 10 : 12, textAlign: 'right', paddingRight: isMobile ? 16 : 20}}>{t('out_of_stock')}</span>
                   ) : (
-                    <span style={{ color: '#bdbdbd', fontWeight: 400, fontSize: isMobile ? 10 : 12, textAlign: 'right', paddingRight: isMobile ? 16 : 20 }}>{t('available_stock', { stock: stockDisponible })}</span>
+                    <span style={{ color: '#bdbdbd', fontWeight: 400, fontSize: isMobile ? 10 : 12, textAlign: 'right', paddingRight: isMobile ? 16 : 20 }}>{t('in_stock', { stock: stockDisponible })}</span>
                   )}
                 </div>
               </div>

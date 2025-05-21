@@ -42,7 +42,7 @@
   "add_to_order": "Añadir a la orden",
   "cancel": "Cancelar",
   "out_of_stock": "Sin stock",
-  "in_stock": "hay {{stock}}",
+  "in_stock": "{{stock}} disp",
   "select_category": "Selecciona una categoría",
   "select_subcategory": "Selecciona una subcategoría",
   "image": "Imagen",
