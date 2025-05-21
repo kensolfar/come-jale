@@ -161,41 +161,71 @@ const Menu: React.FC<MenuProps> = ({ order, setOrder }) => {
               No hay productos en esta categoría.
             </div>
           )}
-          {productosFiltrados.map(producto => (
-            <div
-              key={producto.id}
-              style={{
-                background: '#23242a',
-                borderRadius: 16,
-                boxShadow: '0 2px 8px 0 rgba(0,0,0,0.10)',
-                padding: 0,
-                cursor: 'pointer',
-                overflow: 'hidden',
-                position: 'relative',
-                transition: 'transform 0.1s',
-                minWidth: 0,
-                maxWidth: isMobile ? 154 : 220,
-                width: '100%',
-                height: isMobile ? 182 : 240,
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'flex-start',
-                alignItems: 'stretch',
-                margin: '0 auto',
-              }}
-              onClick={e => handleOpenDialog(producto, (e.currentTarget as HTMLDivElement).getBoundingClientRect())}
-            >
-              <img
-                src={producto.imagen && producto.imagen.startsWith('http') ? producto.imagen : `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'}${producto.imagen}`}
-                alt={producto.nombre}
-                style={{ width: '100%', height: isMobile ? 84 : 120, objectFit: 'cover', display: 'block', borderTopLeftRadius: 16, borderTopRightRadius: 16 }}
-              />
-              <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: isMobile ? '0.5rem' : '0.7rem' }}>
-                <div style={{ fontWeight: 700, fontSize: isMobile ? 11 : 16, color: '#fff', marginBottom: 2, textAlign: 'center' }}>{producto.nombre}</div>
-                <div style={{ color: '#8DAA91', fontWeight: 700, fontSize: isMobile ? 10 : 15, textAlign: 'center' }}>₡{Number(producto.precio).toFixed(2)}</div>
+          {productosFiltrados.map(producto => {
+            const stockDisponible = getStockDisponible(producto);
+            const sinStock = stockDisponible <= 0;
+            return (
+              <div
+                key={producto.id}
+                style={{
+                  background: '#23242a',
+                  borderRadius: 16,
+                  boxShadow: '0 2px 8px 0 rgba(0,0,0,0.10)',
+                  padding: 0,
+                  cursor: sinStock ? 'not-allowed' : 'pointer',
+                  overflow: 'hidden',
+                  position: 'relative',
+                  transition: 'transform 0.1s, box-shadow 0.2s',
+                  minWidth: 0,
+                  maxWidth: isMobile ? 154 : 220,
+                  width: '100%',
+                  height: isMobile ? 182 : 240,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'flex-start',
+                  alignItems: 'stretch',
+                  margin: '0 auto',
+                  opacity: sinStock ? 0.5 : 1,
+                  pointerEvents: sinStock ? 'none' : 'auto',
+                }}
+                onClick={e => !sinStock && handleOpenDialog(producto, (e.currentTarget as HTMLDivElement).getBoundingClientRect())}
+                onMouseOver={e => {
+                  if (!sinStock) e.currentTarget.style.boxShadow = '0 4px 16px 0 rgba(141,170,145,0.25)';
+                }}
+                onMouseOut={e => {
+                  if (!sinStock) e.currentTarget.style.boxShadow = '0 2px 8px 0 rgba(0,0,0,0.10)';
+                }}
+              >
+                <img
+                  src={producto.imagen && producto.imagen.startsWith('http') ? producto.imagen : `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'}${producto.imagen}`}
+                  alt={producto.nombre}
+                  style={{
+                    width: 'calc(100% - 1em)',
+                    height: isMobile ? 96 : 140,
+                    objectFit: 'cover',
+                    display: 'block',
+                    borderRadius: 14,
+                    margin: '0.75em auto 0em auto',
+                    boxSizing: 'border-box',
+                    background: '#23242a',
+                  }}
+                />
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'flex-start', padding: isMobile ? '0.5rem' : '0.7rem', gap: 0 }}>
+                  <div style={{ fontWeight: 500, fontSize: isMobile ? 12.6 : 16, color: '#fff', marginBottom: 4, textAlign: 'left', width: '100%' }}>{producto.nombre}</div>
+                  <div style={{ borderTop: '1px solid #23272f', width: '100%', margin: '2px 0 0 0' }} />
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', width: '100%', padding: isMobile ? '0.5rem' : '0.7rem', position: 'absolute', left: 0, bottom: 0 }}>
+                  <span style={{ fontWeight: 600, fontSize: isMobile ? 14 : 18, color: sinStock ? '#bdbdbd' : '#8DAA91' }}>₡{Number(producto.precio).toFixed(2)}</span>
+                  <span style={{ flex: 1 }} />
+                  {sinStock ? (
+                    <span style={{ color: '#ff5c5c', fontWeight: 500, fontSize: isMobile ? 10 : 12, textAlign: 'right', paddingRight: isMobile ? 16 : 20}}>Sin stock</span>
+                  ) : (
+                    <span style={{ color: '#bdbdbd', fontWeight: 400, fontSize: isMobile ? 10 : 12, textAlign: 'right', paddingRight: isMobile ? 16 : 20 }}>{`hay ${stockDisponible}`}</span>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
         {dialogProduct && (
           <div

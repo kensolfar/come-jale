@@ -8,9 +8,10 @@ interface OrderItem {
 
 interface OrderProps {
   order: OrderItem[];
+  onRemove: (productoId: number) => void;
 }
 
-const Order: React.FC<OrderProps> = ({ order }) => {
+const Order: React.FC<OrderProps> = ({ order, onRemove }) => {
   const subtotal = order.reduce((acc, item) => acc + item.producto.precio * item.cantidad, 0);
   const impuesto = subtotal * 0.13;
   const total = subtotal + impuesto;
@@ -43,7 +44,23 @@ const Order: React.FC<OrderProps> = ({ order }) => {
                 <div style={{ fontWeight: 700, fontSize: 16 }}>{item.producto.nombre}</div>
                 <div style={{ color: '#bdbdbd', fontSize: 14 }}>x{item.cantidad}</div>
               </div>
-              <div style={{ fontWeight: 700, fontSize: 16 }}>₡{Number(item.producto.precio * item.cantidad).toFixed(2)}</div>
+              <div style={{ fontWeight: 700, fontSize: 16, marginRight: 8 }}>₡{Number(item.producto.precio * item.cantidad).toFixed(2)}</div>
+              <button
+                onClick={() => onRemove(item.producto.id)}
+                style={{
+                  background: 'transparent',
+                  color: '#ff5c5c',
+                  border: 'none',
+                  fontWeight: 700,
+                  fontSize: 18,
+                  cursor: 'pointer',
+                  marginLeft: 4,
+                }}
+                aria-label={`Eliminar ${item.producto.nombre}`}
+                title="Eliminar"
+              >
+                ×
+              </button>
             </li>
           ))}
         </ul>

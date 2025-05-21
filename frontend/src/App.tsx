@@ -66,6 +66,11 @@ function App() {
     return () => clearInterval(interval);
   }, [refresh])
 
+  // Eliminar un producto de la orden
+  const handleRemoveFromOrder = (productoId: number) => {
+    setOrder(prev => prev.filter(item => item.producto.id !== productoId));
+  };
+
   if (!token) {
     return <Login onLogin={(access, refresh) => { setToken(access); setRefresh(refresh); }} />
   }
@@ -93,7 +98,7 @@ function App() {
       </div>
       {/* Orden (derecha) */}
       <div className='columna derecha' style={{boxSizing: 'border-box' }}>
-        <Order order={order} />
+        <Order order={order} onRemove={handleRemoveFromOrder} />
       </div>
     </div>
   );
