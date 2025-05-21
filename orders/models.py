@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from rest_framework import serializers
+from django.utils.translation import gettext_lazy as _
 
 class Categoria(models.Model):
     nombre = models.CharField(max_length=100, unique=True)
@@ -118,6 +119,25 @@ class ClienteRuta(models.Model):
     def __str__(self):
         return f"{self.cliente.username} en {self.ruta.nombre}"
 
+class Configuracion(models.Model):
+    idioma = models.CharField(max_length=10, choices=[('es', _('Español')), ('en', _('Inglés'))], default='es')
+    nombre_restaurante = models.CharField(max_length=255)
+    direccion = models.CharField(max_length=255, blank=True)
+    telefono = models.CharField(max_length=50, blank=True)
+    logo = models.ImageField(upload_to='restaurante/', blank=True, null=True)
+    descripcion = models.TextField(blank=True)
+
+    def save(self, *args, **kwargs):
+        self.pk = 1  # Singleton: siempre id=1
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return str(_(f"Configuración de {self.nombre_restaurante}"))
+
+    class Meta:
+        verbose_name = _('Configuración')
+        verbose_name_plural = _('Configuraciones')
+
 class CategoriaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Categoria
@@ -164,6 +184,11 @@ class EntregaSerializer(serializers.ModelSerializer):
 class ClienteRutaSerializer(serializers.ModelSerializer):
     class Meta:
         model = ClienteRuta
+        fields = '__all__'
+
+class ConfiguracionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Configuracion
         fields = '__all__'
 
 class Profile(models.Model):

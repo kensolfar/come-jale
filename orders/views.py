@@ -8,6 +8,9 @@ from rest_framework import status
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import Profile, ProfileSerializer
 from rest_framework.permissions import IsAuthenticated
+from .models import Configuracion, ConfiguracionSerializer
+from rest_framework.permissions import IsAdminUser
+from rest_framework import permissions
 
 # Create your views here.
 
@@ -118,4 +121,34 @@ class ProfileViewSet(viewsets.ModelViewSet):
             serializer.save()
             return Response(serializer.data)
         serializer = self.get_serializer(profile)
+        return Response(serializer.data)
+
+class ConfiguracionViewSet(viewsets.ModelViewSet):
+    queryset = Configuracion.objects.all()
+    serializer_class = ConfiguracionSerializer
+
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            return [permissions.IsAuthenticated()]
+        return [permissions.IsAdminUser()]
+
+    def get_object(self):
+        obj, created = Configuracion.objects.get_or_create(pk=1)
+        return obj
+
+    def list(self, request, *args, **kwargs):
+        obj = self.get_object()
+        serializer = self.get_serializer(obj)
+        return Response(serializer.data)
+
+    def retrieve(self, request, *args, **kwargs):
+        obj = self.get_object()
+        serializer = self.get_serializer(obj)
+        return Response(serializer.data)
+
+    def update(self, request, *args, **kwargs):
+        obj = self.get_object()
+        serializer = self.get_serializer(obj, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
         return Response(serializer.data)

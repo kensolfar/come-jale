@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import type { Producto, Categoria, Subcategoria } from '../services/api';
 import { uploadProductoImagen, getCategorias, getSubcategorias } from '../services/api';
 import { jwtDecode } from 'jwt-decode';
+import { useTranslation } from 'react-i18next';
 
 interface ProductDetailDialogProps {
   product: Producto | null;
@@ -12,6 +13,7 @@ interface ProductDetailDialogProps {
 }
 
 const ProductDetailDialog: React.FC<ProductDetailDialogProps> = ({ product, onClose, onSave, onDelete, token }) => {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState<Producto>(
     product || { 
       id: 0, 
@@ -163,9 +165,9 @@ const ProductDetailDialog: React.FC<ProductDetailDialogProps> = ({ product, onCl
           fontSize: 24,
           color: 'var(--color-coffee-brown, #855E42)',
           fontFamily: 'var(--font-title, Nunito, sans-serif)'
-        }}>{product ? (isAdmin ? 'Editar Producto' : 'Detalles del Producto') : 'Nuevo Producto'}</h2>
+        }}>{product ? (isAdmin ? t('edit_product') : t('product_details')) : t('new_product')}</h2>
         <label style={{ marginBottom: 12, fontWeight: 500, textAlign: 'left', display: 'block' }}>
-          Nombre:
+          {t('name')}:
           <input
             type="text"
             name="nombre"
@@ -186,7 +188,7 @@ const ProductDetailDialog: React.FC<ProductDetailDialogProps> = ({ product, onCl
           />
         </label>
         <label style={{ marginBottom: 12, fontWeight: 500, textAlign: 'left', display: 'block' }}>
-          Descripción:
+          {t('description')}:
           <textarea
             name="descripcion"
             value={formData.descripcion}
@@ -208,7 +210,7 @@ const ProductDetailDialog: React.FC<ProductDetailDialogProps> = ({ product, onCl
           />
         </label>
         <label style={{ marginBottom: 12, fontWeight: 500, textAlign: 'left', display: 'block' }}>
-          Cantidad:
+          {t('Cantidad')}:
           <input
             type="number"
             name="cantidad"
@@ -229,7 +231,7 @@ const ProductDetailDialog: React.FC<ProductDetailDialogProps> = ({ product, onCl
           />
         </label>
         <label style={{ marginBottom: 12, fontWeight: 500, textAlign: 'left', display: 'block' }}>
-          Precio:
+          {t('price')}:
           <input
             type="number"
             name="precio"
@@ -250,7 +252,7 @@ const ProductDetailDialog: React.FC<ProductDetailDialogProps> = ({ product, onCl
           />
         </label>
         <label style={{ marginBottom: 12, fontWeight: 500, textAlign: 'left', display: 'block' }}>
-          Categoría:
+          {t('category')}:
           <select
             name="categoria"
             value={formData.categoria || ''}
@@ -268,14 +270,14 @@ const ProductDetailDialog: React.FC<ProductDetailDialogProps> = ({ product, onCl
             }}
             disabled={!isAdmin}
           >
-            <option value="">Selecciona una categoría</option>
+            <option value="">{t('select_category')}</option>
             {categorias.map(cat => (
               <option key={cat.id} value={cat.id}>{cat.nombre}</option>
             ))}
           </select>
         </label>
         <label style={{ marginBottom: 12, fontWeight: 500, textAlign: 'left', display: 'block' }}>
-          Subcategoría:
+          {t('subcategory')}:
           <select
             name="subcategoria"
             value={formData.subcategoria || ''}
@@ -293,14 +295,14 @@ const ProductDetailDialog: React.FC<ProductDetailDialogProps> = ({ product, onCl
             }}
             disabled={!isAdmin || !formData.categoria}
           >
-            <option value="">Selecciona una subcategoría</option>
+            <option value="">{t('select_subcategory')}</option>
             {subcategorias.map(sub => (
               <option key={sub.id} value={sub.id}>{sub.nombre}</option>
             ))}
           </select>
         </label>
         <label style={{ marginBottom: 18, fontWeight: 500 }}>
-          Imagen:
+          {t('image')}:
           <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginTop: 8 }}>
             {(imagePreview || formData.imagen) ? (
               <img
@@ -318,7 +320,7 @@ const ProductDetailDialog: React.FC<ProductDetailDialogProps> = ({ product, onCl
               />
             ) : (
               <div style={{ width: 80, height: 80, background: '#444', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 8, fontSize: 13 }}>
-                Sin imagen
+                {t('no_image')}
               </div>
             )}
             <input
@@ -335,7 +337,7 @@ const ProductDetailDialog: React.FC<ProductDetailDialogProps> = ({ product, onCl
               onClick={() => isAdmin && fileInputRef.current?.click()}
               disabled={uploading || !isAdmin}
             >
-              {uploading ? 'Subiendo...' : 'Cambiar imagen'}
+              {uploading ? t('uploading') : t('change_image')}
             </button>
           </div>
         </label>
@@ -345,7 +347,7 @@ const ProductDetailDialog: React.FC<ProductDetailDialogProps> = ({ product, onCl
               className="nav-btn"
               onClick={handleSave}
             >
-              Guardar
+              {t('save')}
             </button>
           )}
           {isAdmin && product && (
@@ -353,12 +355,12 @@ const ProductDetailDialog: React.FC<ProductDetailDialogProps> = ({ product, onCl
               className="nav-btn"
               style={{ background: '#a11', color: '#fff' }}
               onClick={() => {
-                if (window.confirm('¿Estás seguro de que deseas eliminar este producto? Esta acción no se puede deshacer.')) {
+                if (window.confirm(t('are_you_sure_delete'))) {
                   handleDelete();
                 }
               }}
             >
-              Eliminar
+              {t('delete')}
             </button>
           )}
           <button
@@ -366,7 +368,7 @@ const ProductDetailDialog: React.FC<ProductDetailDialogProps> = ({ product, onCl
             style={{ background: '#444', color: '#fff' }}
             onClick={onClose}
           >
-            Cerrar
+            {t('close')}
           </button>
         </div>
       </div>

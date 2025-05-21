@@ -1,9 +1,15 @@
 from django.contrib import admin
-from .models import Profile, Categoria, Subcategoria, Producto, Pedido, PedidoProducto, Factura, Ruta, Entrega, ClienteRuta
+from .models import Configuracion, Profile, Categoria, Subcategoria, Producto, Pedido, PedidoProducto, Factura, Ruta, Entrega, ClienteRuta
 
 class PedidoProductoInline(admin.TabularInline):
     model = PedidoProducto
     extra = 1
+
+@admin.register(Configuracion)
+class ConfiguracionAdmin(admin.ModelAdmin):
+    list_display = ("nombre_restaurante", "direccion", "telefono")
+    search_fields = ("nombre_restaurante",)
+    list_filter = ("nombre_restaurante",)
 
 @admin.register(Subcategoria)
 class SubcategoriaAdmin(admin.ModelAdmin):

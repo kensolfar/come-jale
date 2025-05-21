@@ -114,6 +114,19 @@ export async function uploadProductoImagen(file: File, productoId: number): Prom
   return response.data;
 }
 
+export async function updateConfiguracion(data: any, isForm: boolean): Promise<any> {
+  const API_BASE = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000';
+  if (isForm) {
+    const response = await axios.patch(`${API_BASE}/api/configuracion/1/`, data, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return response.data;
+  } else {
+    const response = await axios.patch(`${API_BASE}/api/configuracion/1/`, data);
+    return response.data;
+  }
+}
+
 export interface Producto {
     id: number;
     nombre: string;

@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { getCategorias, getProductos } from '../services/api';
 import type { Categoria, Producto } from '../services/api';
+import { useTranslation } from 'react-i18next';
 
 interface OrderItem {
   producto: Producto;
@@ -13,6 +14,7 @@ interface MenuProps {
 }
 
 const Menu: React.FC<MenuProps> = ({ order, setOrder }) => {
+  const { t } = useTranslation();
   const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [productos, setProductos] = useState<Producto[]>([]);
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState<number | null>(null);
@@ -106,7 +108,7 @@ const Menu: React.FC<MenuProps> = ({ order, setOrder }) => {
           padding: '1rem 1rem',
         }}
       >
-        <h1 style={{ color: '#fff', fontWeight: 800, fontSize: 32, marginBottom: 8 }}>Menú</h1>
+        <h1 style={{ color: '#fff', fontWeight: 800, fontSize: 32, marginBottom: 8 }}>{t('menu')}</h1>
         <div style={{ display: 'flex', gap: 16, marginBottom: 24, flexWrap: 'wrap' }}>
           <button
             onClick={() => setCategoriaSeleccionada(null)}
@@ -123,7 +125,7 @@ const Menu: React.FC<MenuProps> = ({ order, setOrder }) => {
               outline: 'none',
             }}
           >
-            Todo el menú
+            {t('all_menu')}
           </button>
           {categorias.map(cat => (
             <button
@@ -158,7 +160,7 @@ const Menu: React.FC<MenuProps> = ({ order, setOrder }) => {
         >
           {productosFiltrados.length === 0 && (
             <div style={{ color: '#fff', fontWeight: 600, fontSize: 18, gridColumn: '1/-1', textAlign: 'center', padding: '2rem 0' }}>
-              No hay productos en esta categoría.
+              {t('no_products_in_category')}
             </div>
           )}
           {productosFiltrados.map(producto => {
@@ -218,9 +220,9 @@ const Menu: React.FC<MenuProps> = ({ order, setOrder }) => {
                   <span style={{ fontWeight: 600, fontSize: isMobile ? 14 : 18, color: sinStock ? '#bdbdbd' : '#8DAA91' }}>₡{Number(producto.precio).toFixed(2)}</span>
                   <span style={{ flex: 1 }} />
                   {sinStock ? (
-                    <span style={{ color: '#ff5c5c', fontWeight: 500, fontSize: isMobile ? 10 : 12, textAlign: 'right', paddingRight: isMobile ? 16 : 20}}>Sin stock</span>
+                    <span style={{ color: '#ff5c5c', fontWeight: 500, fontSize: isMobile ? 10 : 12, textAlign: 'right', paddingRight: isMobile ? 16 : 20}}>{t('out_of_stock')}</span>
                   ) : (
-                    <span style={{ color: '#bdbdbd', fontWeight: 400, fontSize: isMobile ? 10 : 12, textAlign: 'right', paddingRight: isMobile ? 16 : 20 }}>{`hay ${stockDisponible}`}</span>
+                    <span style={{ color: '#bdbdbd', fontWeight: 400, fontSize: isMobile ? 10 : 12, textAlign: 'right', paddingRight: isMobile ? 16 : 20 }}>{t('available_stock', { stock: stockDisponible })}</span>
                   )}
                 </div>
               </div>
@@ -250,7 +252,7 @@ const Menu: React.FC<MenuProps> = ({ order, setOrder }) => {
           >
             <div style={{ fontWeight: 800, fontSize: 22, marginBottom: 8 }}>{dialogProduct.nombre}</div>
             <div style={{ fontWeight: 700, fontSize: 18, marginBottom: 8 }}>₡{Number(dialogPrecio).toFixed(2)}</div>
-            <div style={{ color: '#fff', fontSize: 15, marginBottom: 10 }}>Stock disponible: {getStockDisponible(dialogProduct)}</div>
+            <div style={{ color: '#fff', fontSize: 15, marginBottom: 10 }}>{t('available_stock', { stock: getStockDisponible(dialogProduct) })}</div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 18 }}>
               <button
                 onClick={() => setDialogCantidad(c => Math.max(1, c - 1))}
@@ -317,7 +319,7 @@ const Menu: React.FC<MenuProps> = ({ order, setOrder }) => {
               onClick={() => handleAddToOrder(dialogProduct, dialogCantidad)}
               disabled={getStockDisponible(dialogProduct) === 0}
             >
-              Añadir a la orden
+              {t('add_to_order')}
             </button>
             <button
               style={{
@@ -333,7 +335,7 @@ const Menu: React.FC<MenuProps> = ({ order, setOrder }) => {
               }}
               onClick={() => setDialogProduct(null)}
             >
-              Cancelar
+              {t('cancel')}
             </button>
           </div>
         )}

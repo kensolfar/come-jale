@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react';
-// import axios from 'axios'; // Ya no se usa directamente
+import { FaCog } from 'react-icons/fa';
+import { ConfigEdit } from './ConfigEdit';
 import { getUserProfileMe } from '../services/api';
+import { useConfig } from './ConfigContext';
+import { useTranslation } from 'react-i18next';
+import BusinessInfoPanel from './BusinessInfoPanel';
 
 interface UserInfoProps {
   token: string;
@@ -34,6 +38,8 @@ function getInitials(name: string) {
 }
 
 const UserInfo: React.FC<UserInfoProps> = ({ token, expanded }) => {
+  const { config, idioma, setIdioma } = useConfig();
+  const { t } = useTranslation();
   const payload = parseJwt(token);
   if (!payload) return null;
   const username = payload.username || payload.user || payload.email || 'N/A';
@@ -56,6 +62,7 @@ const UserInfo: React.FC<UserInfoProps> = ({ token, expanded }) => {
 
   // Estado para la imagen del perfil
   const [profileImg, setProfileImg] = useState<string | null>(null);
+  const [adminOpen, setAdminOpen] = useState(false);
 
   useEffect(() => {
     async function fetchProfile() {
@@ -72,6 +79,12 @@ const UserInfo: React.FC<UserInfoProps> = ({ token, expanded }) => {
     }
     fetchProfile();
   }, [token]);
+
+  useEffect(() => {
+    const close = () => setAdminOpen(false);
+    window.addEventListener('close-admin-modal', close);
+    return () => window.removeEventListener('close-admin-modal', close);
+  }, []);
 
   return (
     <div style={{
@@ -109,7 +122,7 @@ const UserInfo: React.FC<UserInfoProps> = ({ token, expanded }) => {
       {expanded && (
         <div style={{ flex: 1, textAlign: 'left', width: '100%' }}>
             <span style={{ fontSize: 16, marginRight: 5 }}>
-            <strong>Usuario:</strong> {username}
+            <strong>{t('user')}:</strong> {username}
             </span>
             <br />
             <span style={{ fontSize: 16, marginRight: 5 }}>
@@ -117,15 +130,31 @@ const UserInfo: React.FC<UserInfoProps> = ({ token, expanded }) => {
             </span>
             <br />
             <span style={{ fontSize: 16, marginRight: 5 }}>
-            <strong>Rol:</strong> {rol}
+            <strong>{t('role')}:</strong> {t(rol.toLowerCase())}
             </span>
             <br />
             {payload.email && <><strong>Email:</strong> {payload.email}<br /></>}
           {payload.exp && (
             <span style={{ color: '#aaa', fontSize: 13 }}>
-              Sesión expira: {new Date(payload.exp * 1000).toLocaleTimeString()}
+              {t('session_expires')}: {new Date(payload.exp * 1000).toLocaleTimeString()}
             </span>
           )}
+        </div>
+      )}
+      {expanded && config && (
+        <BusinessInfoPanel config={config} idioma={idioma} setIdioma={setIdioma} onOpenAdmin={() => setAdminOpen(true)} />
+      )}
+      {adminOpen && (
+        <div style={{
+          position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: 2000,
+          background: 'rgba(0,0,0,0.45)', display: 'flex', alignItems: 'center', justifyContent: 'center',
+        }}>
+          <div style={{
+            background: 'transparent', borderRadius: 0, boxShadow: 'none', padding: 0, position: 'relative',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', width: 'auto', height: 'auto', minWidth: 0, minHeight: 0
+          }}>
+            <ConfigEdit />
+          </div>
         </div>
       )}
     </div>
