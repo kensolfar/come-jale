@@ -21,6 +21,7 @@ const ProductDetailDialog: React.FC<ProductDetailDialogProps> = ({ product, onCl
       imagen: '', 
       disponible: true, 
       categoria: '', 
+      cantidad: 0,
       subcategoria: '', 
       fecha_creacion: '' 
     }
@@ -202,6 +203,27 @@ const ProductDetailDialog: React.FC<ProductDetailDialogProps> = ({ product, onCl
               minHeight: 60,
               marginBottom: 8,
               resize: 'vertical',
+            }}
+            disabled={!isAdmin}
+          />
+        </label>
+        <label style={{ marginBottom: 12, fontWeight: 500, textAlign: 'left', display: 'block' }}>
+          Cantidad:
+          <input
+            type="number"
+            name="cantidad"
+            value={formData.cantidad}
+            onChange={handleChange}
+            style={{
+              width: '100%',
+              marginTop: 4,
+              padding: '8px 10px',
+              borderRadius: 6,
+              border: '1px solid #333',
+              background: '#fff',
+              color: '#222',
+              fontSize: 16,
+              marginBottom: 8,
             }}
             disabled={!isAdmin}
           />

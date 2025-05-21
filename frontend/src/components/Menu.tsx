@@ -18,6 +18,7 @@ const Menu: React.FC<MenuProps> = ({ order, setOrder }) => {
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState<number | null>(null);
   const [dialogProduct, setDialogProduct] = useState<Producto | null>(null);
   const [dialogCantidad, setDialogCantidad] = useState<number>(1);
+  const [dialogPrecio, setDialogPrecio] = useState<number>(0);
   const [dialogAnchor, setDialogAnchor] = useState<DOMRect | null>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(false);
@@ -62,6 +63,12 @@ const Menu: React.FC<MenuProps> = ({ order, setOrder }) => {
     }
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [dialogProduct]);
+
+  useEffect(() => {
+    if (dialogProduct) {
+      setDialogPrecio(dialogProduct.precio * dialogCantidad);
+    }
+  }, [dialogProduct, dialogCantidad]);
 
   const handleOpenDialog = (producto: Producto, anchor: DOMRect) => {
     setDialogProduct(producto);
@@ -212,7 +219,7 @@ const Menu: React.FC<MenuProps> = ({ order, setOrder }) => {
             }}
           >
             <div style={{ fontWeight: 800, fontSize: 22, marginBottom: 8 }}>{dialogProduct.nombre}</div>
-            <div style={{ fontWeight: 700, fontSize: 18, marginBottom: 8 }}>₡{Number(dialogProduct.precio).toFixed(2)}</div>
+            <div style={{ fontWeight: 700, fontSize: 18, marginBottom: 8 }}>₡{Number(dialogPrecio).toFixed(2)}</div>
             <div style={{ color: '#fff', fontSize: 15, marginBottom: 10 }}>Stock disponible: {getStockDisponible(dialogProduct)}</div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 18 }}>
               <button

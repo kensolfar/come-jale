@@ -3,7 +3,7 @@ import Login from './components/Login'
 import { setAuthToken, refreshToken } from './services/api'
 import './App.css'
 import Sidebar from './components/Sidebar';
-import Menu from './pages/Menu';
+import Menu from './components/Menu';
 import Order from './components/Order';
 import type { Producto } from './services/api';
 import DashboardIcon from '@mui/icons-material/Dashboard';
