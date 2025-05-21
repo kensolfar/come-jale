@@ -11,6 +11,7 @@ import RestaurantMenuIcon from '@mui/icons-material/RestaurantMenu';
 import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
 import LogoutIcon from '@mui/icons-material/Logout';
 import ProductosList from './components/ProductosList';
+import { t } from 'i18next';
 
 interface OrderItem {
   producto: Producto;
@@ -24,10 +25,10 @@ function App() {
   const [page, setPage] = useState<'dashboard' | 'productos' | 'ordenes'>('dashboard');
 
   const navItems = [
-    { label: 'Dashboard', icon: <DashboardIcon />, onClick: () => setPage('dashboard') },
-    { label: 'Productos', icon: <RestaurantMenuIcon />, onClick: () => setPage('productos') },
-    { label: 'Ordenes', icon: <ReceiptLongIcon />, onClick: () => setPage('ordenes') },
-    { label: 'Cerrar sesión', icon: <LogoutIcon />, onClick: () => setToken(null), style: { marginTop: 'auto', color: '#a11' } },
+    { label: t('Dashboard'), icon: <DashboardIcon />, onClick: () => setPage('dashboard') },
+    { label: t('Products'), icon: <RestaurantMenuIcon />, onClick: () => setPage('productos') },
+    { label: t('Orders'), icon: <ReceiptLongIcon />, onClick: () => setPage('ordenes') },
+    { label: t('Logout'), icon: <LogoutIcon />, onClick: () => setToken(null), style: { marginTop: 'auto', color: '#a11' } },
   ];
 
   // Asegura que el token esté en los headers de axios en el primer render

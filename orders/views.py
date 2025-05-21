@@ -148,7 +148,21 @@ class ConfiguracionViewSet(viewsets.ModelViewSet):
 
     def update(self, request, *args, **kwargs):
         obj = self.get_object()
-        serializer = self.get_serializer(obj, data=request.data, partial=True)
+        # Si el request es multipart, eliminar el campo 'logo' para evitar error 400
+        data = request.data.copy()
+        if 'logo' in data and not hasattr(data['logo'], 'file'):
+            data.pop('logo')
+        serializer = self.get_serializer(obj, data=data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
+
+    @action(detail=False, methods=['post'], url_path='upload-logo', permission_classes=[permissions.IsAdminUser])
+    def upload_logo(self, request):
+        obj = self.get_object()
+        file = request.FILES.get('logo')
+        if not file:
+            return Response({'error': 'No se envió ningún archivo.'}, status=status.HTTP_400_BAD_REQUEST)
+        obj.logo = file
+        obj.save()
+        return Response({'logo': obj.logo.url}, status=status.HTTP_200_OK)

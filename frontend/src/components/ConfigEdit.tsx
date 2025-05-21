@@ -23,9 +23,10 @@ interface ConfigEditProps {
   setConfig: (c: any) => void;
   setIdioma?: (lang: string) => void;
   loading: boolean;
+  token: string;
 }
 
-export const ConfigEdit: React.FC<ConfigEditProps> = ({ config, setConfig, setIdioma, loading }) => {
+export const ConfigEdit: React.FC<ConfigEditProps> = ({ config, setConfig, setIdioma, loading, token }) => {
   const { t, i18n } = useTranslation();
   const [form, setForm] = useState(normalizeConfig(config));
   const [logoFile, setLogoFile] = useState<File | null>(null);
@@ -41,7 +42,7 @@ export const ConfigEdit: React.FC<ConfigEditProps> = ({ config, setConfig, setId
     if (success) {
       setConfig(normalizeConfig(form));
     }
-  }, [success, setConfig, form]);
+  }, [success, setConfig]); // Remove 'form' from dependencies to avoid infinite loop
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -65,18 +66,18 @@ export const ConfigEdit: React.FC<ConfigEditProps> = ({ config, setConfig, setId
     setError(null);
     setSuccess(false);
     try {
+      // 1. Guardar datos de configuración (sin logo)
       let data: any = { ...form };
+      data = await updateConfiguracion(data, false, token);
+      // 2. Si hay logoFile, subirlo aparte
       if (logoFile) {
-        const formData = new FormData();
-        Object.entries(data).forEach(([k, v]) => formData.append(k, v as string));
-        formData.append('logo', logoFile);
-        data = await updateConfiguracion(formData, true);
-      } else {
-        data = await updateConfiguracion(data, false);
+        const logoResp = await import('../services/api').then(m => m.uploadConfiguracionLogo(logoFile, token));
+        data.logo = logoResp.logo;
       }
       setSuccess(true);
       setForm(data);
     } catch (err: any) {
+      console.log('Error al guardar configuración:', err?.response?.data || err);
       setError(err?.response?.data?.detail || 'Error al guardar');
     } finally {
       setSaving(false);
@@ -126,7 +127,7 @@ export const ConfigEdit: React.FC<ConfigEditProps> = ({ config, setConfig, setId
         <label htmlFor="logo-upload" style={{
           background: 'var(--color-green-leaf, #8DAA91)', color: '#fff', borderRadius: 8, padding: '8px 18px', cursor: 'pointer', fontWeight: 600, fontSize: 15, boxShadow: '0 1px 4px rgba(0,0,0,0.10)'
         }}>{t('Seleccionar archivo')}</label>
-        <input id="logo-upload" type="file" accept="image/*" onChange={handleLogoChange} style={{ display: 'none' }} />
+        <input id="logo-upload" name="logo" type="file" accept="image/*" onChange={handleLogoChange} style={{ display: 'none' }} />
         <span style={{ color: '#ccc', fontSize: 14 }}>{logoFile?.name || (form.logo ? t('Logo actual') : t('Sin archivo'))}</span>
       </div>
       {form.logo && typeof form.logo === 'string' && (

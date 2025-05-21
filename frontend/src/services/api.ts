@@ -119,17 +119,23 @@ export async function getConfiguracion(): Promise<any> {
   return response.data;
 }
 
-export async function updateConfiguracion(data: any, isForm: boolean): Promise<any> {
+export async function updateConfiguracion(data: any, isForm: boolean, token?: string): Promise<any> {
   const API_BASE = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000';
-  if (isForm) {
-    const response = await axios.patch(`${API_BASE}/api/configuracion/1/`, data, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
-    return response.data;
-  } else {
-    const response = await axios.patch(`${API_BASE}/api/configuracion/1/`, data);
-    return response.data;
-  }
+  const headers: any = {};
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+  // No establecer Content-Type manualmente para FormData
+  const response = await axios.patch(`${API_BASE}/api/configuracion/1/`, data, { headers });
+  return response.data;
+}
+
+export async function uploadConfiguracionLogo(file: File, token?: string): Promise<{ logo: string }> {
+  const API_BASE = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000';
+  const form = new FormData();
+  form.append('logo', file);
+  const headers: any = {};
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+  const response = await axios.post(`${API_BASE}/api/configuracion/upload-logo/`, form, { headers });
+  return response.data;
 }
 
 export interface Producto {
