@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+// import axios from 'axios'; // Ya no se usa directamente
+import { getUserProfileMe } from '../services/api';
 
 interface UserInfoProps {
   token: string;
@@ -35,7 +37,6 @@ const UserInfo: React.FC<UserInfoProps> = ({ token, expanded }) => {
   const payload = parseJwt(token);
   if (!payload) return null;
   const username = payload.username || payload.user || payload.email || 'N/A';
-  const userImg = payload.img || payload.avatar || null; // Ajusta si tu JWT tiene campo de imagen
   const initials = getInitials(username);
   // Detectar rol
   let rol = 'Usuario';
@@ -53,6 +54,25 @@ const UserInfo: React.FC<UserInfoProps> = ({ token, expanded }) => {
     rol = 'Administrador';
   }
 
+  // Estado para la imagen del perfil
+  const [profileImg, setProfileImg] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchProfile() {
+      try {
+        const res = await getUserProfileMe();
+        if (res && res.imagen) {
+          setProfileImg(res.imagen.startsWith('http') ? res.imagen : `${import.meta.env.VITE_BACKEND_URL || ''}${res.imagen}`);
+        } else {
+          setProfileImg(null);
+        }
+      } catch {
+        setProfileImg(null);
+      }
+    }
+    fetchProfile();
+  }, [token]);
+
   return (
     <div style={{
       display: 'flex',
@@ -69,8 +89,8 @@ const UserInfo: React.FC<UserInfoProps> = ({ token, expanded }) => {
       width: '100%',
       boxSizing: 'border-box',
     }}>
-      {userImg ? (
-        <img src={userImg} alt="avatar" style={{ width: 48, height: 48, borderRadius: '50%', objectFit: 'cover', marginBottom: expanded ? 8 : 0 }} />
+      {profileImg ? (
+        <img src={profileImg} alt="avatar" style={{ width: 58, height: 58, borderRadius: '50%', objectFit: 'cover', marginBottom: expanded ? 8 : 0 }} />
       ) : (
         <div style={{
           width: 48,

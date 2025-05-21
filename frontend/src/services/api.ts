@@ -140,6 +140,17 @@ export interface Subcategoria {
   categoria: number;
 }
 
+export interface UserProfile {
+  id: number;
+  user: number;
+  imagen: string | null;
+}
+
+export async function getUserProfileMe(): Promise<UserProfile> {
+  const response = await axios.get(`${API_BASE_URL}/perfiles/me/`);
+  return response.data;
+}
+
 export async function getCategorias(): Promise<Categoria[]> {
   const response = await axios.get(`${API_BASE_URL}/categorias/`);
   return response.data;

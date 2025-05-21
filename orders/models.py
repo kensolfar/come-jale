@@ -165,3 +165,15 @@ class ClienteRutaSerializer(serializers.ModelSerializer):
     class Meta:
         model = ClienteRuta
         fields = '__all__'
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    imagen = models.ImageField(upload_to='usuarios/', blank=True, null=True)
+
+    def __str__(self):
+        return f"Perfil de {self.user.username}"
+
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = '__all__'

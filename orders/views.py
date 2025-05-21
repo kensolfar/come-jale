@@ -6,6 +6,8 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status
 from django_filters.rest_framework import DjangoFilterBackend
+from .models import Profile, ProfileSerializer
+from rest_framework.permissions import IsAuthenticated
 
 # Create your views here.
 
@@ -91,3 +93,29 @@ class SubcategoriaViewSet(viewsets.ModelViewSet):
     filterset_fields = ['nombre', 'categoria']
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['categoria']
+
+class ProfileViewSet(viewsets.ModelViewSet):
+    queryset = Profile.objects.all()
+    serializer_class = ProfileSerializer
+    permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['user']
+
+    def get_queryset(self):
+        # Solo permite que los usuarios vean/editen su propio perfil
+        user = self.request.user
+        return Profile.objects.filter(user=user)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+    @action(detail=False, methods=['get', 'put', 'patch'], url_path='me')
+    def me(self, request):
+        profile, created = Profile.objects.get_or_create(user=request.user)
+        if request.method in ['PUT', 'PATCH']:
+            serializer = self.get_serializer(profile, data=request.data, partial=True)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data)
+        serializer = self.get_serializer(profile)
+        return Response(serializer.data)
