@@ -59,5 +59,11 @@
   "subcategory": "Subcategoría",
   "quantity": "Cantidad",
   "no_products_in_category": "No hay productos en esta categoría.",
-  "no_image": "Sin imagen"
+  "no_image": "Sin imagen",
+  "desayuno": "Desayuno",
+  "almuerzo": "Almuerzo",
+  "bebidas": "Bebidas",
+  "cena": "Cena",
+  "snacks": "Antojitos",
+  "postres": "Postres"
 }

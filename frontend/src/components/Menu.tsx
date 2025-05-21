@@ -144,7 +144,7 @@ const Menu: React.FC<MenuProps> = ({ order, setOrder }) => {
                 outline: 'none',
               }}
             >
-              {cat.nombre}
+              {t(cat.nombre)}
             </button>
           ))}
         </div>

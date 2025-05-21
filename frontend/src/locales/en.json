@@ -60,5 +60,11 @@
   "quantity": "Quantity",
   "no_products_in_category": "No products in this category.",
   "no_image": "No image",
-  "available_stock": "{{stock}} units"
+  "available_stock": "{{stock}} units",
+  "desayuno": "Breakfast",
+  "almuerzo": "Lunch",
+  "bebidas": "Drinks",
+  "cena": "Dinner",
+  "snacks": "Snacks",
+  "postres": "Desserts"
 }
