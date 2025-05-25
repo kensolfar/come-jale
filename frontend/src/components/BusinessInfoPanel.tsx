@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { FaCog } from 'react-icons/fa';
 import { useTranslation } from 'react-i18next';
-import { ConfigEdit } from './ConfigEdit';
+import ConfigTabs from './ConfigTabs';
 
 interface BusinessInfoPanelProps {
   idioma: string;
@@ -101,7 +101,7 @@ const BusinessInfoPanel: React.FC<BusinessInfoPanelProps> = ({ idioma, setIdioma
             background: 'transparent', borderRadius: 0, boxShadow: 'none', padding: 0, position: 'relative',
             display: 'flex', alignItems: 'center', justifyContent: 'center', width: 'auto', height: 'auto', minWidth: 0, minHeight: 0
           }}>
-            <ConfigEdit config={config} setConfig={setConfig} loading={loading || config == null || Object.keys(config).length === 0} token={token} />
+            <ConfigTabs config={config} setConfig={setConfig} setIdioma={setIdioma} loading={loading || config == null || Object.keys(config).length === 0} token={token} />
           </div>
         </div>
       )}

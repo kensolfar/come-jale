@@ -132,7 +132,9 @@ export const ConfigEdit: React.FC<ConfigEditProps> = ({ config, setConfig, setId
       </div>
       {form.logo && typeof form.logo === 'string' && (
         <div style={{ margin: '8px 0 18px 0', textAlign: 'center' }}>
-          <img src={form.logo.startsWith('http') ? form.logo : `${import.meta.env.VITE_BACKEND_URL || ''}${form.logo}`} alt="logo" style={{ maxWidth: 120, maxHeight: 80, borderRadius: 8, background: '#fff' }} />
+          <img src={form.logo.startsWith('http') ? form.logo : `${(typeof process !== 'undefined' && process.env && process.env.VITE_BACKEND_URL ? process.env.VITE_BACKEND_URL : '')}${form.logo}`}
+            alt="logo"
+            style={{ maxWidth: 120, maxHeight: 80, borderRadius: 8, background: '#fff' }} />
         </div>
       )}
       <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 12, marginTop: 24 }}>

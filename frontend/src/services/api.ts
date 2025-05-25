@@ -119,8 +119,17 @@ export async function getConfiguracion(): Promise<any> {
   return response.data;
 }
 
-export async function updateConfiguracion(data: any, isForm: boolean, token?: string): Promise<any> {
-  const API_BASE = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000';
+// Solo usar import.meta.env en entorno Vite, y process.env en entorno test/node
+function getApiBase() {
+  if (typeof process !== 'undefined' && process.env && process.env.VITE_BACKEND_URL) {
+    return process.env.VITE_BACKEND_URL;
+  }
+  // No usar import.meta.env en entorno de test/node
+  return 'http://localhost:8000';
+}
+
+export async function updateConfiguracion(data: any, _isForm: boolean, token?: string): Promise<any> {
+  const API_BASE = getApiBase();
   const headers: any = {};
   if (token) headers['Authorization'] = `Bearer ${token}`;
   // No establecer Content-Type manualmente para FormData
@@ -129,7 +138,7 @@ export async function updateConfiguracion(data: any, isForm: boolean, token?: st
 }
 
 export async function uploadConfiguracionLogo(file: File, token?: string): Promise<{ logo: string }> {
-  const API_BASE = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000';
+  const API_BASE = getApiBase();
   const form = new FormData();
   form.append('logo', file);
   const headers: any = {};
@@ -182,6 +191,41 @@ export async function getCategorias(): Promise<Categoria[]> {
 
 export async function getSubcategorias(categoriaId?: number): Promise<Subcategoria[]> {
   const response = await axios.get(`${API_BASE_URL}/subcategorias/`, categoriaId ? { params: { categoria: categoriaId } } : undefined);
+  return response.data;
+}
+
+// --- IMPUESTOS CRUD ---
+export async function getImpuestos(token: string) {
+  const response = await axios.get(`${API_BASE_URL}/impuestos/`, { headers: { Authorization: `Bearer ${token}` } });
+  return response.data;
+}
+export async function createImpuesto(data: any, token: string) {
+  const response = await axios.post(`${API_BASE_URL}/impuestos/`, data, { headers: { Authorization: `Bearer ${token}` } });
+  return response.data;
+}
+export async function updateImpuesto(id: number, data: any, token: string) {
+  const response = await axios.patch(`${API_BASE_URL}/impuestos/${id}/`, data, { headers: { Authorization: `Bearer ${token}` } });
+  return response.data;
+}
+export async function deleteImpuesto(id: number, token: string) {
+  const response = await axios.delete(`${API_BASE_URL}/impuestos/${id}/`, { headers: { Authorization: `Bearer ${token}` } });
+  return response.data;
+}
+// --- ORDEN CARGOS CRUD ---
+export async function getCargos(token: string) {
+  const response = await axios.get(`${API_BASE_URL}/ordenes-cargos/`, { headers: { Authorization: `Bearer ${token}` } });
+  return response.data;
+}
+export async function createCargo(data: any, token: string) {
+  const response = await axios.post(`${API_BASE_URL}/ordenes-cargos/`, data, { headers: { Authorization: `Bearer ${token}` } });
+  return response.data;
+}
+export async function updateCargo(id: number, data: any, token: string) {
+  const response = await axios.patch(`${API_BASE_URL}/ordenes-cargos/${id}/`, data, { headers: { Authorization: `Bearer ${token}` } });
+  return response.data;
+}
+export async function deleteCargo(id: number, token: string) {
+  const response = await axios.delete(`${API_BASE_URL}/ordenes-cargos/${id}/`, { headers: { Authorization: `Bearer ${token}` } });
   return response.data;
 }
 
