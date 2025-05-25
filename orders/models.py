@@ -2,11 +2,12 @@ from django.db import models
 from django.contrib.auth.models import User
 from rest_framework import serializers
 from django.utils.translation import gettext_lazy as _
+from django.contrib import admin
 
+# --- MODELOS BASE ---
 class Categoria(models.Model):
     nombre = models.CharField(max_length=100, unique=True)
     descripcion = models.TextField(blank=True)
-
     def __str__(self):
         return self.nombre
 
@@ -14,10 +15,8 @@ class Subcategoria(models.Model):
     nombre = models.CharField(max_length=100)
     categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE, related_name='subcategorias')
     descripcion = models.TextField(blank=True)
-
     class Meta:
         unique_together = ('nombre', 'categoria')
-
     def __str__(self):
         return f"{self.nombre} ({self.categoria.nombre})"
 
@@ -29,12 +28,88 @@ class Producto(models.Model):
     subcategoria = models.ForeignKey(Subcategoria, on_delete=models.SET_NULL, null=True, blank=True, related_name='productos')
     imagen = models.ImageField(upload_to='productos/', blank=True, null=True)
     disponible = models.BooleanField(default=True)
-    cantidad = models.PositiveIntegerField(default=0)  # Nuevo campo para stock/cantidad
+    cantidad = models.PositiveIntegerField(default=0)
     fecha_creacion = models.DateTimeField(auto_now_add=True)
-    
     def __str__(self):
         return self.nombre
 
+# --- MODELOS DE ORDEN Y FACTURACION FLEXIBLE ---
+class Impuesto(models.Model):
+    nombre = models.CharField(max_length=50)
+    codigo = models.CharField(max_length=10)
+    tarifa = models.DecimalField(max_digits=5, decimal_places=2)
+    es_exento = models.BooleanField(default=False)
+    def __str__(self):
+        return f"{self.nombre} ({self.codigo})"
+
+class Orden(models.Model):
+    TIPO_CHOICES = [
+        ('SALON', 'Salón'),
+        ('LLEVAR', 'Para llevar'),
+        ('EXPRESS', 'Express'),
+    ]
+    ESTADO_CHOICES = [
+        ('pendiente', 'Pendiente'),
+        ('pagada', 'Pagada'),
+        ('anulada', 'Anulada'),
+        ('entregada', 'Entregada'),
+    ]
+    cliente = models.ForeignKey(User, on_delete=models.CASCADE, related_name='ordenes')
+    tipo = models.CharField(max_length=10, choices=TIPO_CHOICES)
+    estado = models.CharField(max_length=10, choices=ESTADO_CHOICES, default='pendiente')
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+    direccion_entrega = models.CharField(max_length=255, blank=True)
+    contacto = models.CharField(max_length=100, blank=True)
+    subtotal = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    total_descuentos = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    total_impuestos = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    total_otros_cargos = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    total_comprobante = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    def __str__(self):
+        return f"Orden #{self.id} - {self.cliente.username}"
+    def calcular_totales(self):
+        subtotal = sum(l.cantidad * l.precio_unitario for l in self.lineas.all())
+        total_descuentos = sum(l.descuento for l in self.lineas.all())
+        total_impuestos = sum((l.total_linea - l.subtotal + l.descuento) for l in self.lineas.all())
+        total_otros_cargos = sum(c.monto for c in self.cargos.all())
+        self.subtotal = subtotal
+        self.total_descuentos = total_descuentos
+        self.total_impuestos = total_impuestos
+        self.total_otros_cargos = total_otros_cargos
+        self.total_comprobante = subtotal - total_descuentos + total_impuestos + total_otros_cargos
+        self.save()
+
+class OrdenLinea(models.Model):
+    orden = models.ForeignKey(Orden, on_delete=models.CASCADE, related_name='lineas')
+    producto = models.ForeignKey('Producto', on_delete=models.PROTECT)
+    cantidad = models.PositiveIntegerField()
+    unidad_medida = models.CharField(max_length=20, default='Unid')
+    detalle = models.CharField(max_length=255)
+    precio_unitario = models.DecimalField(max_digits=10, decimal_places=2)
+    subtotal = models.DecimalField(max_digits=12, decimal_places=2)
+    descuento = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    impuesto = models.ForeignKey(Impuesto, on_delete=models.PROTECT)
+    total_linea = models.DecimalField(max_digits=12, decimal_places=2)
+    def __str__(self):
+        return f"{self.producto.nombre} x {self.cantidad} (Orden {self.orden.id})"
+
+class OrdenCargo(models.Model):
+    TIPO_CHOICES = [
+        ('SERVICIO', 'Servicio'),
+        ('EMBALAJE', 'Embalaje'),
+        ('TRANSPORTE', 'Transporte'),
+        ('OTRO', 'Otro'),
+    ]
+    orden = models.ForeignKey(Orden, on_delete=models.CASCADE, related_name='cargos')
+    nombre = models.CharField(max_length=50)
+    tipo = models.CharField(max_length=20, choices=TIPO_CHOICES)
+    monto = models.DecimalField(max_digits=10, decimal_places=2)
+    porcentaje = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+    es_impuesto = models.BooleanField(default=False)
+    def __str__(self):
+        return f"{self.nombre} ({self.tipo}) - Orden {self.orden.id}"
+
+# --- OTROS MODELOS Y SERIALIZERS ---
 class Pedido(models.Model):
     ESTADOS = [
         ('pendiente', 'Pendiente'),
@@ -138,6 +213,14 @@ class Configuracion(models.Model):
         verbose_name = _('Configuración')
         verbose_name_plural = _('Configuraciones')
 
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    imagen = models.ImageField(upload_to='usuarios/', blank=True, null=True)
+
+    def __str__(self):
+        return f"Perfil de {self.user.username}"
+
+# --- SERIALIZERS ---
 class CategoriaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Categoria
@@ -191,14 +274,83 @@ class ConfiguracionSerializer(serializers.ModelSerializer):
         model = Configuracion
         fields = '__all__'
 
-class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
-    imagen = models.ImageField(upload_to='usuarios/', blank=True, null=True)
-
-    def __str__(self):
-        return f"Perfil de {self.user.username}"
-
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = '__all__'
+
+class ImpuestoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Impuesto
+        fields = '__all__'
+
+class OrdenCargoSerializer(serializers.ModelSerializer):
+    orden = serializers.PrimaryKeyRelatedField(queryset=Orden.objects.all(), write_only=True, required=False)
+    class Meta:
+        model = OrdenCargo
+        fields = '__all__'
+
+class OrdenLineaSerializer(serializers.ModelSerializer):
+    orden = serializers.PrimaryKeyRelatedField(queryset=Orden.objects.all(), write_only=True, required=False)
+    class Meta:
+        model = OrdenLinea
+        fields = '__all__'
+
+class OrdenSerializer(serializers.ModelSerializer):
+    lineas = OrdenLineaSerializer(many=True, read_only=True)
+    cargos = OrdenCargoSerializer(many=True, read_only=True)
+    class Meta:
+        model = Orden
+        fields = '__all__'
+
+# --- ADMIN ---
+class OrdenCargoInline(admin.TabularInline):
+    model = OrdenCargo
+    extra = 1
+
+class OrdenLineaInline(admin.TabularInline):
+    model = OrdenLinea
+    extra = 1
+
+@admin.register(Orden)
+class OrdenAdmin(admin.ModelAdmin):
+    list_display = ('id', 'cliente', 'tipo', 'estado', 'fecha_creacion', 'total_comprobante')
+    inlines = [OrdenLineaInline, OrdenCargoInline]
+    search_fields = ('cliente__username',)
+    list_filter = ('tipo', 'estado')
+
+@admin.register(OrdenLinea)
+class OrdenLineaAdmin(admin.ModelAdmin):
+    list_display = ('id', 'orden', 'producto', 'cantidad', 'precio_unitario', 'total_linea')
+    search_fields = ('orden__id', 'producto__nombre')
+
+@admin.register(OrdenCargo)
+class OrdenCargoAdmin(admin.ModelAdmin):
+    list_display = ('id', 'orden', 'nombre', 'tipo', 'monto', 'es_impuesto')
+    search_fields = ('orden__id', 'nombre')
+    list_filter = ('tipo', 'es_impuesto')
+
+@admin.register(Impuesto)
+class ImpuestoAdmin(admin.ModelAdmin):
+    list_display = ('id', 'nombre', 'codigo', 'tarifa', 'es_exento')
+    search_fields = ('nombre', 'codigo')
+    list_filter = ('es_exento',)
+
+# Elimina el registro de Factura aquí para evitar el error de AlreadyRegistered
+# El registro de Factura debe estar solo en admin.py o solo aquí, pero no en ambos.
+
+# --- SEÑALES PARA RECALCULAR TOTALES DE ORDEN ---
+from django.db.models.signals import post_save, post_delete
+from django.dispatch import receiver
+
+@receiver([post_save, post_delete], sender=OrdenLinea)
+def recalcular_totales_orden_linea(sender, instance, **kwargs):
+    orden = instance.orden
+    if orden:
+        orden.calcular_totales()
+
+@receiver([post_save, post_delete], sender=OrdenCargo)
+def recalcular_totales_orden_cargo(sender, instance, **kwargs):
+    orden = instance.orden
+    if orden:
+        orden.calcular_totales()

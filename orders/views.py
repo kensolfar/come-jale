@@ -11,15 +11,21 @@ from rest_framework.permissions import IsAuthenticated
 from .models import Configuracion, ConfiguracionSerializer
 from rest_framework.permissions import IsAdminUser
 from rest_framework import permissions
+from .models import Orden, OrdenLinea, OrdenCargo, Impuesto
+from .models import OrdenSerializer, OrdenLineaSerializer, OrdenCargoSerializer, ImpuestoSerializer
 
 # Create your views here.
 
 class ProductoViewSet(viewsets.ModelViewSet):
     queryset = Producto.objects.all()
     serializer_class = ProductoSerializer
-    permission_classes = [IsAdminOrReadOnly | IsVendedor]
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['nombre', 'categoria', 'subcategoria', 'disponible', 'precio', 'fecha_creacion']
+
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            return [permissions.AllowAny()]
+        return [IsAdmin()]
 
     @action(detail=True, methods=['post'], url_path='upload')
     def upload_image(self, request, pk=None):
@@ -166,3 +172,64 @@ class ConfiguracionViewSet(viewsets.ModelViewSet):
         obj.logo = file
         obj.save()
         return Response({'logo': obj.logo.url}, status=status.HTTP_200_OK)
+
+class OrdenViewSet(viewsets.ModelViewSet):
+    queryset = Orden.objects.all()
+    serializer_class = OrdenSerializer
+    permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['cliente', 'tipo', 'estado', 'fecha_creacion']
+
+    @action(detail=True, methods=['post'], url_path='calcular')
+    def calcular(self, request, pk=None):
+        orden = self.get_object()
+        orden.calcular_totales()
+        serializer = self.get_serializer(orden)
+        return Response(serializer.data)
+
+class OrdenLineaViewSet(viewsets.ModelViewSet):
+    queryset = OrdenLinea.objects.all()
+    serializer_class = OrdenLineaSerializer
+    permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['orden', 'producto', 'impuesto']
+
+    def get_queryset(self):
+        orden_pk = self.kwargs.get('orden_pk')
+        if (orden_pk):
+            return OrdenLinea.objects.filter(orden_id=orden_pk)
+        return OrdenLinea.objects.all()
+
+    def perform_create(self, serializer):
+        orden_pk = self.kwargs.get('orden_pk')
+        if (orden_pk):
+            serializer.save(orden_id=orden_pk)
+        else:
+            serializer.save()
+
+class OrdenCargoViewSet(viewsets.ModelViewSet):
+    queryset = OrdenCargo.objects.all()
+    serializer_class = OrdenCargoSerializer
+    permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['orden', 'tipo', 'es_impuesto']
+
+    def get_queryset(self):
+        orden_pk = self.kwargs.get('orden_pk')
+        if (orden_pk):
+            return OrdenCargo.objects.filter(orden_id=orden_pk)
+        return OrdenCargo.objects.all()
+
+    def perform_create(self, serializer):
+        orden_pk = self.kwargs.get('orden_pk')
+        if (orden_pk):
+            serializer.save(orden_id=orden_pk)
+        else:
+            serializer.save()
+
+class ImpuestoViewSet(viewsets.ModelViewSet):
+    queryset = Impuesto.objects.all()
+    serializer_class = ImpuestoSerializer
+    permission_classes = [IsAdminUser]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['nombre', 'codigo', 'tarifa', 'es_exento']
