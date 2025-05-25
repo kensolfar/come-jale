@@ -111,4 +111,254 @@
 2. **Bocetos**  
    - Preparar artboards high-fi para desktop, tablet y móvil.  
 3. **Iteración**  
-   - Ajustes de estilo: colores amigables, tipografías, iconos sugeridos (Feather, FontAwesome) y microcopy cercano.  
+   - Ajustes de estilo: colores amigables, tipografías, iconos sugeridos (Feather, FontAwesome) y microcopy cercano.
+
+---
+
+## 6. Modelos y lógica de órdenes y facturación (backend)
+
+### Modelos principales
+
+- **Impuesto**: Define los impuestos aplicables a productos y líneas de orden, compatible con la facturación electrónica de Costa Rica (ATV 4.4). Permite múltiples tipos y tarifas.
+- **Orden**: Núcleo de la lógica de ventas y facturación. Incluye cliente, tipo (salón, llevar, express), estado, dirección/contacto, y todos los totales fiscales requeridos (subtotal, descuentos, impuestos, otros cargos, total comprobante). Relaciona líneas y cargos.
+- **OrdenLinea**: Cada producto/servicio de la orden, con cantidad, unidad, detalle, precio, descuento, impuesto y total de línea. Cumple con los campos requeridos por la DGT/ATV.
+- **OrdenCargo**: Permite agregar cargos adicionales (servicio, embalaje, transporte, otros) de forma flexible, afectando el total de la orden.
+- **Factura**: Modelo para la información fiscal y legal de la factura electrónica, enlazada a un pedido.
+
+### Lógica de cálculo y automatización
+
+- El método `calcular_totales` en el modelo `Orden` centraliza el cálculo de todos los totales fiscales: subtotal, descuentos, impuestos, otros cargos y total comprobante.
+- Se usan señales de Django (`post_save`, `post_delete`) para que cualquier cambio en líneas o cargos dispare automáticamente el recálculo de totales, garantizando integridad y cumplimiento fiscal.
+- El modelo soporta fácilmente nuevos tipos de cargos, impuestos, promociones o reglas de negocio.
+
+### Compatibilidad fiscal y extensibilidad
+
+- Todos los campos y relaciones cumplen con los requisitos de la DGT/ATV 4.4 para facturación electrónica en Costa Rica.
+- El sistema es robusto y flexible para distintos escenarios de venta, tipos de orden, cargos dinámicos y cambios futuros.
+
+### Pruebas automáticas
+
+- Se implementaron pruebas unitarias para verificar que los totales de la orden se recalculan correctamente al crear, modificar o eliminar líneas y cargos, usando el sistema de señales.
+- Las pruebas cubren los casos de agregar, modificar y eliminar líneas, así como la adición de cargos.
+
+---
+
+## 7. Cambios recientes y mejoras
+
+- CRUD de productos con carga de imagen y validación mejorada.
+- Modelo de órdenes y facturación flexible, robusto y compatible con ATV 4.4.
+- Serializers y admin para todos los modelos nuevos.
+- Lógica centralizada y automática de recálculo de totales.
+- Pruebas unitarias para la lógica de órdenes y señales.
+- Reorganización de modelos y admin para evitar errores de registro y referencias circulares.
+
+---
+
+## 8. Diagrama del modelo de datos (Órdenes y Facturación)
+
+```mermaid
+erDiagram
+    User ||--o{ Orden : tiene
+    Orden ||--|{ OrdenLinea : contiene
+    Orden ||--|{ OrdenCargo : contiene
+    OrdenLinea }|--|| Producto : referencia
+    OrdenLinea }|--|| Impuesto : aplica
+    OrdenCargo }|--|| Orden : pertenece
+    Factura ||--|| Pedido : factura_de
+    Pedido ||--o{ PedidoProducto : contiene
+    PedidoProducto }|--|| Producto : referencia
+    
+    Orden {
+        int id
+        date fecha_creacion
+        string tipo
+        string estado
+        decimal subtotal
+        decimal total_descuentos
+        decimal total_impuestos
+        decimal total_otros_cargos
+        decimal total_comprobante
+    }
+    OrdenLinea {
+        int id
+        int cantidad
+        string unidad_medida
+        string detalle
+        decimal precio_unitario
+        decimal subtotal
+        decimal descuento
+        decimal total_linea
+    }
+    OrdenCargo {
+        int id
+        string nombre
+        string tipo
+        decimal monto
+        decimal porcentaje
+        bool es_impuesto
+    }
+    Impuesto {
+        int id
+        string nombre
+        string codigo
+        decimal tarifa
+        bool es_exento
+    }
+    Producto {
+        int id
+        string nombre
+        decimal precio
+    }
+    Factura {
+        int id
+        string nombre_vendedor
+        string nombre_destinatario
+        decimal monto_total
+    }
+    Pedido {
+        int id
+        string direccion_entrega
+        string contacto
+        string estado
+    }
+    PedidoProducto {
+        int id
+        int cantidad
+        decimal precio_unitario
+    }
+```
+
+**Notas:**
+- Las relaciones reflejan la estructura real de la base de datos y los vínculos fiscales requeridos.
+- El modelo es extensible para nuevos cargos, impuestos, promociones, etc.
+
+---
+
+## 9. Diagramas de flujo de procesos (Órdenes y Facturación)
+
+### 9.1. Flujo de creación y actualización de una orden
+
+```mermaid
+flowchart TD
+    A[Usuario crea/modifica Orden] --> B[Agrega/modifica OrdenLinea(s)]
+    B --> C[Agrega/modifica OrdenCargo(s) opcionales]
+    B & C --> D[Señales post_save/post_delete]
+    D --> E[Llama a calcular_totales() en Orden]
+    E --> F[Actualiza totales fiscales de la Orden]
+    F --> G[Orden lista para facturación]
+```
+
+### 9.2. Flujo de generación de factura electrónica
+
+```mermaid
+flowchart TD
+    A[Orden en estado 'pagada' o 'entregada'] --> B[Usuario/admin solicita factura]
+    B --> C[Se genera Factura con datos de Orden y Cliente]
+    C --> D[Se incluyen líneas, impuestos y cargos según modelo]
+    D --> E[Factura lista para envío a ATV/DGT]
+```
+
+---
+
+## 10. Recursos de API recomendados para el modelo de órdenes y facturación
+
+### Endpoints principales (REST, sugeridos)
+
+- **/api/ordenes/**
+  - `GET`: Listar órdenes
+  - `POST`: Crear orden
+- **/api/ordenes/{id}/**
+  - `GET`: Detalle de orden (incluye líneas y cargos)
+  - `PUT/PATCH`: Modificar orden
+  - `DELETE`: Eliminar orden
+- **/api/ordenes/{id}/lineas/**
+  - `POST`: Agregar línea a orden
+- **/api/ordenes/{id}/cargos/**
+  - `POST`: Agregar cargo a orden
+- **/api/ordenes/{id}/calcular/**
+  - `POST`: Forzar recálculo de totales (opcional, normalmente automático)
+- **/api/impuestos/**
+  - CRUD de tipos de impuesto
+- **/api/facturas/**
+  - `GET`: Listar facturas
+  - `POST`: Generar factura para una orden/pedido
+- **/api/facturas/{id}/**
+  - `GET`: Detalle de factura
+  - `PUT/PATCH`: Modificar factura
+  - `DELETE`: Eliminar factura
+
+### Esquema de ejemplo para creación de orden (POST /api/ordenes/)
+
+```json
+{
+  "cliente": 1,
+  "tipo": "SALON",
+  "lineas": [
+    {
+      "producto": 5,
+      "cantidad": 2,
+      "unidad_medida": "Unid",
+      "detalle": "Arroz con pollo",
+      "precio_unitario": 3500,
+      "descuento": 0,
+      "impuesto": 1,
+      "total_linea": 3955
+    }
+  ],
+  "cargos": [
+    {
+      "nombre": "Servicio",
+      "tipo": "SERVICIO",
+      "monto": 500,
+      "es_impuesto": false
+    }
+  ]
+}
+```
+
+### Respuesta de detalle de orden (GET /api/ordenes/{id}/)
+
+```json
+{
+  "id": 123,
+  "cliente": 1,
+  "tipo": "SALON",
+  "estado": "pendiente",
+  "fecha_creacion": "2025-05-25T12:34:56Z",
+  "subtotal": 7000,
+  "total_descuentos": 0,
+  "total_impuestos": 910,
+  "total_otros_cargos": 500,
+  "total_comprobante": 8410,
+  "lineas": [
+    {
+      "id": 1,
+      "producto": 5,
+      "cantidad": 2,
+      "unidad_medida": "Unid",
+      "detalle": "Arroz con pollo",
+      "precio_unitario": 3500,
+      "subtotal": 7000,
+      "descuento": 0,
+      "impuesto": 1,
+      "total_linea": 7910
+    }
+  ],
+  "cargos": [
+    {
+      "id": 1,
+      "nombre": "Servicio",
+      "tipo": "SERVICIO",
+      "monto": 500,
+      "es_impuesto": false
+    }
+  ]
+}
+```
+
+### Notas de integración
+- Los totales se recalculan automáticamente en el backend, pero se puede exponer un endpoint manual de recálculo si se requiere para integraciones externas.
+- Los endpoints de facturación deben validar que la orden esté en estado válido antes de generar la factura.
+- Los modelos y endpoints están preparados para cumplir con la normativa fiscal costarricense y pueden adaptarse a cambios futuros.
+
+---
