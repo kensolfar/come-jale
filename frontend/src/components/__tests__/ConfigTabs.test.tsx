@@ -3,6 +3,10 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import ConfigTabs from '../ConfigTabs';
 
+jest.mock('react-i18next', () => ({
+  useTranslation: () => ({ t: (key: string) => key }),
+}));
+
 // Helper to get tab button by its label
 function getTabButton(label: string) {
   return screen.getAllByText(new RegExp(label, 'i')).find(
