@@ -88,12 +88,13 @@ export const ConfigEdit: React.FC<ConfigEditProps> = ({ config, setConfig, setId
 
   return (
     <form onSubmit={handleSubmit} style={{
+      width: '100%',
       maxWidth: 500,
       margin: '0 auto',
-      background: '#232428',
-      padding: 32,
-      borderRadius: 16,
-      boxShadow: '0 8px 32px rgba(0,0,0,0.25)',
+      background: 'transparent',
+      padding: 0,
+      borderRadius: 0,
+      boxShadow: 'none',
       color: '#fff',
       fontFamily: 'inherit',
       border: 'none',
@@ -138,12 +139,6 @@ export const ConfigEdit: React.FC<ConfigEditProps> = ({ config, setConfig, setId
         </div>
       )}
       <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 12, marginTop: 24 }}>
-        <button type="button" onClick={() => window.dispatchEvent(new CustomEvent('close-admin-modal'))} style={{
-          background: '#232428', color: '#fff', border: '1.5px solid #8DAA91', borderRadius: 20, padding: '10px 24px', fontWeight: 700, fontSize: 16, cursor: 'pointer', transition: 'background 0.2s', boxShadow: '0 2px 8px rgba(0,0,0,0.10)'
-        }}
-          onMouseOver={e => (e.currentTarget.style.background = '#18191b')}
-          onMouseOut={e => (e.currentTarget.style.background = '#232428')}
-        >{t('Cerrar')}</button>
         <button type="submit" disabled={saving} style={{
           background: 'var(--color-green-leaf, #8DAA91)', color: '#fff', border: 'none', borderRadius: 20, padding: '10px 32px', fontWeight: 700, fontSize: 18, cursor: 'pointer', transition: 'background 0.2s', boxShadow: '0 2px 8px rgba(0,0,0,0.10)'
         }}
