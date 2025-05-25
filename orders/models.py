@@ -149,8 +149,8 @@ class SubcategoriaSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class ProductoSerializer(serializers.ModelSerializer):
-    categoria = CategoriaSerializer(read_only=True)
-    subcategoria = SubcategoriaSerializer(read_only=True)
+    categoria = serializers.PrimaryKeyRelatedField(queryset=Categoria.objects.all())
+    subcategoria = serializers.PrimaryKeyRelatedField(queryset=Subcategoria.objects.all(), allow_null=True, required=False)
     class Meta:
         model = Producto
         fields = '__all__'
