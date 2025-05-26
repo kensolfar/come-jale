@@ -579,7 +579,7 @@
   "model": "auth.permission",
   "pk": 65,
   "fields": {
-    "name": "Can add Configuración",
+    "name": "Can add Configuraciï¿½n",
     "content_type": 17,
     "codename": "add_configuracion"
   }
@@ -588,7 +588,7 @@
   "model": "auth.permission",
   "pk": 66,
   "fields": {
-    "name": "Can change Configuración",
+    "name": "Can change Configuraciï¿½n",
     "content_type": 17,
     "codename": "change_configuracion"
   }
@@ -597,7 +597,7 @@
   "model": "auth.permission",
   "pk": 67,
   "fields": {
-    "name": "Can delete Configuración",
+    "name": "Can delete Configuraciï¿½n",
     "content_type": 17,
     "codename": "delete_configuracion"
   }
@@ -606,7 +606,7 @@
   "model": "auth.permission",
   "pk": 68,
   "fields": {
-    "name": "Can view Configuración",
+    "name": "Can view Configuraciï¿½n",
     "content_type": 17,
     "codename": "view_configuracion"
   }
@@ -1159,7 +1159,7 @@
   "model": "orders.subcategoria",
   "pk": 1,
   "fields": {
-    "nombre": "Típico",
+    "nombre": "Tï¿½pico",
     "categoria": 1,
     "descripcion": ""
   }
@@ -1197,12 +1197,12 @@
   "fields": {
     "nombre": "Gallo Pinto",
     "precio": "2500.00",
-    "descripcion": "Desayuno típico costarricense",
+    "descripcion": "Desayuno tï¿½pico costarricense",
     "categoria": 1,
     "subcategoria": 1,
     "imagen": "",
     "disponible": true,
-    "cantidad": 0,
+    "cantidad": 20,
     "fecha_creacion": "2025-05-26T18:17:54.746Z"
   }
 },
@@ -1212,12 +1212,12 @@
   "fields": {
     "nombre": "Casado de Pollo",
     "precio": "3500.00",
-    "descripcion": "Arroz, frijoles, ensalada, plátano y pollo",
+    "descripcion": "Arroz, frijoles, ensalada, plï¿½tano y pollo",
     "categoria": 2,
     "subcategoria": 2,
     "imagen": "",
     "disponible": true,
-    "cantidad": 0,
+    "cantidad": 20,
     "fecha_creacion": "2025-05-26T18:17:54.747Z"
   }
 },
@@ -1232,7 +1232,7 @@
     "subcategoria": 3,
     "imagen": "",
     "disponible": true,
-    "cantidad": 0,
+    "cantidad": 20,
     "fecha_creacion": "2025-05-26T18:17:54.748Z"
   }
 },
@@ -1247,7 +1247,7 @@
     "subcategoria": 4,
     "imagen": "",
     "disponible": true,
-    "cantidad": 0,
+    "cantidad": 20,
     "fecha_creacion": "2025-05-26T18:17:54.748Z"
   }
 },
@@ -1289,7 +1289,7 @@
     "tipo": "SALON",
     "estado": "pendiente",
     "fecha_creacion": "2025-05-26T18:17:54.771Z",
-    "direccion_entrega": "Dirección demo 1",
+    "direccion_entrega": "Direcciï¿½n demo 1",
     "contacto": "8888-111",
     "subtotal": "15700.00",
     "total_descuentos": "0.00",
@@ -1306,7 +1306,7 @@
     "tipo": "LLEVAR",
     "estado": "pendiente",
     "fecha_creacion": "2025-05-26T18:17:54.785Z",
-    "direccion_entrega": "Dirección demo 2",
+    "direccion_entrega": "Direcciï¿½n demo 2",
     "contacto": "8888-112",
     "subtotal": "15700.00",
     "total_descuentos": "0.00",
@@ -1323,7 +1323,7 @@
     "tipo": "EXPRESS",
     "estado": "pendiente",
     "fecha_creacion": "2025-05-26T18:17:54.795Z",
-    "direccion_entrega": "Dirección demo 3",
+    "direccion_entrega": "Direcciï¿½n demo 3",
     "contacto": "8888-113",
     "subtotal": "15700.00",
     "total_descuentos": "0.00",
@@ -1615,7 +1615,7 @@
   "pk": 3,
   "fields": {
     "nombre": "Transporte",
-    "descripcion": "Cargo por envío a domicilio",
+    "descripcion": "Cargo por envï¿½o a domicilio",
     "monto": "1000.00",
     "tipo": "TRANSPORTE"
   }
@@ -1634,8 +1634,8 @@
   "model": "orders.tipoorden",
   "pk": 1,
   "fields": {
-    "nombre": "Salón",
-    "descripcion": "Pedidos en salón",
+    "nombre": "Salï¿½n",
+    "descripcion": "Pedidos en salï¿½n",
     "cargos": [
       1,
       4
@@ -1682,7 +1682,7 @@
     "cliente": 2,
     "vendedor": 3,
     "repartidor": 4,
-    "direccion_entrega": "Parque Central, Cañas",
+    "direccion_entrega": "Parque Central, Caï¿½as",
     "contacto": "8888-1111",
     "info_adicional": "Entregar antes de las 12pm",
     "estado": "pendiente",
@@ -1715,9 +1715,9 @@
   "fields": {
     "pedido": 1,
     "nombre_vendedor": "Soda La Central",
-    "domicilio_vendedor": "Parque Central, Cañas",
-    "nombre_destinatario": "Juan Pérez",
-    "domicilio_destinatario": "Barrio San José, Cañas",
+    "domicilio_vendedor": "Parque Central, Caï¿½as",
+    "nombre_destinatario": "Juan Pï¿½rez",
+    "domicilio_destinatario": "Barrio San Josï¿½, Caï¿½as",
     "descripcion_mercancias": "Gallo Pinto x2, Refresco Natural x1",
     "tipo_embalaje": "Caja",
     "marcas": "-",
@@ -1727,7 +1727,7 @@
     "termino_comercial": "Contado",
     "fletes": "0.00",
     "seguro": "0.00",
-    "lugar_expedicion": "Cañas",
+    "lugar_expedicion": "Caï¿½as",
     "fecha_expedicion": "2025-05-26",
     "metodo_pago": "Efectivo",
     "monto_total": "6000.00"
@@ -1738,7 +1738,7 @@
   "pk": 1,
   "fields": {
     "nombre": "Ruta Central",
-    "descripcion": "Centro de Cañas, Parque Central",
+    "descripcion": "Centro de Caï¿½as, Parque Central",
     "activa": true
   }
 },
@@ -1746,8 +1746,8 @@
   "model": "orders.ruta",
   "pk": 2,
   "fields": {
-    "nombre": "Ruta Barrio San José",
-    "descripcion": "Barrio San José, cerca de la iglesia",
+    "nombre": "Ruta Barrio San Josï¿½",
+    "descripcion": "Barrio San Josï¿½, cerca de la iglesia",
     "activa": true
   }
 },
@@ -1764,8 +1764,8 @@
   "model": "orders.ruta",
   "pk": 4,
   "fields": {
-    "nombre": "Ruta Barrio Santa Lucía",
-    "descripcion": "Barrio Santa Lucía, costado sur del Ebais",
+    "nombre": "Ruta Barrio Santa Lucï¿½a",
+    "descripcion": "Barrio Santa Lucï¿½a, costado sur del Ebais",
     "activa": true
   }
 },
@@ -1790,7 +1790,7 @@
     "ruta": 1,
     "latitud": "10.427100",
     "longitud": "-85.099800",
-    "direccion": "Parque Central, Cañas"
+    "direccion": "Parque Central, Caï¿½as"
   }
 },
 {
@@ -1801,7 +1801,7 @@
     "ruta": 2,
     "latitud": "10.430000",
     "longitud": "-85.095000",
-    "direccion": "Barrio San José, Cañas"
+    "direccion": "Barrio San Josï¿½, Caï¿½as"
   }
 },
 {
@@ -1810,10 +1810,10 @@
   "fields": {
     "idioma": "es",
     "nombre_restaurante": "Soda La Central",
-    "direccion": "Parque Central, Cañas",
+    "direccion": "Parque Central, Caï¿½as",
     "telefono": "8888-1111",
     "logo": "",
-    "descripcion": "Comida típica costarricense en el corazón de Cañas."
+    "descripcion": "Comida tï¿½pica costarricense en el corazï¿½n de Caï¿½as."
   }
 },
 {

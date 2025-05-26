@@ -52,10 +52,10 @@ class Command(BaseCommand):
 
         # Productos
         productos = [
-            {'nombre': 'Gallo Pinto', 'precio': 2500, 'descripcion': 'Desayuno típico costarricense', 'categoria': 'Desayuno', 'subcategoria': 'Típico'},
-            {'nombre': 'Casado de Pollo', 'precio': 3500, 'descripcion': 'Arroz, frijoles, ensalada, plátano y pollo', 'categoria': 'Almuerzo', 'subcategoria': 'Casado'},
-            {'nombre': 'Refresco Natural', 'precio': 1000, 'descripcion': 'Bebida de frutas frescas', 'categoria': 'Bebidas', 'subcategoria': 'Natural'},
-            {'nombre': 'Empanada de Queso', 'precio': 800, 'descripcion': 'Empanada artesanal rellena de queso', 'categoria': 'Snacks', 'subcategoria': 'Empanadas'},
+            {'nombre': 'Gallo Pinto', 'cantidad': 20, 'precio': 2500, 'descripcion': 'Desayuno típico costarricense', 'categoria': 'Desayuno', 'subcategoria': 'Típico'},
+            {'nombre': 'Casado de Pollo', 'cantidad': 20, 'precio': 3500, 'descripcion': 'Arroz, frijoles, ensalada, plátano y pollo', 'categoria': 'Almuerzo', 'subcategoria': 'Casado'},
+            {'nombre': 'Refresco Natural', 'cantidad': 20, 'precio': 1000, 'descripcion': 'Bebida de frutas frescas', 'categoria': 'Bebidas', 'subcategoria': 'Natural'},
+            {'nombre': 'Empanada de Queso', 'cantidad': 20, 'precio': 800, 'descripcion': 'Empanada artesanal rellena de queso', 'categoria': 'Snacks', 'subcategoria': 'Empanadas'},
         ]
         producto_objs = []
         for p in productos:
