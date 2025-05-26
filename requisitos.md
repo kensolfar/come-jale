@@ -120,10 +120,28 @@
 ### Modelos principales
 
 - **Impuesto**: Define los impuestos aplicables a productos y líneas de orden, compatible con la facturación electrónica de Costa Rica (ATV 4.4). Permite múltiples tipos y tarifas.
-- **Orden**: Núcleo de la lógica de ventas y facturación. Incluye cliente, tipo (salón, llevar, express), estado, dirección/contacto, y todos los totales fiscales requeridos (subtotal, descuentos, impuestos, otros cargos, total comprobante). Relaciona líneas y cargos.
+- **TipoOrden**: Define los tipos de orden (ej: salón, para llevar, express) y permite asociar cargos e impuestos permitidos a cada tipo.
+- **TipoCargo**: Define los tipos de cargo posibles (servicio, embalaje, transporte, etc.).
+- **TipoOrdenCargo**: Relación entre TipoOrden y TipoCargo, indicando qué cargos están permitidos para cada tipo de orden.
+- **TipoOrdenImpuesto**: Relación entre TipoOrden e Impuesto, indicando qué impuestos se aplican a cada tipo de orden.
+- **Orden**: Núcleo de la lógica de ventas y facturación. Incluye cliente, tipo (ForeignKey a TipoOrden), estado, dirección/contacto, y todos los totales fiscales requeridos (subtotal, descuentos, impuestos, otros cargos, total comprobante). Relaciona líneas y cargos.
 - **OrdenLinea**: Cada producto/servicio de la orden, con cantidad, unidad, detalle, precio, descuento, impuesto y total de línea. Cumple con los campos requeridos por la DGT/ATV.
-- **OrdenCargo**: Permite agregar cargos adicionales (servicio, embalaje, transporte, otros) de forma flexible, afectando el total de la orden.
+- **OrdenCargo**: Permite agregar cargos adicionales (servicio, embalaje, transporte, otros) de forma flexible, afectando el total de la orden. Cada cargo referencia a un TipoCargo.
 - **Factura**: Modelo para la información fiscal y legal de la factura electrónica, enlazada a un pedido.
+
+### Lógica de asociación y validación
+
+- En la configuración global, el usuario puede asociar qué tipos de cargo e impuesto están permitidos para cada tipo de orden.
+- Al crear una orden, solo se pueden seleccionar cargos e impuestos permitidos según el tipo de orden.
+- El backend valida que los cargos/impuestos asociados a una orden sean válidos para su tipo.
+- El frontend muestra solo las opciones válidas según el tipo de orden.
+
+### Ejemplo de flujo de configuración global
+
+1. El admin define los tipos de orden (ej: salón, para llevar, express).
+2. El admin define los tipos de cargo (servicio, embalaje, transporte, etc.).
+3. El admin asocia, desde la interfaz de configuración, qué cargos e impuestos están permitidos para cada tipo de orden.
+4. Estas reglas se usan luego en la creación y edición de órdenes.
 
 ### Lógica de cálculo y automatización
 

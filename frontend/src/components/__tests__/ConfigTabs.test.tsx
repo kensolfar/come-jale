@@ -31,11 +31,17 @@ describe('ConfigTabs', () => {
     expect(impuestosBtn).toBeDefined();
     fireEvent.click(impuestosBtn!);
     // Esperar a que el contenido de la pestaña Impuestos esté visible (por ejemplo, un input o label único)
-    await waitFor(() => expect(screen.getByRole('heading', { name: /Impuestos/i })).toBeInTheDocument());
+    await waitFor(() => {
+      const headings = screen.getAllByRole('heading', { name: /Impuestos/i });
+      expect(headings.length).toBeGreaterThan(0);
+    });
     // Switch to Cargos
     const cargosBtn = getTabButton('Cargos');
     expect(cargosBtn).toBeDefined();
     fireEvent.click(cargosBtn!);
-    await waitFor(() => expect(screen.getByRole('heading', { name: /Cargos/i })).toBeInTheDocument());
+    await waitFor(() => {
+      const headings = screen.getAllByRole('heading', { name: /Cargos/i });
+      expect(headings.length).toBeGreaterThan(0);
+    });
   });
 });

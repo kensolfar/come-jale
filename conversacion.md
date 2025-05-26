@@ -4,6 +4,9 @@
 Sistema de gestión para restaurante/cocina con módulos de productos, pedidos, facturación, usuarios y roles, subida de imágenes, autenticación JWT y panel administrativo. Frontend en React + TypeScript, backend Django REST Framework.
 
 ## Cambios y decisiones recientes
+- **Configuración global de tipos de orden:** Ahora existe un modelo para definir los tipos de orden y asociarles los tipos de cargo e impuesto permitidos. Esto permite reglas flexibles y validación robusta tanto en backend como en frontend.
+- **Validación de cargos/impuestos por tipo de orden:** El backend y el frontend validan que solo se puedan asociar cargos e impuestos válidos según el tipo de orden.
+- **Diseño de modelos extensible:** Se agregaron los modelos TipoOrden, TipoCargo, TipoOrdenCargo y TipoOrdenImpuesto para soportar la lógica de asociación global.
 - **Subida de imágenes:** Ahora se realiza mediante un endpoint personalizado `/api/productos/<id>/upload/` que asocia la imagen al producto existente. El frontend solo permite subir imagen si el producto ya está guardado.
 - **Actualización de productos:** El campo `imagen` no se envía en el PATCH/PUT, solo se actualiza por el endpoint de upload.
 - **JWT personalizado:** El token JWT ahora incluye los campos `username`, `first_name` y `last_name` además de los claims estándar, gracias a un serializer custom en Django.

@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User, Group
-from orders.models import Producto, Pedido, PedidoProducto, Factura, Ruta, Entrega, ClienteRuta, Categoria, Subcategoria
+from orders.models import Producto, Pedido, PedidoProducto, Factura, Ruta, Entrega, ClienteRuta, Categoria, Subcategoria, Impuesto, TipoCargo, TipoOrden, Orden, OrdenLinea, OrdenCargo, Configuracion, Profile
 from django.db import transaction
 
 class Command(BaseCommand):
@@ -132,4 +132,90 @@ class Command(BaseCommand):
             ubicacion_actual='En cocina'
         )
 
-        self.stdout.write(self.style.SUCCESS('Datos de prueba creados exitosamente.'))
+        # Impuestos
+        impuestos_data = [
+            {'nombre': 'IVA', 'codigo': '01', 'tarifa': 13.0, 'es_exento': False},
+            {'nombre': 'Exento', 'codigo': '02', 'tarifa': 0.0, 'es_exento': True},
+            {'nombre': 'Consumo', 'codigo': '03', 'tarifa': 2.0, 'es_exento': False},
+        ]
+        impuesto_objs = []
+        for imp in impuestos_data:
+            obj, _ = Impuesto.objects.get_or_create(**imp)
+            impuesto_objs.append(obj)
+
+        # TipoCargo (catálogo de cargos)
+        cargos_data = [
+            {'nombre': 'Servicio', 'descripcion': 'Cargo por servicio en mesa', 'monto': 500, 'tipo': 'SERVICIO'},
+            {'nombre': 'Embalaje', 'descripcion': 'Cargo por empaque para llevar', 'monto': 200, 'tipo': 'EMBALAJE'},
+            {'nombre': 'Transporte', 'descripcion': 'Cargo por envío a domicilio', 'monto': 1000, 'tipo': 'TRANSPORTE'},
+            {'nombre': 'Propina', 'descripcion': 'Propina sugerida', 'monto': 300, 'tipo': 'OTRO'},
+        ]
+        tipocargo_objs = []
+        for c in cargos_data:
+            obj, _ = TipoCargo.objects.get_or_create(**c)
+            tipocargo_objs.append(obj)
+
+        # TipoOrden (asociar cargos e impuestos)
+        tipoorden_data = [
+            {'nombre': 'Salón', 'descripcion': 'Pedidos en salón', 'cargos': [tipocargo_objs[0], tipocargo_objs[3]], 'impuestos': [impuesto_objs[0]]},
+            {'nombre': 'Para llevar', 'descripcion': 'Pedidos para llevar', 'cargos': [tipocargo_objs[1]], 'impuestos': [impuesto_objs[0], impuesto_objs[1]]},
+            {'nombre': 'Express', 'descripcion': 'Pedidos express', 'cargos': [tipocargo_objs[2]], 'impuestos': [impuesto_objs[0], impuesto_objs[2]]},
+        ]
+        tipoorden_objs = []
+        for t in tipoorden_data:
+            obj, _ = TipoOrden.objects.get_or_create(nombre=t['nombre'], defaults={'descripcion': t['descripcion']})
+            obj.cargos.set(t['cargos'])
+            obj.impuestos.set(t['impuestos'])
+            tipoorden_objs.append(obj)
+
+        # Configuración
+        Configuracion.objects.update_or_create(
+            pk=1,
+            defaults={
+                'idioma': 'es',
+                'nombre_restaurante': 'Soda La Central',
+                'direccion': 'Parque Central, Cañas',
+                'telefono': '8888-1111',
+                'descripcion': 'Comida típica costarricense en el corazón de Cañas.'
+            }
+        )
+
+        # Perfiles de usuario
+        for user in [admin, cliente, vendedor, repartidor]:
+            Profile.objects.get_or_create(user=user)
+
+        # Crear varias órdenes, líneas y cargos
+        for i in range(3):
+            orden = Orden.objects.create(
+                cliente=cliente,
+                tipo=['SALON', 'LLEVAR', 'EXPRESS'][i % 3],
+                estado='pendiente',
+                direccion_entrega=f'Dirección demo {i+1}',
+                contacto=f'8888-11{i+1}',
+            )
+            # Líneas de orden
+            for j, prod in enumerate(producto_objs):
+                OrdenLinea.objects.create(
+                    orden=orden,
+                    producto=prod,
+                    cantidad=1+j,
+                    unidad_medida='Unid',
+                    detalle=f'{prod.nombre} especial',
+                    precio_unitario=prod.precio,
+                    subtotal=prod.precio * (1+j),
+                    descuento=0,
+                    impuesto=impuesto_objs[j % len(impuesto_objs)],
+                    total_linea=prod.precio * (1+j),
+                )
+            # Cargos de orden
+            for k, cargo in enumerate(tipocargo_objs):
+                if k % 2 == i % 2:
+                    OrdenCargo.objects.create(
+                        orden=orden,
+                        tipo_cargo=cargo,
+                        monto_aplicado=cargo.monto,
+                        tipo_aplicado=cargo.tipo,
+                        impuesto=None
+                    )
+
+        self.stdout.write(self.style.SUCCESS('Datos de prueba creados exitosamente y enriquecidos.'))

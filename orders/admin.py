@@ -1,9 +1,21 @@
 from django.contrib import admin
-from .models import Configuracion, Profile, Categoria, Subcategoria, Producto, Pedido, PedidoProducto, Factura, Ruta, Entrega, ClienteRuta
+from .models import TipoCargo, TipoOrden, Configuracion, Profile, Categoria, Subcategoria, Producto, Pedido, PedidoProducto, Factura, Ruta, Entrega, ClienteRuta
 
 class PedidoProductoInline(admin.TabularInline):
     model = PedidoProducto
     extra = 1
+
+@admin.register(TipoCargo)
+class TipoCargoAdmin(admin.ModelAdmin):
+    list_display = ("nombre", "descripcion")
+    search_fields = ("nombre",)
+    list_filter = ("nombre",)
+
+@admin.register(TipoOrden)
+class TipoOrdenAdmin(admin.ModelAdmin):
+    list_display = ("nombre", "descripcion")
+    search_fields = ("nombre",)
+    list_filter = ("nombre",)
 
 @admin.register(Configuracion)
 class ConfiguracionAdmin(admin.ModelAdmin):

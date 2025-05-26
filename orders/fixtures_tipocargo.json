@@ -1,0 +1,52 @@
+[
+  {
+    "model": "orders.tipocargo",
+    "pk": 1,
+    "fields": {
+      "nombre": "Servicio",
+      "descripcion": "Cargo por servicio en mesa",
+      "monto": "500.00",
+      "tipo": "SERVICIO"
+    }
+  },
+  {
+    "model": "orders.tipocargo",
+    "pk": 2,
+    "fields": {
+      "nombre": "Embalaje",
+      "descripcion": "Cargo por empaque para llevar",
+      "monto": "200.00",
+      "tipo": "EMBALAJE"
+    }
+  },
+  {
+    "model": "orders.tipocargo",
+    "pk": 3,
+    "fields": {
+      "nombre": "Transporte",
+      "descripcion": "Cargo por envío a domicilio",
+      "monto": "1000.00",
+      "tipo": "TRANSPORTE"
+    }
+  },
+  {
+    "model": "orders.tipocargo",
+    "pk": 4,
+    "fields": {
+      "nombre": "Propina",
+      "descripcion": "Propina sugerida",
+      "monto": "300.00",
+      "tipo": "OTRO"
+    }
+  },
+  {
+    "model": "orders.tipocargo",
+    "pk": 5,
+    "fields": {
+      "nombre": "Servicio Premium",
+      "descripcion": "Cargo por atención personalizada",
+      "monto": "1500.00",
+      "tipo": "SERVICIO"
+    }
+  }
+]

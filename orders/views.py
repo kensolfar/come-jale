@@ -13,6 +13,7 @@ from rest_framework.permissions import IsAdminUser
 from rest_framework import permissions
 from .models import Orden, OrdenLinea, OrdenCargo, Impuesto
 from .models import OrdenSerializer, OrdenLineaSerializer, OrdenCargoSerializer, ImpuestoSerializer
+from .models import TipoOrden, TipoCargo, TipoOrdenSerializer, TipoCargoSerializer
 
 # Create your views here.
 
@@ -212,7 +213,7 @@ class OrdenCargoViewSet(viewsets.ModelViewSet):
     serializer_class = OrdenCargoSerializer
     permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['orden', 'tipo', 'es_impuesto']
+    filterset_fields = ['orden']
 
     def get_queryset(self):
         orden_pk = self.kwargs.get('orden_pk')
@@ -233,3 +234,32 @@ class ImpuestoViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAdminUser]
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['nombre', 'codigo', 'tarifa', 'es_exento']
+
+class TipoOrdenViewSet(viewsets.ModelViewSet):
+    queryset = TipoOrden.objects.all()
+    serializer_class = TipoOrdenSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['nombre']
+
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve', 'create', 'update', 'partial_update', 'destroy']:
+            return [permissions.IsAdminUser()]
+        return [permissions.IsAdminUser()]
+
+    def partial_update(self, request, *args, **kwargs):
+        response = super().partial_update(request, *args, **kwargs)
+        instance = self.get_object()
+        instance.refresh_from_db()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
+
+class TipoCargoViewSet(viewsets.ModelViewSet):
+    queryset = TipoCargo.objects.all()
+    serializer_class = TipoCargoSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['nombre']
+
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve', 'create', 'update', 'partial_update', 'destroy']:
+            return [permissions.IsAdminUser()]
+        return [permissions.IsAdminUser()]

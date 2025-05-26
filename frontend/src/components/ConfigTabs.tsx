@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ImpuestosCrud from './ImpuestosCrud';
-import OrdenCargosCrud from './OrdenCargosCrud';
+import TipoCargoCrud from './TipoCargoCrud';
 import { ConfigEdit } from './ConfigEdit';
+import ConfigTipoOrdenes from './ConfigTipoOrdenes';
 
 const TABS = [
   { key: 'general', label: 'General' },
   { key: 'impuestos', label: 'Impuestos' },
   { key: 'cargos', label: 'Cargos' },
+  { key: 'tiposorden', label: 'Tipos de Orden' },
 ];
 
 const ConfigTabs = ({ config, setConfig, setIdioma, loading, token }: any) => {
@@ -71,7 +73,10 @@ const ConfigTabs = ({ config, setConfig, setIdioma, loading, token }: any) => {
             <ImpuestosCrud token={token} />
           )}
           {tab === 'cargos' && (
-            <OrdenCargosCrud token={token} />
+            <TipoCargoCrud token={token} />
+          )}
+          {tab === 'tiposorden' && (
+            <ConfigTipoOrdenes token={token} />
           )}
         </div>
       </div>
