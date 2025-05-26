@@ -244,3 +244,28 @@ Puedes importar la colección en Postman y usar los usuarios de prueba documenta
 
 ## Contacto y soporte
 Para dudas o soporte, contactar a los administradores del repositorio.
+
+# Come Jale - Documentación de Cambios Recientes
+
+## Cambios en la Configuración de Tipos de Orden (frontend)
+
+### Visualización y Selección de Cargos
+- Los cargos ahora se muestran como tarjetas tipo botón, máximo 3 por línea, con nombre, monto y tipo en formato vertical.
+- El usuario puede activar/desactivar cargos haciendo clic en la tarjeta.
+- Los impuestos también se muestran como tarjetas verticales, con detalles claros.
+
+### Lógica y Servicios
+- El endpoint para obtener cargos es ahora `/tipocargo/` (catálogo de tipos de cargo), no `/ordenes-cargos/`.
+- La interfaz `Cargo` incluye los campos: `id`, `nombre`, `descripcion`, `monto`, `tipo`.
+
+### Pruebas (TDD)
+- Los tests unitarios fueron actualizados para usar los nuevos endpoints y data-testid.
+- Todos los tests pasan y validan la nueva lógica y presentación.
+
+### Resumen de la Conversación
+- Se siguió un enfoque TDD: primero se ajustaron los tests, luego la UI y la lógica.
+- Se mejoró la experiencia visual y la consistencia entre cargos e impuestos.
+- Se validó la integración y los tests.
+
+---
+Última actualización: 2025-05-26

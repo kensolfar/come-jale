@@ -1,4 +1,4 @@
-# Conversación y contexto del proyecto Come Jale (actualizado al 18 de mayo de 2025)
+# Conversación y contexto del proyecto Come Jale (actualizado al 26 de mayo de 2025)
 
 ## Resumen del proyecto
 Sistema de gestión para restaurante/cocina con módulos de productos, pedidos, facturación, usuarios y roles, subida de imágenes, autenticación JWT y panel administrativo. Frontend en React + TypeScript, backend Django REST Framework.
@@ -53,4 +53,26 @@ Sistema de gestión para restaurante/cocina con módulos de productos, pedidos, 
 
 ---
 
-Este documento resume el estado actual y las decisiones técnicas/funcionales del proyecto Come Jale al 18 de mayo de 2025.
+Este documento resume el estado actual y las decisiones técnicas/funcionales del proyecto Come Jale al 26 de mayo de 2025.
+
+# Conversación y cambios recientes sobre ConfigTipoOrdenes
+
+## Cambios en frontend/src/components/ConfigTipoOrdenes.tsx
+- Se actualizó la interfaz y la visualización de cargos para que se muestren como tarjetas tipo botón, máximo 3 por línea, con nombre, monto y tipo en formato vertical.
+- Se corrigieron los data-testid para que los tests puedan encontrar los elementos correctamente.
+- Se ajustó la lógica para que los cargos se obtengan desde `/tipocargo/` y no desde `/ordenes-cargos/`.
+- Se mejoró la visualización de los impuestos para que coincida con el estilo de los cargos.
+
+## Cambios en frontend/src/components/__tests__/ConfigTipoOrdenes.test.tsx
+- Se actualizaron los mocks para que usen `/tipocargo/`.
+- Se corrigieron los tests para que usen los nuevos data-testid (`cargo-btn-*`, `cargo-nombre-*`, etc.).
+- Todos los tests pasan correctamente y validan la nueva UI y lógica.
+
+## Resumen de la conversación
+- El usuario solicitó adaptar la UI de ConfigTipoOrdenes a los cambios recientes en el catálogo de cargos.
+- Se implementó TDD: primero se escribieron/ajustaron los tests, luego se adaptó la UI y la lógica.
+- Se mejoró la experiencia visual y la consistencia entre cargos e impuestos.
+- Se validó que la integración y los tests funcionan correctamente.
+
+---
+Última actualización: 2025-05-26
