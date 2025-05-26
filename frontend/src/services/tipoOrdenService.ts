@@ -13,6 +13,8 @@ export interface Cargo {
   id: number;
   nombre: string;
   descripcion: string;
+  monto: number;
+  tipo: string;
 }
 export interface Impuesto {
   id: number;
@@ -27,7 +29,7 @@ export async function getTiposOrden(token: string): Promise<TipoOrden[]> {
   return response.data;
 }
 export async function getCargos(token: string): Promise<Cargo[]> {
-  const response = await axios.get(`${API_BASE_URL}/ordenes-cargos/`, { headers: { Authorization: `Bearer ${token}` } });
+  const response = await axios.get(`${API_BASE_URL}/tipocargo/`, { headers: { Authorization: `Bearer ${token}` } });
   return response.data;
 }
 export async function getImpuestos(token: string): Promise<Impuesto[]> {

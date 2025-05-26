@@ -66,7 +66,7 @@ const TipoCargoCrud = ({ token }: { token: string }) => {
       <h3 style={{ color: '#8DAA91', fontWeight: 700, margin: '24px 0 18px 0' }}>Cargos</h3>
       <form onSubmit={handleSubmit} style={{ display: 'flex', gap: 12, marginBottom: 24, flexWrap: 'wrap', alignItems: 'center' }}>
         <input name="nombre" value={form.nombre} onChange={handleChange} placeholder="Nombre" required style={{ flex: 1, minWidth: 120 }} />
-        <textarea name="descripcion" value={form.descripcion} onChange={handleChange} placeholder="Descripción" style={{ flex: 2, minWidth: 180, resize: 'vertical', height: 32 }} />
+        <input name="descripcion" value={form.descripcion} onChange={handleChange} placeholder="Descripción" style={{ flex: 2, minWidth: 180 }} />
         <label htmlFor="tipo" style={{ margin: 0 }}>Tipo</label>
         <select id="tipo" name="tipo" value={form.tipo} onChange={handleChange} style={{ width: 120 }}>
           <option value="SERVICIO">Servicio</option>

@@ -19,6 +19,8 @@ interface Cargo {
   id: number;
   nombre: string;
   descripcion: string;
+  monto: number;
+  tipo: string;
 }
 interface Impuesto {
   id: number;
@@ -200,24 +202,93 @@ const ConfigTipoOrdenes: React.FC<ConfigTipoOrdenesProps> = ({ token }) => {
             </div>
             <div>
               <label style={{ color: '#bdbdbd', fontWeight: 600, marginBottom: 4 }}>Cargos</label>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginTop: 4 }}>
-                {cargos.map(c => (
-                  <label key={c.id} style={{ background: '#232428', color: '#8DAA91', borderRadius: 8, padding: '4px 12px', fontSize: 15, display: 'flex', alignItems: 'center', gap: 6 }}>
-                    <input type="checkbox" checked={!!(form.cargos || []).includes(c.id)} onChange={() => handleMultiSelect('cargos', c.id)} style={{ accentColor: '#8DAA91', marginRight: 4 }} />
-                    {c.nombre}
-                  </label>
-                ))}
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(3, 1fr)',
+                  gap: 10,
+                  marginTop: 4,
+                  marginBottom: 8,
+                }}
+              >
+                {cargos.map(c => {
+                  const checked = !!(form.cargos || []).includes(c.id);
+                  return (
+                    <button
+                      key={c.id}
+                      type="button"
+                      onClick={() => handleMultiSelect('cargos', c.id)}
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'flex-start',
+                        background: checked ? '#232428' : 'transparent',
+                        color: checked ? '#8DAA91' : '#bdbdbd',
+                        border: checked ? '1.5px solid #8DAA91' : '1.5px solid #232428',
+                        borderRadius: 8,
+                        padding: '6px 14px',
+                        fontWeight: 700,
+                        fontSize: 15,
+                        cursor: 'pointer',
+                        boxShadow: checked ? '0 2px 8px rgba(0,0,0,0.10)' : 'none',
+                        outline: 'none',
+                        transition: 'all 0.15s',
+                        minWidth: 0,
+                        minHeight: 40,
+                      }}
+                      data-testid={`cargo-btn-${c.id}`}
+                    >
+                      <span data-testid={`cargo-nombre-${c.id}`} style={{ fontWeight: 700 }}>{c.nombre}</span>
+                      <span data-testid={`cargo-monto-${c.id}`} style={{ color: '#bdbdbd', fontSize: 12 }}>₡{Number(c.monto).toFixed(0)}</span>
+                      <span data-testid={`cargo-tipo-${c.id}`} style={{ color: '#bdbdbd', fontSize: 12 }}>{c.tipo}</span>
+                    </button>
+                  );
+                })}
               </div>
             </div>
             <div>
               <label style={{ color: '#bdbdbd', fontWeight: 600, marginBottom: 4 }}>Impuestos</label>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginTop: 4 }}>
-                {impuestos.map(i => (
-                  <label key={i.id} style={{ background: '#232428', color: '#8DAA91', borderRadius: 8, padding: '4px 12px', fontSize: 15, display: 'flex', alignItems: 'center', gap: 6 }}>
-                    <input type="checkbox" checked={!!(form.impuestos || []).includes(i.id)} onChange={() => handleMultiSelect('impuestos', i.id)} style={{ accentColor: '#8DAA91', marginRight: 4 }} />
-                    {i.nombre}
-                  </label>
-                ))}
+              <div
+                style={{
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  gap: 10,
+                  marginTop: 4,
+                }}
+              >
+                {impuestos.map(i => {
+                  const checked = !!(form.impuestos || []).includes(i.id);
+                  return (
+                    <button
+                      key={i.id}
+                      type="button"
+                      onClick={() => handleMultiSelect('impuestos', i.id)}
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'flex-start',
+                        background: checked ? '#232428' : 'transparent',
+                        color: checked ? '#8DAA91' : '#bdbdbd',
+                        border: checked ? '1.5px solid #8DAA91' : '1.5px solid #232428',
+                        borderRadius: 8,
+                        padding: '6px 14px',
+                        fontWeight: 700,
+                        fontSize: 15,
+                        cursor: 'pointer',
+                        boxShadow: checked ? '0 2px 8px rgba(0,0,0,0.10)' : 'none',
+                        outline: 'none',
+                        transition: 'all 0.15s',
+                        minWidth: 0,
+                        minHeight: 40,
+                      }}
+                      data-testid={`impuesto-btn-${i.id}`}
+                    >
+                      <span style={{ fontWeight: 700 }}>{i.nombre}</span>
+                      <span style={{ color: '#bdbdbd', fontSize: 12 }}>Tarifa: {i.tarifa}% {i.es_exento ? '(Exento)' : ''}</span>
+                      <span style={{ color: '#bdbdbd', fontSize: 12 }}>Código: {i.codigo}</span>
+                    </button>
+                  );
+                })}
               </div>
             </div>
             {formError && <div style={{ color: '#ff6b6b', fontWeight: 600, marginTop: 2 }}>{formError}</div>}

@@ -11,8 +11,8 @@ const mockTiposOrden = [
   { id: 2, nombre: 'Para llevar', descripcion: 'Pedidos para llevar', cargos: [], impuestos: [2] },
 ];
 const mockCargos = [
-  { id: 1, nombre: 'Servicio', descripcion: '' },
-  { id: 2, nombre: 'Embalaje', descripcion: '' },
+  { id: 1, nombre: 'Servicio', descripcion: '', monto: 1000, tipo: 'SERVICIO' },
+  { id: 2, nombre: 'Embalaje', descripcion: '', monto: 500, tipo: 'EMBALAJE' },
 ];
 const mockImpuestos = [
   { id: 1, nombre: 'IVA', codigo: '01', tarifa: 13.0, es_exento: false },
@@ -26,7 +26,7 @@ describe('ConfigTipoOrdenes', () => {
     // Mockear las respuestas de axios para cada endpoint
     mockedAxios.get.mockImplementation(url => {
       if (url.includes('/tipoorden/')) return Promise.resolve({ data: mockTiposOrden });
-      if (url.includes('/ordenes-cargos/')) return Promise.resolve({ data: mockCargos });
+      if (url.includes('/tipocargo/')) return Promise.resolve({ data: mockCargos });
       if (url.includes('/impuestos/')) return Promise.resolve({ data: mockImpuestos });
       return Promise.reject(new Error('not found'));
     });
@@ -68,7 +68,7 @@ describe('ConfigTipoOrdenes', () => {
   it('permite editar cargos e impuestos asociados', async () => {
     render(<ConfigTipoOrdenes token={DUMMY_TOKEN} />);
     fireEvent.click(await screen.findByTestId('edit-tipoorden-1'));
-    fireEvent.click(screen.getByLabelText('Embalaje'));
+    fireEvent.click(screen.getByTestId('cargo-btn-2'));
     fireEvent.click(screen.getByText(/Guardar/i));
     await waitFor(() => expect(screen.getByText('Embalaje')).toBeInTheDocument());
   });
@@ -86,5 +86,17 @@ describe('ConfigTipoOrdenes', () => {
     mockedAxios.get.mockRejectedValueOnce({ response: { data: { detail: 'Acceso restringido' } } });
     render(<ConfigTipoOrdenes token={DUMMY_TOKEN} />);
     expect(await screen.findByText(/Acceso restringido/i)).toBeInTheDocument();
+  });
+
+  it('muestra los detalles de monto y tipo de los cargos en el formulario', async () => {
+    render(<ConfigTipoOrdenes token={DUMMY_TOKEN} />);
+    fireEvent.click(await screen.findByText(/Agregar Tipo de Orden/i));
+    // Debe mostrar el nombre, monto y tipo de cada cargo usando data-testid
+    expect(screen.getByTestId('cargo-nombre-1')).toHaveTextContent('Servicio');
+    expect(screen.getByTestId('cargo-monto-1')).toHaveTextContent('₡1000');
+    expect(screen.getByTestId('cargo-tipo-1')).toHaveTextContent('SERVICIO');
+    expect(screen.getByTestId('cargo-nombre-2')).toHaveTextContent('Embalaje');
+    expect(screen.getByTestId('cargo-monto-2')).toHaveTextContent('₡500');
+    expect(screen.getByTestId('cargo-tipo-2')).toHaveTextContent('EMBALAJE');
   });
 });
