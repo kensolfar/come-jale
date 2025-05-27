@@ -33,6 +33,11 @@ class Producto(models.Model):
     def __str__(self):
         return self.nombre
 
+    def clean(self):
+        from django.core.exceptions import ValidationError
+        if self.precio <= 0:
+            raise ValidationError("El precio debe ser mayor a cero.")
+
 # --- MODELOS DE ORDEN Y FACTURACION FLEXIBLE ---
 class Impuesto(models.Model):
     nombre = models.CharField(max_length=50)
@@ -138,6 +143,30 @@ class Pedido(models.Model):
     info_adicional = models.TextField(blank=True)
     estado = models.CharField(max_length=20, choices=ESTADOS, default='pendiente')
     fecha_creacion = models.DateTimeField(auto_now_add=True)
+    
+    def clean(self):
+        from django.core.exceptions import ValidationError
+        # Validar dirección y contacto no vacíos
+        if not self.direccion_entrega or not self.direccion_entrega.strip():
+            raise ValidationError("La dirección de entrega no puede estar vacía.")
+        if not self.contacto or not self.contacto.strip():
+            raise ValidationError("El contacto no puede estar vacío.")
+        # Validar estado
+        if self.estado not in dict(self.ESTADOS):
+            raise ValidationError(f"Estado '{self.estado}' no es válido.")
+        # Validar productos únicos en el pedido (solo si ya está guardado)
+        if self.pk:
+            productos = self.productos.values_list('id', flat=True)
+            if len(productos) != len(set(productos)):
+                raise ValidationError("No se permiten productos duplicados en el pedido.")
+            # Validar que haya al menos un producto
+            if self.productos.count() == 0:
+                raise ValidationError("Debe agregar al menos un producto al pedido.")
+        # Validar transición de estado (ejemplo: no pasar de cancelado a pagado)
+        if self.pk:
+            original = Pedido.objects.get(pk=self.pk)
+            if original.estado == 'cancelado' and self.estado == 'pagado':
+                raise ValidationError("No se puede cambiar de 'cancelado' a 'pagado'.")
 
     def __str__(self):
         return f"Pedido #{self.id} - {self.cliente.username}"
@@ -147,6 +176,30 @@ class PedidoProducto(models.Model):
     producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
     cantidad = models.PositiveIntegerField(default=1)
     precio_unitario = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def clean(self):
+        from django.core.exceptions import ValidationError
+        # Validar cantidad positiva
+        if self.cantidad <= 0:
+            raise ValidationError("La cantidad debe ser mayor a cero.")
+        # Validar precio unitario positivo
+        if self.precio_unitario <= 0:
+            raise ValidationError("El precio unitario debe ser mayor a cero.")
+        # Validar producto disponible
+        if not self.producto.disponible:
+            raise ValidationError(f"El producto '{self.producto.nombre}' no está disponible.")
+        # Validar stock suficiente
+        if self.producto.cantidad < self.cantidad:
+            raise ValidationError(f"No hay suficiente stock para '{self.producto.nombre}'. Disponible: {self.producto.cantidad}, solicitado: {self.cantidad}")
+        # Validar producto único en el pedido
+        if self.pedido_id and self.producto_id:
+            existe = PedidoProducto.objects.filter(pedido_id=self.pedido_id, producto_id=self.producto_id).exclude(pk=self.pk).exists()
+            if existe:
+                raise ValidationError(f"El producto '{self.producto.nombre}' ya está en el pedido.")
+
+    def save(self, *args, **kwargs):
+        self.clean()
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.producto.nombre} x {self.cantidad}"
@@ -170,6 +223,13 @@ class Factura(models.Model):
     fecha_expedicion = models.DateField(auto_now_add=True)
     metodo_pago = models.CharField(max_length=100)
     monto_total = models.DecimalField(max_digits=12, decimal_places=2)
+
+    def clean(self):
+        from django.core.exceptions import ValidationError
+        # Validar monto total igual a suma de productos del pedido
+        total = sum(pp.cantidad * pp.precio_unitario for pp in self.pedido.pedidoproducto_set.all())
+        if self.monto_total != total:
+            raise ValidationError("El monto total de la factura debe coincidir con el total del pedido.")
 
     def __str__(self):
         return f"Factura #{self.id} - Pedido #{self.pedido.id}"
@@ -247,17 +307,51 @@ class ProductoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Producto
         fields = '__all__'
+    def validate_precio(self, value):
+        if value <= 0:
+            raise serializers.ValidationError("El precio debe ser mayor a cero.")
+        return value
+    def validate_nombre(self, value):
+        if Producto.objects.filter(nombre=value).exists():
+            raise serializers.ValidationError("Ya existe un producto con este nombre.")
+        return value
 
 class PedidoProductoSerializer(serializers.ModelSerializer):
     class Meta:
         model = PedidoProducto
         fields = '__all__'
+    def validate_cantidad(self, value):
+        if value <= 0:
+            raise serializers.ValidationError("La cantidad debe ser mayor a cero.")
+        return value
+    def validate_precio_unitario(self, value):
+        if value <= 0:
+            raise serializers.ValidationError("El precio unitario debe ser mayor a cero.")
+        return value
+    def validate(self, data):
+        producto = data.get('producto')
+        if producto and not producto.disponible:
+            raise serializers.ValidationError({'producto': f"El producto '{producto.nombre}' no está disponible."})
+        return data
 
 class PedidoSerializer(serializers.ModelSerializer):
     productos = PedidoProductoSerializer(source='pedidoproducto_set', many=True, read_only=True)
     class Meta:
         model = Pedido
         fields = '__all__'
+    def validate_direccion_entrega(self, value):
+        if not value or not value.strip():
+            raise serializers.ValidationError("La dirección de entrega no puede estar vacía.")
+        return value
+    def validate_contacto(self, value):
+        if not value or not value.strip():
+            raise serializers.ValidationError("El contacto no puede estar vacío.")
+        return value
+    def validate_estado(self, value):
+        estados = [e[0] for e in Pedido.ESTADOS]
+        if value not in estados:
+            raise serializers.ValidationError(f"Estado '{value}' no es válido.")
+        return value
 
 class FacturaSerializer(serializers.ModelSerializer):
     class Meta:
@@ -450,6 +544,7 @@ class ImpuestoAdmin(admin.ModelAdmin):
 # --- SEÑALES PARA RECALCULAR TOTALES DE ORDEN ---
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
+from django.core.exceptions import ValidationError
 
 @receiver([post_save, post_delete], sender=OrdenLinea)
 def recalcular_totales_orden_linea(sender, instance, **kwargs):
