@@ -90,8 +90,8 @@ class ProductoModelTest(TestCase):
     def test_nombre_unico(self):
         Producto.objects.create(nombre='Unico', precio=10, cantidad=1, disponible=True, categoria=self.categoria)
         producto = Producto(nombre='Unico', precio=10, cantidad=1, disponible=True, categoria=self.categoria)
-        with self.assertRaises(ValidationError):
-            producto.full_clean()
+        with self.assertRaises(IntegrityError):
+            producto.save()
 class FacturaModelTest(TestCase):
     def setUp(self):
         self.user = User.objects.create(username='cliente')

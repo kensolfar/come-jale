@@ -21,7 +21,7 @@ class Subcategoria(models.Model):
         return f"{self.nombre} ({self.categoria.nombre})"
 
 class Producto(models.Model):
-    nombre = models.CharField(max_length=255)
+    nombre = models.CharField(max_length=255, unique=True)
     precio = models.DecimalField(max_digits=10, decimal_places=2)
     descripcion = models.TextField(blank=True)
     categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE, related_name='productos')
