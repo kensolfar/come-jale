@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { FaCog } from 'react-icons/fa';
 import { useTranslation } from 'react-i18next';
 import ConfigTabs from './ConfigTabs';
+import type { RestauranteConfig } from './ConfigEdit';
+import { isAdminFromToken } from './utilsAuth';
 
-interface BusinessInfoPanelProps {
+export interface BusinessInfoPanelProps {
   idioma: string;
   setIdioma: (lang: string) => void;
   token: string;
@@ -11,7 +13,7 @@ interface BusinessInfoPanelProps {
 
 const BusinessInfoPanel: React.FC<BusinessInfoPanelProps> = ({ idioma, setIdioma, token }) => {
   const { t, i18n } = useTranslation();
-  const [config, setConfig] = useState<any>(null);
+  const [config, setConfig] = useState<RestauranteConfig | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [adminOpen, setAdminOpen] = useState(false);
@@ -21,19 +23,19 @@ const BusinessInfoPanel: React.FC<BusinessInfoPanelProps> = ({ idioma, setIdioma
       setLoading(true);
       setError(null);
       try {
-        const data = await import('../services/api').then(m => m.getConfiguracion());
+        const data: RestauranteConfig = await import('../services/api').then(m => m.getConfiguracion());
         setConfig(data);
         if (data.idioma) {
           i18n.changeLanguage(data.idioma);
         }
-      } catch (err: any) {
+      } catch {
         setError('Error al cargar la configuración');
       } finally {
         setLoading(false);
       }
     }
     fetchConfig();
-  }, []);
+  }, [i18n]);
 
   useEffect(() => {
     const open = () => setAdminOpen(true);
@@ -49,6 +51,8 @@ const BusinessInfoPanel: React.FC<BusinessInfoPanelProps> = ({ idioma, setIdioma
   if (loading) return <div>{t('Cargando...')}</div>;
   if (error) return <div style={{ color: '#ff6b6b' }}>{error}</div>;
   if (!config) return null;
+
+  const isAdmin = isAdminFromToken(token);
 
   return (
     <div style={{ marginTop: 8, fontSize: 14, position: 'relative', minHeight: 48, padding: 8 }}>
@@ -82,16 +86,18 @@ const BusinessInfoPanel: React.FC<BusinessInfoPanelProps> = ({ idioma, setIdioma
         <span style={{ display: 'block', marginBottom: 2 }}><strong style={{ fontWeight: 700, color: '#8DAA91' }}>📍 {t('address')}:</strong> <span style={{ color: '#fff' }}>{config.direccion}</span></span>
         <span style={{ display: 'block' }}><strong style={{ fontWeight: 700, color: '#8DAA91' }}>📞 {t('phone')}:</strong> <span style={{ color: '#fff' }}>{config.telefono}</span></span>
       </div>
-      <button
-        onClick={() => setAdminOpen(true)}
-        style={{
-          display: 'flex', alignItems: 'center', gap: 8, margin: '16px auto 0', background: 'none', border: 'none', color: '#fff', cursor: 'pointer', fontSize: 16
-        }}
-        title={t('admin_panel')}
-      >
-        <FaCog size={20} />
-        <span>{t('admin_panel')}</span>
-      </button>
+      {isAdmin && (
+        <button
+          onClick={() => setAdminOpen(true)}
+          style={{
+            display: 'flex', alignItems: 'center', gap: 8, margin: '16px auto 0', background: 'none', border: 'none', color: '#fff', cursor: 'pointer', fontSize: 16
+          }}
+          title={t('admin_panel')}
+        >
+          <FaCog size={20} />
+          <span>{t('admin_panel')}</span>
+        </button>
+      )}
       {adminOpen && (
         <div style={{
           position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: 2000,
