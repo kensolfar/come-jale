@@ -207,6 +207,8 @@ def test_clienteruta_crud(get_jwt_token):
 # --- ORDENES CRUD Y ANIDADOS ---
 @pytest.mark.parametrize('get_jwt_token', ['admin'], indirect=True)
 def test_ordenes_crud_and_nested(get_jwt_token):
+    from orders.models.base import Producto
+    Producto.objects.all().delete()  # Limpia productos antes del test
     headers = {"Authorization": f"Bearer {get_jwt_token}"}
     unique_cat = f"TestCat_{int(time.time()*1000)}"
     # Crear categoría
@@ -220,8 +222,10 @@ def test_ordenes_crud_and_nested(get_jwt_token):
     assert r.status_code == 201
     impuesto_id = r.json()["id"]
     # Crear producto
-    producto_data = {"nombre": "Producto Test", "precio": 1000, "descripcion": "desc", "categoria": categoria_id}
+    producto_data = {"nombre": f"Producto Test {int(time.time()*1000)}", "precio": 1000, "descripcion": "desc", "categoria": categoria_id}
     r = requests.post(f"{BASE_URL}/api/productos/", json=producto_data, headers=headers)
+    if r.status_code != 201:
+        print('Detalle error producto:', r.status_code, r.text)
     assert r.status_code == 201
     producto_id = r.json()["id"]
     # Crear orden
@@ -308,6 +312,8 @@ def test_impuestos_crud(get_jwt_token):
 # --- ORDENES-LINEAS Y ORDENES-CARGOS CRUD (no anidados) ---
 @pytest.mark.parametrize('get_jwt_token', ['admin'], indirect=True)
 def test_ordenes_lineas_y_cargos_crud_flat(get_jwt_token):
+    from orders.models.base import Producto
+    Producto.objects.all().delete()  # Limpia productos antes del test
     headers = {"Authorization": f"Bearer {get_jwt_token}"}
     # Crear dependencias: categoría, impuesto, producto
     unique_cat = f"Categoria Flat {int(time.time()*1000)}"
@@ -322,8 +328,10 @@ def test_ordenes_lineas_y_cargos_crud_flat(get_jwt_token):
     assert r.status_code == 201
     imp_id = r.json()["id"]
     prod_url = f"{BASE_URL}/api/productos/"
-    prod_data = {"nombre": "Producto Flat", "precio": 100, "descripcion": "desc flat", "categoria": cat_id}
+    prod_data = {"nombre": f"Producto Flat {int(time.time()*1000)}", "precio": 100, "descripcion": "desc flat", "categoria": cat_id}
     r = requests.post(prod_url, json=prod_data, headers=headers)
+    if r.status_code != 201:
+        print('Detalle error producto:', r.status_code, r.text)
     assert r.status_code == 201
     prod_id = r.json()["id"]
     # Crear orden

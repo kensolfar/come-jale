@@ -1,7 +1,7 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from rest_framework_nested.routers import NestedDefaultRouter
-from .views import ProductoViewSet, PedidoViewSet, FacturaViewSet, RutaViewSet, EntregaViewSet, ClienteRutaViewSet, CategoriaViewSet, SubcategoriaViewSet, ProfileViewSet, ConfiguracionViewSet, OrdenViewSet, OrdenLineaViewSet, OrdenCargoViewSet, ImpuestoViewSet, TipoOrdenViewSet, TipoCargoViewSet
+from .views import ProductoViewSet, PedidoViewSet, FacturaViewSet, RutaViewSet, EntregaViewSet, ClienteRutaViewSet, CategoriaViewSet, SubcategoriaViewSet, ProfileViewSet, ConfiguracionViewSet, OrdenViewSet, OrdenLineaViewSet, OrdenCargoViewSet, ImpuestoViewSet, TipoOrdenViewSet, TipoCargoViewSet, PedidoProductoViewSet
 
 router = DefaultRouter()
 router.register(r'productos', ProductoViewSet)
@@ -20,6 +20,7 @@ router.register(r'ordenes-cargos', OrdenCargoViewSet)
 router.register(r'impuestos', ImpuestoViewSet)
 router.register(r'tipoorden', TipoOrdenViewSet, basename='tipoorden')
 router.register(r'tipocargo', TipoCargoViewSet, basename='tipocargo')
+router.register(r'pedido-productos', PedidoProductoViewSet)
 
 # Nested routers for ordenes/{orden_pk}/lineas and ordenes/{orden_pk}/cargos
 ordenes_router = NestedDefaultRouter(router, r'ordenes', lookup='orden')

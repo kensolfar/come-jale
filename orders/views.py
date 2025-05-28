@@ -267,3 +267,13 @@ class TipoCargoViewSet(viewsets.ModelViewSet):
         if self.action in ['list', 'retrieve', 'create', 'update', 'partial_update', 'destroy']:
             return [permissions.IsAdminUser()]
         return [permissions.IsAdminUser()]
+
+class PedidoProductoViewSet(viewsets.ModelViewSet):
+    queryset = PedidoProducto.objects.all()
+    serializer_class = PedidoProductoSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['pedido', 'producto']
+
+    def get_permissions(self):
+        # Ajusta los permisos según tu lógica de negocio
+        return [permissions.IsAuthenticated()]
