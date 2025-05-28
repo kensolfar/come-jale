@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   getTiposOrden,
   getCargos,
@@ -8,21 +9,21 @@ import {
   deleteTipoOrden,
 } from '../services/tipoOrdenService';
 
-interface TipoOrden {
+export interface TipoOrden {
   id: number;
   nombre: string;
   descripcion: string;
   cargos: number[];
   impuestos: number[];
 }
-interface Cargo {
+export interface Cargo {
   id: number;
   nombre: string;
   descripcion: string;
   monto: number;
   tipo: string;
 }
-interface Impuesto {
+export interface Impuesto {
   id: number;
   nombre: string;
   codigo: string;
@@ -30,11 +31,12 @@ interface Impuesto {
   es_exento: boolean;
 }
 
-interface ConfigTipoOrdenesProps {
+export interface ConfigTipoOrdenesProps {
   token: string;
 }
 
 const ConfigTipoOrdenes: React.FC<ConfigTipoOrdenesProps> = ({ token }) => {
+  const { t } = useTranslation();
   const [tiposOrden, setTiposOrden] = useState<TipoOrden[]>([]);
   const [cargos, setCargos] = useState<Cargo[]>([]);
   const [impuestos, setImpuestos] = useState<Impuesto[]>([]);
@@ -60,20 +62,31 @@ const ConfigTipoOrdenes: React.FC<ConfigTipoOrdenesProps> = ({ token }) => {
         setCargos(c);
         setImpuestos(i);
         setIsAdmin(true);
-      } catch (e: any) {
-        // Mejor manejo de error para tests y axios
-        const detail = e?.detail || e?.response?.data?.detail;
+      } catch (e: unknown) {
+        let detail: string | undefined;
+        type AxiosErrorDetail = { detail?: string };
+        type AxiosErrorResponse = { response?: { data?: AxiosErrorDetail } };
+        if (typeof e === 'object' && e !== null) {
+          if ('detail' in e && typeof (e as AxiosErrorDetail).detail === 'string') {
+            detail = (e as AxiosErrorDetail).detail;
+          } else if ('response' in e && typeof (e as AxiosErrorResponse).response === 'object') {
+            const resp = (e as AxiosErrorResponse).response;
+            if (resp && resp.data && typeof resp.data.detail === 'string') {
+              detail = resp.data.detail;
+            }
+          }
+        }
         if (detail && detail.includes('Acceso restringido')) {
           setIsAdmin(false);
         } else {
-          setError('Error al cargar datos');
+          setError(t('error_loading'));
         }
       } finally {
         setLoading(false);
       }
     }
     fetchData();
-  }, [token]);
+  }, [token, t]);
 
   const handleAdd = () => {
     setForm({ nombre: '', descripcion: '', cargos: [], impuestos: [] });
@@ -110,15 +123,25 @@ const ConfigTipoOrdenes: React.FC<ConfigTipoOrdenesProps> = ({ token }) => {
         setTiposOrden([...tiposOrden, nuevo]);
       }
       setShowForm(false);
-    } catch (err: any) {
+    } catch (err: unknown) {
       // Mejor manejo de error para tests y axios
-      const data = err?.response?.data || err;
-      setFormError(data.nombre?.[0] || data.detail || 'Error al guardar');
+      let data: unknown = err;
+      type AxiosErrorData = { nombre?: string[]; detail?: string };
+      type AxiosErrorResponse = { response?: { data?: AxiosErrorData } };
+      if (typeof err === 'object' && err !== null && 'response' in err && typeof (err as AxiosErrorResponse).response === 'object') {
+        const resp = (err as AxiosErrorResponse).response;
+        if (resp && resp.data) {
+          data = resp.data;
+        }
+      }
+      const nombre = (data as AxiosErrorData).nombre;
+      const detail = (data as AxiosErrorData).detail;
+      setFormError((nombre && nombre[0]) || detail || t('error_saving'));
     }
   };
 
-  if (loading) return <div>Cargando...</div>;
-  if (!isAdmin) return <div>Acceso restringido</div>;
+  if (loading) return <div>{t('loading')}</div>;
+  if (!isAdmin) return <div>{t('acceso_restringido')}</div>;
   if (error) return <div>{error}</div>;
 
   // Evitar errores si los datos no están listos
@@ -127,23 +150,19 @@ const ConfigTipoOrdenes: React.FC<ConfigTipoOrdenesProps> = ({ token }) => {
   return (
     <div>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
-        <h3 style={{ color: '#8DAA91', fontWeight: 700, margin: 0, fontSize: 20 }}>
-          Configuración de Tipos de Orden
-        </h3>
         <button
           onClick={handleAdd}
           style={{
-            background: '#8DAA91', color: '#fff', border: 'none', borderRadius: 16, padding: '10px 22px', fontWeight: 700, fontSize: 16, cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.10)', display: 'flex', alignItems: 'center', gap: 8, marginLeft: 16, marginRight: 0
+            background: '#8DAA91', color: '#fff', border: 'none', borderRadius: 12, padding: '10px 22px', fontWeight: 700, fontSize: 16, cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.10)', display: 'flex', alignItems: 'center', gap: 8, marginLeft: 0, marginRight: 0
           }}
         >
-          <span style={{ fontSize: 22, fontWeight: 900, marginRight: 6 }}>+</span> Agregar Tipo de Orden
+          {t('add')}
         </button>
       </div>
       {/* Lista de Tipos de Orden o mensaje vacío */}
       {tiposOrden.length === 0 ? (
         <div style={{ color: '#bdbdbd', fontSize: 17, textAlign: 'center', marginTop: 64 }}>
-          No hay tipos de orden configurados.<br />
-          Usa el botón <span style={{ fontWeight: 700, color: '#8DAA91' }}>Agregar Tipo de Orden</span> para crear uno nuevo.
+          {t('no_tipos_orden')}
         </div>
       ) : (
         <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
@@ -151,33 +170,33 @@ const ConfigTipoOrdenes: React.FC<ConfigTipoOrdenesProps> = ({ token }) => {
             <li key={tipo.id} style={{ background: '#18191b', borderRadius: 12, marginBottom: 18, padding: '18px 20px', boxShadow: '0 2px 8px rgba(0,0,0,0.10)', display: 'flex', flexDirection: 'column', gap: 8 }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <div>
-                  <strong style={{ color: '#fff', fontSize: 17 }}>{tipo.nombre}</strong>
+                  <strong style={{ color: '#fff', fontSize: 17 }}>{t(tipo.nombre)}</strong>
                   <span style={{ color: '#bdbdbd', marginLeft: 12 }}>{tipo.descripcion}</span>
                 </div>
                 <div style={{ display: 'flex', gap: 8 }}>
-                  <button data-testid={`edit-tipoorden-${tipo.id}`} onClick={() => handleEdit(tipo)} style={{ background: '#232428', color: '#8DAA91', border: '1.5px solid #8DAA91', borderRadius: 8, padding: '6px 14px', fontWeight: 700, fontSize: 15, cursor: 'pointer' }}>Editar</button>
-                  <button onClick={() => handleDelete(tipo.id)} style={{ background: '#232428', color: '#ff6b6b', border: '1.5px solid #ff6b6b', borderRadius: 8, padding: '6px 14px', fontWeight: 700, fontSize: 15, cursor: 'pointer' }}>Eliminar</button>
+                  <button data-testid={`edit-tipoorden-${tipo.id}`} onClick={() => handleEdit(tipo)} style={{ background: '#232428', color: '#8DAA91', border: '1.5px solid #8DAA91', borderRadius: 8, padding: '6px 14px', fontWeight: 700, fontSize: 15, cursor: 'pointer', marginLeft: 12 }}>{t('edit')}</button>
+                  <button onClick={() => handleDelete(tipo.id)} style={{ background: '#232428', color: '#ff6b6b', border: '1.5px solid #ff6b6b', borderRadius: 8, padding: '6px 14px', fontWeight: 700, fontSize: 15, cursor: 'pointer' }}>{t('remove')}</button>
                 </div>
               </div>
               <div style={{ display: 'flex', gap: 24, marginTop: 4 }}>
                 <div>
-                  <span style={{ color: '#bdbdbd', fontWeight: 600 }}>Cargos: </span>
+                  <span style={{ color: '#bdbdbd', fontWeight: 600 }}>{t('configtabs_cargos')}: </span>
                   {cargos.length > 0 && tipo.cargos.length > 0 ? (
                     cargos.filter(c => tipo.cargos.includes(c.id)).map(c => (
-                      <span key={c.id} style={{ background: '#232428', color: '#8DAA91', borderRadius: 8, padding: '2px 10px', marginRight: 6, fontSize: 14 }}>{c.nombre}</span>
+                      <span key={c.id} style={{ background: '#232428', color: '#8DAA91', borderRadius: 8, padding: '2px 10px', marginRight: 6, fontSize: 14 }}>{t(c.nombre)}</span>
                     ))
                   ) : (
-                    <span style={{ color: '#bdbdbd' }}>Ninguno</span>
+                    <span style={{ color: '#bdbdbd' }}>{t('ninguno')}</span>
                   )}
                 </div>
                 <div>
-                  <span style={{ color: '#bdbdbd', fontWeight: 600 }}>Impuestos: </span>
+                  <span style={{ color: '#bdbdbd', fontWeight: 600 }}>{t('configtabs_impuestos')}: </span>
                   {impuestos.length > 0 && tipo.impuestos.length > 0 ? (
                     impuestos.filter(i => tipo.impuestos.includes(i.id)).map(i => (
-                      <span key={i.id} style={{ background: '#232428', color: '#8DAA91', borderRadius: 8, padding: '2px 10px', marginRight: 6, fontSize: 14 }}>{i.nombre}</span>
+                      <span key={i.id} style={{ background: '#232428', color: '#8DAA91', borderRadius: 8, padding: '2px 10px', marginRight: 6, fontSize: 14 }}>{t(i.nombre)}</span>
                     ))
                   ) : (
-                    <span style={{ color: '#bdbdbd' }}>Ninguno</span>
+                    <span style={{ color: '#bdbdbd' }}>{t('ninguno')}</span>
                   )}
                 </div>
               </div>

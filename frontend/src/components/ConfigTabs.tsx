@@ -5,14 +5,26 @@ import TipoCargoCrud from './TipoCargoCrud';
 import { ConfigEdit } from './ConfigEdit';
 import ConfigTipoOrdenes from './ConfigTipoOrdenes';
 
+
 const TABS = [
-  { key: 'general', label: 'General' },
-  { key: 'impuestos', label: 'Impuestos' },
-  { key: 'cargos', label: 'Cargos' },
-  { key: 'tiposorden', label: 'Tipos de Orden' },
+  { key: 'general', label: 'configtabs_general' },
+  { key: 'impuestos', label: 'configtabs_impuestos' },
+  { key: 'cargos', label: 'configtabs_cargos' },
+  { key: 'tiposorden', label: 'configtabs_tiposorden' },
 ];
 
-const ConfigTabs = ({ config, setConfig, setIdioma, loading, token }: any) => {
+// Import the RestauranteConfig type from ConfigEdit or its source file
+import type { RestauranteConfig } from './ConfigEdit';
+
+export interface ConfigTabsProps {
+  config: RestauranteConfig;
+  setConfig: (config: RestauranteConfig) => void;
+  setIdioma: (idioma: string) => void;
+  loading: boolean;
+  token: string;
+}
+
+const ConfigTabs = ({ config, setConfig, setIdioma, loading, token }: ConfigTabsProps) => {
   const { t } = useTranslation();
   const [tab, setTab] = useState('general');
 
@@ -63,7 +75,7 @@ const ConfigTabs = ({ config, setConfig, setIdioma, loading, token }: any) => {
           }}
             onMouseOver={e => (e.currentTarget.style.background = '#18191b')}
             onMouseOut={e => (e.currentTarget.style.background = '#232428')}
-          >{t('Cerrar')}</button>
+          >{t('close')}</button>
         </div>
         <div style={{ padding: 32 }}>
           {tab === 'general' && (
