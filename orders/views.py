@@ -1,19 +1,23 @@
 from rest_framework import viewsets
-from .models import Producto, Pedido, Factura, Ruta, Entrega, ClienteRuta, Categoria, Subcategoria
-from .models import ProductoSerializer, PedidoSerializer, FacturaSerializer, RutaSerializer, EntregaSerializer, ClienteRutaSerializer, CategoriaSerializer, SubcategoriaSerializer
+from orders.models.base import Producto, Categoria, Subcategoria
+from orders.models.pedido import Pedido, PedidoProducto
+from orders.models.facturacion import Factura
+from orders.models.rutas import Ruta, Entrega, ClienteRuta
+from orders.models.configuracion import Configuracion, Profile
+from orders.models.orden import Orden, OrdenLinea, OrdenCargo, Impuesto, TipoOrden, TipoCargo
+from orders.serializers.base import ProductoSerializer, CategoriaSerializer, SubcategoriaSerializer
+from orders.serializers.pedido import PedidoSerializer, PedidoProductoSerializer
+from orders.serializers.facturacion import FacturaSerializer
+from orders.serializers.rutas import RutaSerializer, EntregaSerializer, ClienteRutaSerializer
+from orders.serializers.configuracion import ConfiguracionSerializer, ProfileSerializer
+from orders.serializers.orden import OrdenSerializer, OrdenLineaSerializer, OrdenCargoSerializer, ImpuestoSerializer, TipoOrdenSerializer, TipoCargoSerializer
 from .permissions import IsAdmin, IsVendedor, IsRepartidor, IsCliente, IsAdminOrReadOnly, IsAdminOrVendedorOrCliente
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status
 from django_filters.rest_framework import DjangoFilterBackend
-from .models import Profile, ProfileSerializer
-from rest_framework.permissions import IsAuthenticated
-from .models import Configuracion, ConfiguracionSerializer
-from rest_framework.permissions import IsAdminUser
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework import permissions
-from .models import Orden, OrdenLinea, OrdenCargo, Impuesto
-from .models import OrdenSerializer, OrdenLineaSerializer, OrdenCargoSerializer, ImpuestoSerializer
-from .models import TipoOrden, TipoCargo, TipoOrdenSerializer, TipoCargoSerializer
 
 # Create your views here.
 
@@ -263,3 +267,13 @@ class TipoCargoViewSet(viewsets.ModelViewSet):
         if self.action in ['list', 'retrieve', 'create', 'update', 'partial_update', 'destroy']:
             return [permissions.IsAdminUser()]
         return [permissions.IsAdminUser()]
+
+class PedidoProductoViewSet(viewsets.ModelViewSet):
+    queryset = PedidoProducto.objects.all()
+    serializer_class = PedidoProductoSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['pedido', 'producto']
+
+    def get_permissions(self):
+        # Ajusta los permisos según tu lógica de negocio
+        return [permissions.IsAuthenticated()]
