@@ -225,7 +225,7 @@ def test_ordenes_crud_and_nested(get_jwt_token):
     producto_data = {"nombre": f"Producto Test {int(time.time()*1000)}", "precio": 1000, "descripcion": "desc", "categoria": categoria_id}
     r = requests.post(f"{BASE_URL}/api/productos/", json=producto_data, headers=headers)
     if r.status_code != 201:
-        print('Detalle error producto:', r.status_code, r.text)
+        logging.error('Detalle error producto: Status Code: %s, Response: %s', r.status_code, r.text)
     assert r.status_code == 201
     producto_id = r.json()["id"]
     # Crear orden
