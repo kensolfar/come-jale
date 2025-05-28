@@ -25,7 +25,7 @@ router.register(r'ordenes-cargos', OrdenCargoViewSet)
 router.register(r'impuestos', ImpuestoViewSet)
 router.register(r'tipoorden', TipoOrdenViewSet, basename='tipoorden')
 router.register(r'tipocargo', TipoCargoViewSet, basename='tipocargo')
-router.register(r'pedido-productos', PedidoProductoViewSet)
+router.register(r'pedido-productos', PedidoProductoViewSet, basename='pedido-producto')
 
 # Nested routers for ordenes/{orden_pk}/lineas and ordenes/{orden_pk}/cargos
 ordenes_router = NestedDefaultRouter(router, r'ordenes', lookup='orden')
