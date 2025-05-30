@@ -20,11 +20,12 @@ const Order: React.FC<OrderProps> = ({ order, onRemove }) => {
 
   return (
     <aside style={{
-      background: '#23242a',
+      background: 'var(--base-dark-bg-2)',
       color: '#fff',
-      padding: '2rem 1rem', // padding lateral reducido
-      borderRadius: 18,
-      boxShadow: '-4px 0 24px 0 rgba(0,0,0,0.18)',
+      padding: '2rem 1rem',
+      height: '100%',
+      //borderRadius: 18,
+      //boxShadow: '-4px 0 24px 0 rgba(0,0,0,0.18)',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'stretch',

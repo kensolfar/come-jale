@@ -108,14 +108,13 @@ const Menu: React.FC<MenuProps> = ({ order, setOrder }) => {
           padding: '1rem 1rem',
         }}
       >
-        <h1 style={{ color: '#fff', fontWeight: 800, fontSize: 32, marginBottom: 8 }}>{t('menu')}</h1>
+        <h1 style={{ marginBottom: 8 }}>{t('menu')}</h1>
         <div style={{ display: 'flex', gap: 16, marginBottom: 24, flexWrap: 'wrap' }}>
           <button
             onClick={() => setCategoriaSeleccionada(null)}
             style={{
-              background: categoriaSeleccionada === null ? 'var(--color-green-leaf, #8DAA91)' : '#23242a',
-              color: categoriaSeleccionada === null ? '#fff' : '#bdbdbd',
-              border: categoriaSeleccionada === null ? '2px solid #fff' : '2px solid #23242a',
+              background: categoriaSeleccionada === null ? 'var(--primary-color)' : 'var(--base-dark-bg-2)',
+              color: categoriaSeleccionada === null ? 'var(--white)' : 'var(--primary-color)',
               borderRadius: 16,
               fontWeight: 700,
               fontSize: 18,
@@ -132,9 +131,8 @@ const Menu: React.FC<MenuProps> = ({ order, setOrder }) => {
               key={cat.id}
               onClick={() => setCategoriaSeleccionada(cat.id)}
               style={{
-                background: categoriaSeleccionada === cat.id ? 'var(--color-green-leaf, #8DAA91)' : '#23242a',
-                color: categoriaSeleccionada === cat.id ? '#fff' : '#bdbdbd',
-                border: categoriaSeleccionada === cat.id ? '2px solid #fff' : '2px solid #23242a',
+                background: categoriaSeleccionada === cat.id ? 'var(--primary-color)' : 'var(--base-dark-bg-2)',
+                color: categoriaSeleccionada === cat.id ? 'var(--white)' : 'var(--primary-color)',
                 borderRadius: 16,
                 fontWeight: 700,
                 fontSize: 18,

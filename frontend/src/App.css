@@ -1,11 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+@import url('./styleguide.css');
 
 #root {
   max-width: 2400px;
   text-align: center;
-  
   /* En móvil, reduce el margen lateral en la diferencia entre sidebar expandido y colapsado */
-  /* Suponiendo: sidebar expandido = 240px, colapsado = 64px, diferencia = 176px */
 }
 @media (max-width: 600px) {
   #root {
@@ -16,18 +14,15 @@
 .columna {
   float: left;
 }
-
 .izquierda {
-  width: 20%;
+  width: 15%;
 }
-
 .derecha {
-  width: 30%;
+  width: 20%;
   float: right;
 }
-
 .centro {
-  width: 50%;
+  width: 65%;
 }
 
 .logo {
@@ -37,21 +32,16 @@
   transition: filter 300ms;
 }
 .logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+  filter: drop-shadow(0 0 2em var(--accents-blue));
 }
 .logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+  filter: drop-shadow(0 0 2em var(--accents-green));
 }
 
 @keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
-
 @media (prefers-reduced-motion: no-preference) {
   a:nth-of-type(2) .logo {
     animation: logo-spin infinite 20s linear;
@@ -60,85 +50,71 @@
 
 .card {
   padding: 2em;
+  background: var(--base-form-bg);
+  border-radius: var(--border-radius-main);
+  box-shadow: var(--dropshadow);
+  color: var(--text-dark);
 }
 
 .read-the-docs {
-  color: #888;
-}
-
-/* App.css - Estilos globales para la app estilo coffee shop */
-
-:root {
-  --color-coffee-brown: #855E42;
-  --color-latte-cream: #F5E1C6;
-  --color-green-leaf: #8DAA91;
-  --color-white: #FFFFFF;
-  --border-radius-main: 18px;
-  --border-width-main: 2px;
-  --font-title: 'Nunito', sans-serif;
-  --font-body: 'Open Sans', sans-serif;
-  --color-bg-main: #181A20; /* Fondo principal oscuro */
-  --color-bg-panel: #23242a; /* Paneles y sidebar */
-  --color-bg-card: #23242a; /* Tarjetas y paneles */
-  --color-accent: #ff5c5c; /* Botón y acento */
-  --color-text-main: #fff;
-  --color-text-secondary: #bdbdbd;
-  --color-border: #292b32;
-  --color-btn-hover: #ff7b7b;
+  color: var(--textgray);
 }
 
 body {
-  background: var(--color-latte-cream);
-  color: var(--color-coffee-brown);
-  font-family: var(--font-body);
+  background: var(--base-bg);
+  color: var(--text-dark);
+  font-family: var(--body-font-family);
   margin: 0;
   display: block;
   min-height: 100vh;
 }
 
-body, html, #root {
-  background: var(--color-bg-main) !important;
-  color: var(--color-text-main);
-  font-family: 'Poppins', 'Segoe UI', Arial, sans-serif;
+h1 {
+  font-family: var(--heading-h1-font-family);
+  font-weight: var(--heading-h1-font-weight);
+  font-size: var(--heading-h1-font-size);
+  font-style: var(--heading-h1-font-style);
+  color: var(--white);
+}
+h2 {
+  font-family: var(--heading-h2-font-family);
+  font-weight: var(--heading-h2-font-weight);
+  font-size: var(--heading-h2-font-size);
+  font-style: var(--heading-h2-font-style);
+  color: var(--white);
 }
 
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-title);
-  font-weight: 800;
-  color: var(--color-coffee-brown);
-  margin-top: 0;
-}
 
 button, .btn {
   border-radius: var(--border-radius-main);
-  border: var(--border-width-main) solid var(--color-coffee-brown);
-  font-family: var(--font-title);
-  font-weight: 700;
-  font-size: 1rem;
+  border: var(--border-width-main, 2px) solid var(--primary-color);
+  font-family: var(--button-normal-semibold-font-family);
+  font-weight: var(--button-normal-semibold-font-weight);
+  font-size: var(--button-normal-semibold-font-size);
   padding: 10px 24px;
   cursor: pointer;
   transition: background 0.2s, color 0.2s;
-  background: var(--color-green-leaf);
-  color: var(--color-white);
+  background: var(--primary-color);
+  color: var(--white);
 }
 
 button.primary, .btn-primary {
-  background: var(--color-green-leaf);
-  color: var(--color-white);
+  background: var(--primary-color);
+  color: var(--white);
   border: none;
 }
 
 button.secondary, .btn-secondary {
-  background: var(--color-white);
-  color: var(--color-coffee-brown);
-  border: var(--border-width-main) solid var(--color-coffee-brown);
+  background: var(--white);
+  color: var(--primary-color);
+  border: var(--border-width-main, 2px) solid var(--primary-color);
 }
 
 .primary-btn {
   margin-bottom: 18px;
   padding: 10px 24px;
-  background: #1a73e8;
-  color: #fff;
+  background: var(--accents-blue);
+  color: var(--white);
   font-weight: 700;
   border: none;
   border-radius: 8px;
@@ -150,11 +126,11 @@ button.secondary, .btn-secondary {
 }
 
 .nav-btn {
-  background: var(--color-green-leaf, #8DAA91);
-  color: #fff;
-  font-family: var(--font-title, 'Nunito', sans-serif);
-  font-weight: 700;
-  font-size: 17px;
+  background: var(--primary-color);
+  color: var(--white);
+  font-family: var(--button-normal-semibold-font-family);
+  font-weight: var(--button-normal-semibold-font-weight);
+  font-size: var(--button-normal-semibold-font-size);
   border: none;
   border-radius: 8px;
   padding: 10px 24px;
@@ -165,38 +141,38 @@ button.secondary, .btn-secondary {
 }
 
 .nav-btn:hover, .nav-btn:focus {
-  background: #6e9477;
-  color: #fff;
+  background: var(--accents-green);
+  color: var(--white);
   filter: brightness(1.08);
 }
 
 input, textarea, select {
-  border-radius: calc(var(--border-radius-main) / 2);
-  border: var(--border-width-main) solid var(--color-coffee-brown);
-  background: var(--color-white);
-  color: var(--color-coffee-brown);
-  font-family: var(--font-body);
-  font-size: 1rem;
+  border-radius: calc(var(--border-radius-main, 18px) / 2);
+  border: var(--border-width-main, 2px) solid var(--primary-color);
+  background: var(--white);
+  color: var(--text-dark);
+  font-family: var(--body-font-family);
+  font-size: var(--body-normal-medium-font-size);
   padding: 8px 12px;
   outline: none;
   box-sizing: border-box;
 }
 
 .card, .product-card {
-  background: var(--color-latte-cream);
+  background: var(--base-bg);
   border-radius: var(--border-radius-main);
-  box-shadow: 0 4px 16px 0 rgba(133,94,66,0.08);
-  border: var(--border-width-main) solid var(--color-coffee-brown);
+  box-shadow: var(--dropshadow);
+  border: var(--border-width-main, 2px) solid var(--primary-color);
   padding: 1.5rem 2rem;
   margin-bottom: 1.5rem;
 }
 
 ::-webkit-scrollbar {
   width: 10px;
-  background: var(--color-latte-cream);
+  background: var(--base-bg);
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--color-coffee-brown);
+  background: var(--primary-color);
   border-radius: 8px;
 }
 

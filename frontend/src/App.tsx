@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import Login from './components/Login'
 import { setAuthToken, refreshToken } from './services/api'
 import './App.css'
+import './styleguide.css'
 import Sidebar from './components/Sidebar';
 import Menu from './components/Menu';
 import Order from './components/Order';
@@ -10,6 +11,7 @@ import DashboardIcon from '@mui/icons-material/Dashboard';
 import RestaurantMenuIcon from '@mui/icons-material/RestaurantMenu';
 import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
 import LogoutIcon from '@mui/icons-material/Logout';
+import SettingsIcon from '@mui/icons-material/Settings';
 import ProductosList from './components/ProductosList';
 import { t } from 'i18next';
 
@@ -17,18 +19,20 @@ interface OrderItem {
   producto: Producto;
   cantidad: number;
 }
+type PageKey = 'dashboard' | 'productos' | 'ordenes' | 'configuracion';
 
 function App() {
   const [token, setToken] = useState<string | null>(() => localStorage.getItem('jwt_token'))
   const [refresh, setRefresh] = useState<string | null>(() => localStorage.getItem('jwt_refresh'))
   const [order, setOrder] = useState<OrderItem[]>([]);
-  const [page, setPage] = useState<'dashboard' | 'productos' | 'ordenes'>('dashboard');
+  const [page, setPage] = useState<PageKey>('dashboard');
 
   const navItems = [
-    { label: t('Dashboard'), icon: <DashboardIcon />, onClick: () => setPage('dashboard') },
-    { label: t('Products'), icon: <RestaurantMenuIcon />, onClick: () => setPage('productos') },
-    { label: t('Orders'), icon: <ReceiptLongIcon />, onClick: () => setPage('ordenes') },
-    { label: t('Logout'), icon: <LogoutIcon />, onClick: () => setToken(null), style: { marginTop: 'auto', color: '#a11' } },
+    { label: t('dashboard'), key: 'dashboard', icon: <DashboardIcon />, onClick: () => setPage('dashboard' as PageKey) },
+    { label: t('productos'), key: 'productos', icon: <RestaurantMenuIcon />, onClick: () => setPage('productos' as PageKey) },
+    { label: t('ordenes'), key: 'ordenes', icon: <ReceiptLongIcon />, onClick: () => setPage('ordenes' as PageKey)  },
+    { label: t('configuracion'), key: 'configuracion', icon: <SettingsIcon />, onClick: () => setPage('configuracion' as PageKey)  },
+    { label: t('logout'), key: 'logout', icon: <LogoutIcon />, onClick: () => setToken(null), style: { marginTop: 'auto', color: '#a11' } },
   ];
 
   // Asegura que el token esté en los headers de axios en el primer render
@@ -85,10 +89,9 @@ function App() {
       flexDirection: 'row',
       width: '100vw',
       height: '100vh',
-      background: '#18191f',
+      background: 'var(--base-dark-bg-1)',
       overflow: 'hidden',
-      boxSizing: 'border-box',
-      padding: '1rem 1rem',
+      boxSizing: 'border-box'
     }}>
       {/* Sidebar (izquierda) */}
       <div className='columna izquierda' style={{boxSizing: 'border-box' }}>
