@@ -13,6 +13,7 @@ import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
 import LogoutIcon from '@mui/icons-material/Logout';
 import SettingsIcon from '@mui/icons-material/Settings';
 import ProductosList from './components/ProductosList';
+import Configuracion from './components/Configuracion/Configuracion';
 import { t } from 'i18next';
 
 interface OrderItem {
@@ -97,16 +98,17 @@ function App() {
       <div className='columna izquierda' style={{boxSizing: 'border-box' }}>
         <Sidebar navItems={navItems} page={page} token={token || ''} />
       </div>
-      {/* Contenido central (menú) */}
-      <div className='columna centro' style={{overflowY: 'auto', padding: '0 1.5rem', boxSizing: 'border-box' }}>
+      {/* Contenido */}
+      <div className='columna centro' style={{overflowY: 'auto', padding: '0', boxSizing: 'border-box' }}>
         {page === 'dashboard' && <Menu order={order} setOrder={setOrder} />}
         {page === 'productos' && <ProductosList token={token || ''} />}
+        {page === 'configuracion' && <Configuracion token={token || ''} />}
         {/* Aquí puedes agregar más páginas según el valor de page */}
       </div>
-      {/* Orden (derecha) */}
+      {/* Orden (derecha) 
       <div className='columna derecha' style={{boxSizing: 'border-box' }}>
         <Order order={order} onRemove={handleRemoveFromOrder} />
-      </div>
+      </div>*/}
     </div>
   );
 }

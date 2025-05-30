@@ -1,6 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import UserInfo from './UserInfo';
 import { useTranslation } from 'react-i18next';
+// import your i18n instance from the correct path (adjust the path as needed)
+import i18n from '../i18n';
 import BusinessInfoPanel from './BusinessInfoPanel';
 
 interface NavItem {
@@ -61,9 +63,6 @@ const Sidebar: React.FC<SidebarProps> = ({ navItems, page, token }) => {
         {navItems.map((item) => {
           // For multilenguaje: convert label to a translation key (snake_case)
           const labelKey = item.key
-            .toLowerCase()
-            .replace(/ /g, '_')
-            .replace(/[^a-z0-9_]/g, '');
           return (
             <button
               key={item.label}
@@ -106,11 +105,9 @@ const Sidebar: React.FC<SidebarProps> = ({ navItems, page, token }) => {
                   marginRight: showLabel ? 14 : 0, // Espacio entre icono y label solo si está activo
                   width: !showLabel ? '100%' : 'auto', // Centrar icono si no hay label
                 }}>
-                  {React.isValidElement(item.icon)
-                    ? React.cloneElement(item.icon as React.ReactElement<any, any>, {
-                        style: { color: page === labelKey ? '#fff' : 'var(--primary-color)' }
-                      })
-                    : item.icon}
+                  {React.cloneElement(item.icon as React.ReactElement<any, any>, {
+                    style: { color: page === labelKey ? '#fff' : 'var(--primary-color)' }
+                  })}
                 </span>
                 {showLabel && <h2>{t(labelKey)}</h2>}
               </span>

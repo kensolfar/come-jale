@@ -31,7 +31,7 @@
     --body-normal-medium-font-family: "Barlow", Helvetica;
     --body-normal-medium-font-size: 14px;
     --body-normal-medium-font-style: normal;
-    --body-normal-medium-font-weight: 500;
+    --body-normal-medium-font-weight: 600;
     --body-normal-medium-letter-spacing: 0px;
     --body-normal-medium-line-height: 129.99999523162842%;
     --body-normal-regular-font-family: "Barlow", Helvetica;
@@ -86,7 +86,7 @@
     --heading-h1-font-family: "Barlow", Helvetica;
     --heading-h1-font-size: 28px;
     --heading-h1-font-style: normal;
-    --heading-h1-font-weight: 600;
+    --heading-h1-font-weight: 500;
     --heading-h1-letter-spacing: 0px;
     --heading-h1-line-height: 139.9999976158142%;
     --heading-h2-font-family: "Barlow", Helvetica;
@@ -96,6 +96,7 @@
     --heading-h2-letter-spacing: 0px;
     --heading-h2-line-height: 139.9999976158142%;
     --primary-color: rgba(234, 124, 105, 1);
+    --primary-color-transparent: rgba(234, 124, 105, 0.3);
     --secondary-color: rgba(146, 136, 224, 1);
     --text-dark: rgba(59, 81, 98, 1);
     --text-lighter: rgba(224, 230, 233, 1);
