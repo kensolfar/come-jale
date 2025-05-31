@@ -247,10 +247,11 @@ const Configuracion: React.FC<ConfiguracionProps> = ({ token, setIdioma, idioma 
           </nav>
         </div>
         <div 
-          className ='config-content'
+          className='config-content'
           style={{ 
             display: 'flex',
             flexDirection: 'column',
+            alignItems: 'flex-start',
             width: '70%',
             height: '100%',
             borderRadius: 15,

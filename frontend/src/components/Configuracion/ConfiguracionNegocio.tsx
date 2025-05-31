@@ -100,45 +100,36 @@ const ConfiguracionNegocio: React.FC<ConfigNegocioProps> = ({ config, setConfig,
   return (
     <form onSubmit={handleSubmit} style={{
       width: '100%',
+      height: '100%',
       maxWidth: 500,
-      margin: '0 auto',
+      marginTop: '34px',
+      marginLeft: '24px',
       background: 'transparent',
       padding: 0,
       borderRadius: 0,
       boxShadow: 'none',
-      color: '#fff',
+      color: 'var(--white)',
       fontFamily: 'inherit',
       border: 'none',
       position: 'relative',
+      paddingBottom: 24
     }}>
-      <h2 style={{ textAlign: 'center', color: '#fff', fontWeight: 700, marginBottom: 16, fontSize: 26 }}>{t('restaurant_configuration')}</h2>
-      <label style={{ color: '#eee', fontWeight: 500, fontSize: 15, display: 'block', marginBottom: 8 }} htmlFor="idioma">{t('language')}:</label>
-      <select id="idioma" name="idioma" value={form.idioma} onChange={handleLangChange} style={{
-        background: '#232428', color: '#fff', border: '1.5px solid #8DAA91', borderRadius: 8, padding: '6px 12px', fontSize: 16, width: '100%', marginBottom: 18
-      }}>
+      <h2 style={{ textAlign: 'left'}}>{t('restaurant_configuration')}</h2>
+      <label className="label" htmlFor="idioma">{t('language')}:</label>
+      <select id="idioma" name="idioma" value={form.idioma} onChange={handleLangChange}>
         {LANGS.map(l => <option key={l.code} value={l.code}>{l.label}</option>)}
       </select>
-      <label style={{ color: '#eee', fontWeight: 500, fontSize: 15, display: 'block', marginBottom: 8 }} htmlFor="nombre_restaurante">{t('restaurant_name')}:</label>
-      <input id="nombre_restaurante" name="nombre_restaurante" value={form.nombre_restaurante} onChange={handleChange} required style={{
-        width: '100%', background: '#18191b', color: '#fff', border: '1.5px solid #8DAA91', borderRadius: 8, padding: 10, fontSize: 16, marginBottom: 18
-      }} />
-      <label style={{ color: '#eee', fontWeight: 500, fontSize: 15, display: 'block', marginBottom: 8 }} htmlFor="direccion">{t('address')}:</label>
-      <input id="direccion" name="direccion" value={form.direccion} onChange={handleChange} style={{
-        width: '100%', background: '#18191b', color: '#fff', border: '1.5px solid #8DAA91', borderRadius: 8, padding: 10, fontSize: 16, marginBottom: 18
-      }} />
-      <label style={{ color: '#eee', fontWeight: 500, fontSize: 15, display: 'block', marginBottom: 8 }} htmlFor="telefono">{t('phone')}:</label>
-      <input id="telefono" name="telefono" value={form.telefono} onChange={handleChange} style={{
-        width: '100%', background: '#18191b', color: '#fff', border: '1.5px solid #8DAA91', borderRadius: 8, padding: 10, fontSize: 16, marginBottom: 18
-      }} />
-      <label style={{ color: '#eee', fontWeight: 500, fontSize: 15, display: 'block', marginBottom: 8 }} htmlFor="descripcion">{t('description')}:</label>
-      <textarea id="descripcion" name="descripcion" value={form.descripcion} onChange={handleChange} style={{
-        width: '100%', background: '#18191b', color: '#fff', border: '1.5px solid #8DAA91', borderRadius: 8, padding: 10, fontSize: 16, marginBottom: 18, minHeight: 48
-      }} />
-      <label style={{ color: '#eee', fontWeight: 500, fontSize: 15, display: 'block', marginBottom: 8 }} htmlFor="logo">{t('logo')}:</label>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 18 }}>
-        <label htmlFor="logo-upload" style={{
-          background: 'var(--color-green-leaf, #8DAA91)', color: '#fff', borderRadius: 8, padding: '8px 18px', cursor: 'pointer', fontWeight: 600, fontSize: 15, boxShadow: '0 1px 4px rgba(0,0,0,0.10)'
-        }}>{t('select_file')}</label>
+      <label htmlFor="nombre_restaurante">{t('restaurant_name')}:</label>
+      <input id="nombre_restaurante" name="nombre_restaurante" value={form.nombre_restaurante} onChange={handleChange} required />
+      <label htmlFor="direccion">{t('address')}:</label>
+      <input id="direccion" name="direccion" value={form.direccion} onChange={handleChange} />
+      <label htmlFor="telefono">{t('phone')}:</label>
+      <input id="telefono" name="telefono" value={form.telefono} onChange={handleChange} />
+      <label htmlFor="descripcion">{t('description')}:</label>
+      <textarea id="descripcion" name="descripcion" value={form.descripcion} onChange={handleChange} />
+      <label style={{ marginTop: 18}} htmlFor="logo">{t('logo')}:</label>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 18}}>
+        <label className="upload" htmlFor="logo-upload">{t('select_file')}</label>
         <input id="logo-upload" name="logo" type="file" accept="image/*" onChange={handleLogoChange} style={{ display: 'none' }} />
         <span style={{ color: '#ccc', fontSize: 14 }}>{logoFile?.name || (form.logo ? t('Logo actual') : t('no_file'))}</span>
       </div>
@@ -149,16 +140,26 @@ const ConfiguracionNegocio: React.FC<ConfigNegocioProps> = ({ config, setConfig,
             style={{ maxWidth: 120, maxHeight: 80, borderRadius: 8, background: '#fff' }} />
         </div>
       )}
-      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 12, marginTop: 24 }}>
-        <button type="submit" disabled={saving} style={{
-          background: 'var(--color-green-leaf, #8DAA91)', color: '#fff', border: 'none', borderRadius: 20, padding: '10px 32px', fontWeight: 700, fontSize: 18, cursor: 'pointer', transition: 'background 0.2s', boxShadow: '0 2px 8px rgba(0,0,0,0.10)'
+      <div 
+        style={{ 
+          display: 'flex', 
+          flexDirection: 'column',
+          gap: 12, 
+          marginTop: 24,
+          position: 'absolute',
+          bottom: 24,
+          left: 0,
+          width: '100%',
         }}
-          onMouseOver={e => (e.currentTarget.style.background = '#6e8c74')}
-          onMouseOut={e => (e.currentTarget.style.background = 'var(--color-green-leaf, #8DAA91)')}
-        >{saving ? t('saving') : t('save')}</button>
+      >
+        {error && <div className="config-negocio-error">{error}</div>}
+        {success && <div className="config-negocio-success">{t('saved_success')}</div>}
+        <div style={{ alignSelf: 'flex-end' }}>
+          <button className='primary' type="submit" disabled={saving}>
+            {saving ? t('saving') : t('save')}
+          </button>
+        </div>
       </div>
-      {error && <div style={{ background: 'rgba(255,107,107,0.12)', color: '#ff6b6b', marginTop: 14, textAlign: 'center', borderRadius: 8, padding: 8 }}>{error}</div>}
-      {success && <div style={{ background: 'rgba(141,170,145,0.12)', color: '#8DAA91', marginTop: 14, textAlign: 'center', borderRadius: 8, padding: 8 }}>{t('saved_success')}</div>}
     </form>
   );
 };

@@ -85,45 +85,33 @@ h2 {
 }
 
 
-button, .btn {
-  border-radius: var(--border-radius-main);
-  border: var(--border-width-main, 2px) solid var(--primary-color);
+button {
+  border-radius: var(--border-radius-button);
   font-family: var(--button-normal-semibold-font-family);
   font-weight: var(--button-normal-semibold-font-weight);
   font-size: var(--button-normal-semibold-font-size);
-  padding: 10px 24px;
   cursor: pointer;
   transition: background 0.2s, color 0.2s;
-  background: var(--primary-color);
   color: var(--white);
 }
 
-button.primary, .btn-primary {
+button.primary {
+  box-shadow: var(--dropshadow);
   background: var(--primary-color);
   color: var(--white);
   border: none;
+  padding: 14px;
+  width: 144px;
 }
 
-button.secondary, .btn-secondary {
-  background: var(--white);
-  color: var(--primary-color);
-  border: var(--border-width-main, 2px) solid var(--primary-color);
-}
-
-.primary-btn {
-  margin-bottom: 18px;
-  padding: 10px 24px;
-  background: var(--accents-blue);
+button.secondary {
+  background: var(--base-form-bg);
   color: var(--white);
-  font-weight: 700;
-  border: none;
-  border-radius: 8px;
-  font-size: 17px;
-  cursor: pointer;
-  transition: background 0.2s;
-  display: block;
-  margin-left: auto;
+  border: solid var(--border-width-main, 2px) var(--primary-color);
+  padding: 14px;
+  width: 144px;
 }
+
 
 .nav-btn {
   background: var(--primary-color);
@@ -148,14 +136,16 @@ button.secondary, .btn-secondary {
 
 input, textarea, select {
   border-radius: calc(var(--border-radius-main, 18px) / 2);
-  border: var(--border-width-main, 2px) solid var(--primary-color);
-  background: var(--white);
-  color: var(--text-dark);
+  border: var(--border-width-main) solid var(--base-dark-line);
+  background: var(--base-form-bg);
+  color: var(--textlight);
   font-family: var(--body-font-family);
   font-size: var(--body-normal-medium-font-size);
-  padding: 8px 12px;
+  padding: 14px;
   outline: none;
   box-sizing: border-box;
+  width: 100%;
+  margin-bottom: 18px;
 }
 
 .card, .product-card {
@@ -174,6 +164,47 @@ input, textarea, select {
 ::-webkit-scrollbar-thumb {
   background: var(--primary-color);
   border-radius: 8px;
+}
+
+label {
+  color: var(--text-lighter);
+  font-size: var(--body-large-medium-font-size);
+  font-family: var(--body-large-medium-font-family);
+  font-style: var(--body-large-medium-font-style);
+  display: block;
+  margin-bottom: 8px;
+  text-align: left;
+  font-weight: var(--body-large-medium-font-weight);
+  line-height: var(--body-large-medium-line-height);
+}
+
+label.upload {
+  box-shadow: var(--dropshadow);
+  background: var(--primary-color);
+  color: var(--white);
+  border-radius: var(--border-radius-button);
+  padding: 8px 18px;
+  cursor: pointer;
+  font-size: 15px;
+  display: inline-block;
+}
+
+.config-negocio-error {
+  background: rgba(255,107,107,0.12);
+  color: #ff6b6b;
+  margin-top: 14px;
+  text-align: center;
+  border-radius: 8px;
+  padding: 8px;
+}
+
+.config-negocio-success {
+  background: rgba(141,170,145,0.12);
+  color: #8DAA91;
+  margin-top: 14px;
+  text-align: center;
+  border-radius: 8px;
+  padding: 8px;
 }
 
 /* Ejemplo de uso de clases:
