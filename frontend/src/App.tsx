@@ -14,7 +14,9 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import SettingsIcon from '@mui/icons-material/Settings';
 import ProductosList from './components/ProductosList';
 import Configuracion from './components/Configuracion/Configuracion';
+import { ProveedorUsuario } from './components/ContextoDeUsuario';
 import { t } from 'i18next';
+import i18n from './i18n';
 
 interface OrderItem {
   producto: Producto;
@@ -85,31 +87,33 @@ function App() {
   }
 
   return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'row',
-      width: '100vw',
-      height: '100vh',
-      background: 'var(--base-dark-bg-1)',
-      overflow: 'hidden',
-      boxSizing: 'border-box'
-    }}>
-      {/* Sidebar (izquierda) */}
-      <div className='columna izquierda' style={{boxSizing: 'border-box' }}>
-        <Sidebar navItems={navItems} page={page} token={token || ''} />
+    <ProveedorUsuario token={token}>
+      <div style={{
+        display: 'flex',
+        flexDirection: 'row',
+        width: '100vw',
+        height: '100vh',
+        background: 'var(--base-dark-bg-1)',
+        overflow: 'hidden',
+        boxSizing: 'border-box'
+      }}>
+        {/* Sidebar (izquierda) */}
+        <div className='columna izquierda' style={{boxSizing: 'border-box' }}>
+          <Sidebar navItems={navItems} page={page} token={token || ''} />
+        </div>
+        {/* Contenido */}
+        <div className='columna centro' style={{overflowY: 'auto', padding: '0', boxSizing: 'border-box' }}>
+          {page === 'dashboard' && <Menu order={order} setOrder={setOrder} />}
+          {page === 'productos' && <ProductosList token={token || ''} />}
+          {page === 'configuracion' && <Configuracion token={token} idioma={i18n.language} setIdioma={(lang: string) => i18n.changeLanguage(lang)}  />}
+          {/* Aquí puedes agregar más páginas según el valor de page */}
+        </div>
+        {/* Orden (derecha) 
+        <div className='columna derecha' style={{boxSizing: 'border-box' }}>
+          <Order order={order} onRemove={handleRemoveFromOrder} />
+        </div>*/}
       </div>
-      {/* Contenido */}
-      <div className='columna centro' style={{overflowY: 'auto', padding: '0', boxSizing: 'border-box' }}>
-        {page === 'dashboard' && <Menu order={order} setOrder={setOrder} />}
-        {page === 'productos' && <ProductosList token={token || ''} />}
-        {page === 'configuracion' && <Configuracion token={token || ''} />}
-        {/* Aquí puedes agregar más páginas según el valor de page */}
-      </div>
-      {/* Orden (derecha) 
-      <div className='columna derecha' style={{boxSizing: 'border-box' }}>
-        <Order order={order} onRemove={handleRemoveFromOrder} />
-      </div>*/}
-    </div>
+    </ProveedorUsuario>
   );
 }
 

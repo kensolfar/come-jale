@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { FaCog } from 'react-icons/fa';
 import { useTranslation } from 'react-i18next';
 import ConfigTabs from './ConfigTabs';
-import type { RestauranteConfig } from './ConfigEdit';
+import type { NegocioConfig } from './Configuracion/ConfiguracionNegocio';
 import { isAdminFromToken } from './utilsAuth';
 
 export interface BusinessInfoPanelProps {
@@ -13,7 +13,7 @@ export interface BusinessInfoPanelProps {
 
 const BusinessInfoPanel: React.FC<BusinessInfoPanelProps> = ({ idioma, setIdioma, token }) => {
   const { t, i18n } = useTranslation();
-  const [config, setConfig] = useState<RestauranteConfig | null>(null);
+  const [config, setConfig] = useState<NegocioConfig | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [adminOpen, setAdminOpen] = useState(false);
@@ -23,7 +23,7 @@ const BusinessInfoPanel: React.FC<BusinessInfoPanelProps> = ({ idioma, setIdioma
       setLoading(true);
       setError(null);
       try {
-        const data: RestauranteConfig = await import('../services/api').then(m => m.getConfiguracion());
+        const data: NegocioConfig = await import('../services/api').then(m => m.getConfiguracion());
         setConfig(data);
         if (data.idioma) {
           i18n.changeLanguage(data.idioma);

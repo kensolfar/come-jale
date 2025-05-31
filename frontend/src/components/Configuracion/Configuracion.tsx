@@ -1,25 +1,57 @@
-import React, { useMemo, useState, useRef, useEffect, use } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { isAdminFromToken } from '../utilsAuth';
 import PaletteOutlinedIcon from '@mui/icons-material/PaletteOutlined';
 import StorefrontOutlinedIcon from '@mui/icons-material/StorefrontOutlined';
 import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
 import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
 import SecurityOutlinedIcon from '@mui/icons-material/SecurityOutlined';
 import PointOfSaleOutlinedIcon from '@mui/icons-material/PointOfSaleOutlined';
+import { usarUsuario } from '../ContextoDeUsuario';
+import ConfiguracionNegocio from './ConfiguracionNegocio';
 
-interface ConfiguracionProps {
+import type { NegocioConfig } from './ConfiguracionNegocio';
+
+export type LlaveConfig = 'apariencia' | 'restaurante' | 'productos' | 'notificaciones' | 'seguridad' | 'facturacion';
+export type rolesUsuario = 'administrador' | 'vendedor' | 'cliente' | 'repartidor' ;
+export interface ConfiguracionProps {
+  idioma: string;
+  setIdioma: (lang: string) => void;
   token: string;
 }
-type LlaveConfig = 'apariencia' | 'restaurante' | 'productos' | 'notificaciones' | 'seguridad' | 'facturacion';
+export interface NavItem {
+  label: string;
+  key: LlaveConfig;
+  descripcion: string;
+  icon: React.ReactNode;
+  roles: rolesUsuario[];
+  onClick: () => void;
+}
 
-
-const Configuracion: React.FC<ConfiguracionProps> = ({ token }) => {
-  const { t } = useTranslation();
+const Configuracion: React.FC<ConfiguracionProps> = ({ token, setIdioma, idioma }) => {
+  const { t, i18n } = useTranslation();
+  const { user } = usarUsuario();
   const [pagina, setPagina] = useState<LlaveConfig>('apariencia');
   const navRef = useRef<HTMLDivElement>(null);
   const contenedorRef = useRef<HTMLDivElement>(null);
   const [tocaElFondo, setTocaElFondo] = useState(false);
+  const [config, setConfig] = useState<NegocioConfig | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchConfig() {
+      setError(null);
+      try {
+        const data: NegocioConfig = await import('../../services/api').then(m => m.getConfiguracion());
+        setConfig(data);
+        if (data.idioma) {
+          i18n.changeLanguage(data.idioma);
+        }
+      } catch {
+        setError('Error al cargar la configuración');
+      }
+    }
+    fetchConfig();
+  }, [i18n]);
 
   useEffect(() => {
     function verificaSiTocaElFondo() {
@@ -30,7 +62,8 @@ const Configuracion: React.FC<ConfiguracionProps> = ({ token }) => {
     return () => window.addEventListener('resize', verificaSiTocaElFondo);
   },[]);
 
-  const isAdmin = useMemo(() => isAdminFromToken(token), [token]);
+  console.log('Configuracion renderizado', user);
+  
   const iconStyle = { 
     width: 16,
     height: 16,
@@ -40,7 +73,7 @@ const Configuracion: React.FC<ConfiguracionProps> = ({ token }) => {
     marginRight: 1.33,
     color: 'var(--textlight)'
   }
-  const navItems = [
+  const navItems: NavItem[] = [
     {
       label: t('apariencia'),
       key: 'apariencia',
@@ -106,7 +139,14 @@ const Configuracion: React.FC<ConfiguracionProps> = ({ token }) => {
         gap: 10
       }}
     >   
-      <h1 style={{ fontSize: 24, marginBottom: 16, marginTop: 4, textAlign: 'left' }}>{t('configuracion')}</h1>
+      <h1 
+        style={{ 
+          fontSize: 24, 
+          marginBottom: 16, 
+          marginTop: 4, 
+          textAlign: 'left' 
+        }}
+      >{t('configuracion')}</h1>
       <div
         className='config-container'
         style={{
@@ -138,10 +178,14 @@ const Configuracion: React.FC<ConfiguracionProps> = ({ token }) => {
               const etiqueta = item.key;
               const esPrimero = i === 0;
               const esUltimo = i === navItems.length - 1;
+              const tienePermiso = (Array.isArray(user?.groups) && item.roles.some(rol => user?.groups?.includes(rol))) || user?.is_superuser;
+              if (!tienePermiso) return null;
               return (
                 <button 
                   className='config-item' 
                   onClick={item.onClick}
+                  key={item.key}
+                  disabled={!tienePermiso}
                   style={{
                     border: 'none',
                     padding: '26px 0 26px 26px',
@@ -204,7 +248,7 @@ const Configuracion: React.FC<ConfiguracionProps> = ({ token }) => {
         </div>
         <div 
           className ='config-content'
-          style={{
+          style={{ 
             display: 'flex',
             flexDirection: 'column',
             width: '70%',
@@ -213,7 +257,19 @@ const Configuracion: React.FC<ConfiguracionProps> = ({ token }) => {
             background: 'var(--base-dark-bg-2)',
           }}
         >
-          <h2 style={{ fontSize: 20, marginBottom: 12, textAlign: 'left' }}>{t('contenido')}</h2>
+          { pagina === 'apariencia' && <div>Aquí va la configuración de apariencia</div> }
+          { pagina === 'restaurante' && config && (
+            <ConfiguracionNegocio 
+              config={config} 
+              setConfig={setConfig} 
+              setIdioma={setIdioma} 
+              token={token} 
+            />
+          ) }
+          { pagina === 'productos' && <div>Aquí va la configuración de productos</div> }
+          { pagina === 'notificaciones' && <div>Aquí va la configuración de notificaciones</div> }
+          { pagina === 'seguridad' && <div>Aquí va la configuración de seguridad</div> }
+          { pagina === 'facturacion' && <div>Aquí va la configuración de facturación</div> }
         </div>
       </div>
     </div>

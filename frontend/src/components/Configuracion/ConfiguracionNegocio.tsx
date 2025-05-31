@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { updateConfiguracion } from '../services/api';
+import { updateConfiguracion } from '../../services/api';
 
 const LANGS = [
   { code: 'es', label: 'Español' },
   { code: 'en', label: 'English' },
 ];
 
-export interface RestauranteConfig {
+export interface NegocioConfig {
   idioma: string;
   nombre_restaurante: string;
   direccion: string;
@@ -16,7 +16,7 @@ export interface RestauranteConfig {
   descripcion: string;
 }
 
-function normalizeConfig(cfg: Partial<RestauranteConfig> | undefined): RestauranteConfig {
+function normalizeConfig(cfg: Partial<NegocioConfig> | undefined): NegocioConfig {
   return {
     idioma: cfg?.idioma || 'es',
     nombre_restaurante: cfg?.nombre_restaurante || '',
@@ -27,15 +27,14 @@ function normalizeConfig(cfg: Partial<RestauranteConfig> | undefined): Restauran
   };
 }
 
-interface ConfigEditProps {
-  config: RestauranteConfig;
-  setConfig: (c: RestauranteConfig) => void;
+interface ConfigNegocioProps {
+  config: NegocioConfig;
+  setConfig: (c: NegocioConfig) => void;
   setIdioma?: (lang: string) => void;
-  loading: boolean;
   token: string;
 }
 
-export const ConfigEdit: React.FC<ConfigEditProps> = ({ config, setConfig, setIdioma, loading, token }) => {
+const ConfiguracionNegocio: React.FC<ConfigNegocioProps> = ({ config, setConfig, setIdioma, token }) => {
   const { t, i18n } = useTranslation();
   const [form, setForm] = useState(normalizeConfig(config));
   const [logoFile, setLogoFile] = useState<File | null>(null);
@@ -76,11 +75,11 @@ export const ConfigEdit: React.FC<ConfigEditProps> = ({ config, setConfig, setId
     setSuccess(false);
     try {
       // 1. Guardar datos de configuración (sin logo)
-      let data: RestauranteConfig = { ...form };
+      let data: NegocioConfig = { ...form };
       data = await updateConfiguracion(data, false, token);
       // 2. Si hay logoFile, subirlo aparte
       if (logoFile) {
-        const logoResp = await import('../services/api').then(m => m.uploadConfiguracionLogo(logoFile, token));
+        const logoResp = await import('../../services/api').then(m => m.uploadConfiguracionLogo(logoFile, token));
         data.logo = logoResp.logo;
       }
       setSuccess(true);
@@ -97,8 +96,6 @@ export const ConfigEdit: React.FC<ConfigEditProps> = ({ config, setConfig, setId
       setSaving(false);
     }
   };
-
-  if (loading) return <div>{t('loading')}</div>;
 
   return (
     <form onSubmit={handleSubmit} style={{
@@ -165,3 +162,5 @@ export const ConfigEdit: React.FC<ConfigEditProps> = ({ config, setConfig, setId
     </form>
   );
 };
+
+export default ConfiguracionNegocio;

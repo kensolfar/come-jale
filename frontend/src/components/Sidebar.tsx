@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import UserInfo from './UserInfo';
 import { useTranslation } from 'react-i18next';
-// import your i18n instance from the correct path (adjust the path as needed)
 import i18n from '../i18n';
 import BusinessInfoPanel from './BusinessInfoPanel';
 

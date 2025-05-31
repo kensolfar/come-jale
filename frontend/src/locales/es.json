@@ -98,7 +98,21 @@
   "charge": "Monto",
   "servicio": "Servicio",
   "empaque": "Empaque",
-  "empleados": "Empleados",
   "propina": "Propina",
-  "no_tipos_orden": "No hay tipos de orden configurados.\nUsa el botón 'Agregar Tipo de Orden' para crear uno nuevo."
+  "no_tipos_orden": "No hay tipos de orden configurados.\nUsa el botón 'Agregar Tipo de Orden' para crear uno nuevo.",
+  "apariencia": "Apariencia",
+  "configuracion_apariencia_desc": "Configura la apariencia de tu aplicacion de punto de venta.",
+  "restaurante": "Restaurante",
+  "configuracion_restaurante_desc": "Configura los detalles de tu restaurante.",
+  "notificaciones": "Notificaciones",
+  "configuracion_notificaciones_desc": "Configura las notificaciones de tu restaurante.",
+  "seguridad": "Seguridad",
+  "configuracion_seguridad_desc": "Configura la seguridad y las cuentas de usuario.",
+  "facturacion": "Facturación",
+  "configuracion_facturacion_desc": "Configura la facturación de tu restaurante, impuestos y cargos.",
+  "usuarios": "Usuarios",
+  "configuracion_usuarios_desc": "Configura los usuarios y sus roles en el sistema.",
+  "empleados": "Empleados",
+  "configuracion_empleados_desc": "Configura los empleados de tu restaurante y sus roles.",
+  "configuracion_productos_desc": "Configura los productos y categorías de tu restaurante."
 }

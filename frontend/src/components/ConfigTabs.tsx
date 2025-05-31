@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ImpuestosCrud from './ImpuestosCrud';
 import TipoCargoCrud from './TipoCargoCrud';
-import { ConfigEdit } from './ConfigEdit';
+import ConfiguracionNegocio from './Configuracion/ConfiguracionNegocio';
 import ConfigTipoOrdenes from './ConfigTipoOrdenes';
 
 
@@ -14,17 +14,17 @@ const TABS = [
 ];
 
 // Import the RestauranteConfig type from ConfigEdit or its source file
-import type { RestauranteConfig } from './ConfigEdit';
+import type { NegocioConfig } from './Configuracion/ConfiguracionNegocio';
 
 export interface ConfigTabsProps {
-  config: RestauranteConfig;
-  setConfig: (config: RestauranteConfig) => void;
+  config: NegocioConfig;
+  setConfig: (config: NegocioConfig) => void;
   setIdioma: (idioma: string) => void;
   loading: boolean;
   token: string;
 }
 
-const ConfigTabs = ({ config, setConfig, setIdioma, loading, token }: ConfigTabsProps) => {
+const ConfigTabs = ({ config, setConfig, setIdioma, token }: ConfigTabsProps) => {
   const { t } = useTranslation();
   const [tab, setTab] = useState('general');
 
@@ -79,7 +79,7 @@ const ConfigTabs = ({ config, setConfig, setIdioma, loading, token }: ConfigTabs
         </div>
         <div style={{ padding: 32 }}>
           {tab === 'general' && (
-            <ConfigEdit config={config} setConfig={setConfig} setIdioma={setIdioma} loading={loading} token={token} />
+            <ConfiguracionNegocio config={config} setConfig={setConfig} setIdioma={setIdioma} token={token} />
           )}
           {tab === 'impuestos' && (
             <ImpuestosCrud token={token} />
