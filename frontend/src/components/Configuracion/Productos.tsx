@@ -3,6 +3,7 @@ import { getCategorias, getProductos } from '../../services/api';
 import type { Categoria, Producto } from '../../services/api';
 import CategoryOutlinedIcon from '@mui/icons-material/CategoryOutlined';
 import { useTranslation } from 'react-i18next';
+import IconoEditar from '../Iconos/IconoEditar';
 //import { usarUsuario } from '../ContextoDeUsuario';
 
 interface ItemOrden {
@@ -251,12 +252,13 @@ const Productos: React.FC<ProductosProps> = ({ orden }) => {
                 />
                 <div style={{ 
                   flex: 1, 
-                  padding: '16px', 
+                  //padding: '16px', 
                   display: 'flex', 
                   flexDirection: 'column',
                   justifyContent: 'space-between',
                 }}>
-                  <div>
+                  <div style={{
+                    padding: '16px',}}>
                     <h3 style={{ 
                       margin: 0, 
                       fontSize: isMobile ? 14 : 16, 
@@ -289,10 +291,14 @@ const Productos: React.FC<ProductosProps> = ({ orden }) => {
                   </div>
                   <button 
                     style={{
-                      background: 'var(--primary-color)',
-                      color: 'white',
+                      background: 'var(--primary-color-transparent)',
+                      width: '100%',
+                      height: '100%',
+                      margin: 0,
+                      color: 'var(--primary-color)',
                       border: 'none',
-                      borderRadius: '8px',
+                      borderTopLeftRadius: 0,
+                      borderTopRightRadius: 0,
                       padding: '8px 16px',
                       fontSize: 14,
                       fontWeight: 500,
@@ -303,7 +309,7 @@ const Productos: React.FC<ProductosProps> = ({ orden }) => {
                       gap: 8,
                     }}
                   >
-                    ✏️ {t('edit_dish')}
+                    <IconoEditar/> {t('edit_dish')}
                   </button>
                 </div>
               </div>
