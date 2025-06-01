@@ -8,6 +8,7 @@ import SecurityOutlinedIcon from '@mui/icons-material/SecurityOutlined';
 import PointOfSaleOutlinedIcon from '@mui/icons-material/PointOfSaleOutlined';
 import { usarUsuario } from '../ContextoDeUsuario';
 import ConfiguracionNegocio from './ConfiguracionNegocio';
+import Productos from './Productos';
 
 import type { NegocioConfig } from './ConfiguracionNegocio';
 
@@ -29,7 +30,7 @@ export interface NavItem {
 
 const Configuracion: React.FC<ConfiguracionProps> = ({ token, setIdioma, idioma }) => {
   const { t, i18n } = useTranslation();
-  const { user } = usarUsuario();
+  const { usuario } = usarUsuario();
   const [pagina, setPagina] = useState<LlaveConfig>('apariencia');
   const navRef = useRef<HTMLDivElement>(null);
   const contenedorRef = useRef<HTMLDivElement>(null);
@@ -62,7 +63,7 @@ const Configuracion: React.FC<ConfiguracionProps> = ({ token, setIdioma, idioma 
     return () => window.addEventListener('resize', verificaSiTocaElFondo);
   },[]);
 
-  console.log('Configuracion renderizado', user);
+  console.log('Configuracion renderizado', usuario);
   
   const iconStyle = { 
     width: 16,
@@ -178,7 +179,7 @@ const Configuracion: React.FC<ConfiguracionProps> = ({ token, setIdioma, idioma 
               const etiqueta = item.key;
               const esPrimero = i === 0;
               const esUltimo = i === navItems.length - 1;
-              const tienePermiso = (Array.isArray(user?.groups) && item.roles.some(rol => user?.groups?.includes(rol))) || user?.is_superuser;
+              const tienePermiso = (Array.isArray(usuario?.groups) && item.roles.some(rol => usuario?.groups?.includes(rol))) || usuario?.is_superuser;
               if (!tienePermiso) return null;
               return (
                 <button 
@@ -267,7 +268,7 @@ const Configuracion: React.FC<ConfiguracionProps> = ({ token, setIdioma, idioma 
               token={token} 
             />
           ) }
-          { pagina === 'productos' && <div>Aquí va la configuración de productos</div> }
+          { pagina === 'productos' && <Productos/> }
           { pagina === 'notificaciones' && <div>Aquí va la configuración de notificaciones</div> }
           { pagina === 'seguridad' && <div>Aquí va la configuración de seguridad</div> }
           { pagina === 'facturacion' && <div>Aquí va la configuración de facturación</div> }

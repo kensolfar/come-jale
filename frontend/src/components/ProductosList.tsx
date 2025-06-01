@@ -3,7 +3,7 @@ import { getProductos, createProducto, updateProducto, deleteProducto } from '..
 import type { Producto } from '../services/api';
 import ProductDetailDialog from './ProductDetailDialog';
 import ProductViewDialog from './ProductViewDialog';
-import { parseJwt } from './utilsAuth';
+import { parseJwt } from './utiles/utilesAuth';
 
 const ProductosList: React.FC<{ token?: string }> = ({ token }) => {
   const [productos, setProductos] = useState<Producto[]>([]);

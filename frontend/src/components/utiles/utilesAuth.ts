@@ -19,8 +19,6 @@ export function rolesFromToken(token?: string): string[] | null {
   return null;
 }
 
-
-
 export function parseJwt(token: string) {
   try {
     const base64Url = token.split('.')[1];

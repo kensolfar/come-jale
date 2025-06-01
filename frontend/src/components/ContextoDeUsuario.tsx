@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useMemo } from 'react';
-import { parseJwt } from "./utilsAuth";
+import { parseJwt } from "./utiles/utilesAuth";
 
 export interface InformacionUsuario {
   first_name: string;
@@ -12,14 +12,15 @@ export interface InformacionUsuario {
 }
 
 export interface TipoContextoUsuario {
-  user: InformacionUsuario | null;
+  usuario: InformacionUsuario | null;
+  ficha: string | null;
 }
 
-const ContextoDeUsuario = createContext<TipoContextoUsuario>({ user: null });
+const ContextoDeUsuario = createContext<TipoContextoUsuario>({ usuario: null, ficha: null });
 
 export const ProveedorUsuario: React.FC<{ token?: string; children: React.ReactNode }> = ({ token, children }) => {
-  const user = useMemo(() => (token ? parseJwt(token) : null), [token]);
-  return <ContextoDeUsuario.Provider value={{ user }}>{children}</ContextoDeUsuario.Provider>;
+  const usuario = useMemo(() => (token ? parseJwt(token) : null), [token]);
+  return <ContextoDeUsuario.Provider value={{ usuario, ficha: token ?? null }}>{children}</ContextoDeUsuario.Provider>;
 };
 
 export function usarUsuario() {

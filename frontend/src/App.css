@@ -109,7 +109,16 @@ button.secondary {
   color: var(--white);
   border: solid var(--border-width-main, 2px) var(--primary-color);
   padding: 14px;
-  width: 144px;
+}
+
+button.navegacion {
+  background: transparent;
+  color: var(--white);
+  border: none;
+  border-radius: 0;
+  margin-right: 14px;
+  padding: 14px 0;
+  font-weight: var(--button-small-semibold-font-weight);
 }
 
 

@@ -3,7 +3,7 @@ import { FaCog } from 'react-icons/fa';
 import { useTranslation } from 'react-i18next';
 import ConfigTabs from './ConfigTabs';
 import type { NegocioConfig } from './Configuracion/ConfiguracionNegocio';
-import { isAdminFromToken } from './utilsAuth';
+import { isAdminFromToken } from './utiles/utilesAuth';
 
 export interface BusinessInfoPanelProps {
   idioma: string;
